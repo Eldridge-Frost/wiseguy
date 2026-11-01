@@ -1,0 +1,17 @@
+# Build outputs
+*.apk
+*.aab
+# Build intermediates
+*/build/
+*/.gradle/
+local.properties
+# Large media (verify license before public push)
+assets/music/*.mp3
+*.zip
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+# Backups
+backups/
