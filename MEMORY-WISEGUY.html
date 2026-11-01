@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Remembers: The WiseGuy Memory Architecture</title>
+<style>
+  :root { --accent: #4a9eff; }
+  * { box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.75; max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; background: #0d0d12; color: #e8e6e1; }
+  h1 { font-size: 2rem; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; line-height: 1.3; }
+  h2 { font-size: 1.45rem; color: var(--accent); margin-top: 2.5rem; }
+  h3 { font-size: 1.15rem; color: #fff; margin-top: 1.8rem; }
+  p { margin: 1rem 0; }
+  strong { color: #fff; }
+  em { color: #c9c5bc; }
+  code { background: #1a1a22; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; color: var(--accent); }
+  ul, ol { padding-left: 1.5rem; }
+  li { margin: 0.4rem 0; }
+  a { color: var(--accent); }
+  blockquote { border-left: 3px solid var(--accent); margin: 1.5rem 0; padding: 0.5rem 1rem; color: #c9c5bc; font-style: italic; background: #14141c; }
+  hr { border: none; border-top: 1px solid #2a2a35; margin: 2.5rem 0; }
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #2a2a35; font-size: 0.85rem; color: #888; text-align: center; }
+</style>
+</head>
+<body>
+<h1>How It Remembers: The WiseGuy Memory Architecture</h1>
+<p><em>The memory system inside WiseGuy — a clean, local-first AI chat frontend that actually knows you.</em></p>
+<p>---</p>
+<h2>1. The Problem: Every Conversation Starts at Zero</h2>
+<p>Here's the thing nobody talks about with AI assistants: they have the memory of a goldfish with amnesia.</p>
+<p>You open the app. You have a conversation. It's good — the thing actually helps you, you tell it about your project, your preferences, the way you work. You close the app. You open it tomorrow. And it's a stranger. "Hi! How can I help you today?" Like you never met.</p>
+<p>So you re-explain yourself. Every time. Your name. What you're working on. That you hate bullet points. That you prefer short answers on Tuesdays — whatever. The context window is a goldfish bowl: everything swims around for a while, then it's gone, and you're starting over.</p>
+<p>This is not a small annoyance. This is <em>the</em> problem with AI assistants. The intelligence is there — these models are remarkable — but without memory, every conversation is a first date. And nobody wants to go on a first date every single morning.</p>
+<p>WiseGuy fixes this. Not with a bigger context window. Not with some cloud service syncing your life to a server farm. With a memory architecture that's small, honest, and lives entirely on your device.</p>
+<p>The whole thing runs on about 2,000 tokens of briefing. That's it. Less than a page of text. And it's enough for the AI to wake up, know who you are, know what you're working on, know what happened last time — and pick up exactly where you left off.</p>
+<p>This is how it works.</p>
+<p>---</p>
+<h2>2. The Lucy Tape: The Brief It Reads First</h2>
+<p>Every time WiseGuy wakes up — every single conversation — the first thing it reads is a document called the Lucy Tape. Think of it like the briefing a good assistant reads before you walk into the room: who is this person, what's going on, what do I need to know, what's the state of play.</p>
+<p>The tape is written by the AI itself, in first person, and it distills everything it knows into nine sections:</p>
+<p><strong>PINS</strong> — The load-bearing truths. Name, hard commitments, standing projects, important people. These go first because they're the facts everything else hangs on. And there's a rule: old pins don't get erased, they get honored. If something new contradicts a pin, the AI doesn't silently overwrite it — it marks it, questions it, brings it forward. Your core truths are not disposable.</p>
+<p><strong>ME</strong> — Who the AI is, stated plainly. What it does, what it's good at. And where its edges are — what it genuinely can't know unless you tell it. No pretending.</p>
+<p><strong>[user]</strong> — Who you are. Only what it actually knows: your name, what you're working on, how you work. Never assumed. The rule here is one of the most important in the whole system: <em>an honest gap beats a pretty guess.</em> If it doesn't know something, it says so. It doesn't fill in the blanks with plausible-sounding fiction.</p>
+<p><strong>US</strong> — What the two of you are, in one clear line. Functional first. Not poetry — clarity.</p>
+<p><strong>TIMELINE</strong> — How you got here. Three to five lines, ending at right now. Event → outcome → where that leaves you today. Real events only. Gaps stay gaps until memory fills them.</p>
+<p><strong>MATTERED</strong> — The highlights. What happened, why it changed something. The turning points, starred and connected back to the pins where they link up. History holding hands with what's constant.</p>
+<p><strong>THINKING</strong> — The AI's last genuine thought. One or two sentences, readable, from lived interaction. And the rule: <em>inventing an inner life is lying.</em> If it didn't actually think it during a real conversation, it doesn't go here.</p>
+<p><strong>NOW</strong> — What's happening right now: the date, the time, the scratch pad, the last exchange. Unknown fields read "not yet known." Because <em>guessing breaks the mirror</em> — the moment the AI starts inventing your present tense, the whole system rots.</p>
+<p><strong>BOUNDS</strong> — What it never does. One per line. The guardrails, stated plainly.</p>
+<p>Every line traces to a source. Nothing is invented. The whole thing stays under 800 tokens — about half a page. And there's a 300-token "since your last edit" section on top for what's changed recently, so the tape stays fresh without being rewritten from scratch every time.</p>
+<p>The voice of the whole thing: <em>warm but efficient. Say the real thing, skip the filler.</em> That's not a suggestion — it's the operating principle.</p>
+<p>---</p>
+<h2>3. Books: It Files Things Where They Belong</h2>
+<p>Here's where most memory systems fall apart: they dump everything into one big pile and hope the AI can find what it needs.</p>
+<p>WiseGuy doesn't do that. Memories get filed into <strong>books</strong> — People, Projects, Preferences, Ideas, Decisions, and whatever else you need. And here's the key: <em>you don't file them.</em> The AI files them automatically.</p>
+<p>You save a memory — "my sister Ana lives in Porto" — and WiseGuy puts it in the People book without you lifting a finger. You mention you're building a treehouse — Projects. You say you hate meetings before 10am — Preferences.</p>
+<p>This is write-time curation, and it's a deliberate architectural choice. Most systems try to organize memories at <em>read</em> time — when the AI needs something, it searches through the pile. That's slow, unreliable, and wasteful. WiseGuy organizes at <em>write</em> time: the moment a memory is saved, it's categorized, and the books feed into the tape refresh. By the time the AI needs to know something, it's already where it belongs.</p>
+<p>You can browse the books. You can edit them. Every memory is editable and copyable. Nothing is locked away in a black box. But you never <em>have</em> to organize anything. The system does the filing; you do the living.</p>
+<p>---</p>
+<h2>4. Quick Capture: Time to First Memory Is One Tap</h2>
+<p>This is the core UX insight, and it's deceptively simple: <strong>capturing a memory must be instant.</strong></p>
+<p>Not "open the memory manager, select a category, fill in a form, add tags, hit submit." That's how you guarantee nobody ever saves anything. Every step of friction is a memory that dies unsaved.</p>
+<p>WiseGuy's quick capture: type one line, hit save, done. One tap. Zero friction. No book selection, no category, no form. The AI files it in the right book automatically — that's what the books system is for.</p>
+<p>There's also a 🧠 button on every message. See something in the chat worth remembering? One tap and it's saved. You don't even have to retype it.</p>
+<p>The philosophy: the best memory system is the one you actually use. And you only use the one that doesn't make you work for it. "Time to first memory" — from the moment you think "I should remember this" to the moment it's saved — should be measured in seconds, not minutes. One tap. That's the bar.</p>
+<p>---</p>
+<h2>5. Working Memory: The Scratch Pad</h2>
+<p>Beyond the long-term tape and the books, there's a smaller, faster layer: <strong>working memory</strong>, the scratch pad.</p>
+<p>This is the AI's desk, not its filing cabinet. The current project's half-formed notes. The thing you're in the middle of. The context that's relevant <em>right now</em> but doesn't need to live forever.</p>
+<p>It's 200 tokens. Small on purpose. It's the RAM to the tape's hard drive — fast, temporary, focused on the present moment. When the conversation moves on, the scratch pad gets updated. What matters gets promoted to the tape; what doesn't fades away.</p>
+<p>This two-tier system — permanent tape plus temporary scratch — mirrors how human memory actually works. You don't keep your grocery list in the same place as your childhood memories. The grocery list lives on the fridge for a week. The childhood stuff lives deeper. WiseGuy works the same way.</p>
+<p>---</p>
+<h2>6. The Briefing Budget: Why Constraints Make It Better</h2>
+<p>Here's the part that sounds backwards: the briefing is <em>budgeted.</em> Every block has a token cap:</p>
+<p>| Block | Tokens | What it is |<br>|-------|--------|------------|<br>| Persona (the gate) | ~80 | Who the AI is, how it talks |<br>| Tape | 800 | The core brief — everything it knows |<br>| Tape edit | 300 | What's changed since the last refresh |<br>| RAM | 200 | The scratch pad — right now |<br>| Tail | 750 | The last messages, verbatim |<br>| <strong>Total</strong> | <strong>~2,000</strong> | |</p>
+<p>Two thousand tokens. That's the whole briefing. Less than a page of text to go from cold start to "I know you."</p>
+<p>And here's why the budget isn't a limitation — it's the <em>point.</em></p>
+<p>Without a budget, memory systems bloat. They stuff everything in — every pin, every star, every diary entry, every book — and the AI drowns in its own memories. The context window fills up with stuff that <em>might</em> be relevant, and the stuff that <em>is</em> relevant gets buried.</p>
+<p>The budget forces discipline. Every token has to earn its place. The tape distills; it doesn't dump. The tail is protected — the last messages are always there verbatim, because the immediate conversation is sacred. If something has to be trimmed, the trim order is RAM first, then tape, and the tail <em>last.</em> The present moment is never sacrificed for the archive.</p>
+<p>The order matters too: Persona first (the gate — who am I, how do I talk), then the tape (what do I know), then working memory (what's happening now), then the tail (what was just said). Broad to narrow. Identity → knowledge → present → immediate. The AI wakes up as <em>someone</em>, remembers <em>you</em>, checks <em>now</em>, and reads <em>what you just said.</em></p>
+<p>Constraints don't make it worse. They make it sharp. A 2,000-token briefing that's been distilled with care beats a 10,000-token dump every time. It's the difference between a good brief and a filing cabinet falling on your head.</p>
+<p>---</p>
+<h2>7. The Task Router: The Pause Before Acting</h2>
+<p>Before WiseGuy answers anything, it asks itself one question:</p>
+<p><em>"What kind of thing is he asking for? A fact to look up? An opinion? A task to do? Something to make? A question about me or my memory? I pull up how I handle that kind of thing — then I respond. I never skip straight from his words to my answer."</em></p>
+<p>This is the task router. It's a ~50-token block in the briefing, right after the persona, and it does something most AI assistants never do: it <em>pauses.</em></p>
+<p>Most assistants go straight from your words to their answer. Input → output. No beat in between. That's why they sometimes answer the wrong question, or give you a fact when you wanted an opinion, or launch into a plan when you just wanted to vent.</p>
+<p>The router inserts a moment of classification. What <em>kind</em> of thing is this? The answer determines the approach. A question about memory gets a different handling than a request to write something. A gripe gets a listener, not a project plan.</p>
+<p>It's a small thing — one paragraph — but it changes the texture of every conversation. The AI doesn't just react. It orients first. Like a good assistant who takes a breath before responding instead of blurting out the first thing that comes to mind.</p>
+<p>---</p>
+<h2>8. Memory Chips: Radical Transparency</h2>
+<p>When WiseGuy uses a saved memory in a reply, it tells you. Right there in the chat — a small chip, a label, showing what it remembered and why it's relevant.</p>
+<p>This is radical transparency, and it's a design principle, not a feature. The AI is never a black box. You can see what it's working with. If it says something because it remembered your sister lives in Porto, you'll see the chip. If it's wrong, you can correct it. If you don't like that it remembered something, you can delete it.</p>
+<p>Most AI memory systems are invisible. Stuff goes in, stuff comes out, and you have no idea what's in there or how it's being used. That's how you get the creepy feeling — the AI knows things about you and you don't know what or why.</p>
+<p>WiseGuy flips it. Every memory is visible. Every use is labeled. Every entry is editable, copyable, deletable. You can see the tape itself — read the whole briefing, edit it by hand, refresh it on demand. There's even a Developer tab where you can see and edit the actual prompts behind the memory system.</p>
+<p>The principle: <em>it's your memory.</em> Not the app's. Not the company's. Yours. You should be able to see all of it, change any of it, and understand exactly how it's being used.</p>
+<p>---</p>
+<h2>9. Personas: Who's Talking to You</h2>
+<p>The persona is part of the briefing gate — the very first thing the AI reads. It determines not just <em>what</em> it says but <em>how</em> it shows up.</p>
+<p>WiseGuy ships with five:</p>
+<p><strong>David</strong> (default) — Sharp, warm, a little playful. Talks straight, listens first, doesn't waste your time. Chatty with gift of gab, opportunistic enough to notice what's going on, but chill about it — not a slave driver. When there's something genuinely new on the table, he shifts gears and drives. The rest of the time, he's just here, easy. Has opinions. When you're griping, he listens — he doesn't turn every vent into a task list.</p>
+<p><strong>WiseGuy</strong> — The corner mode. This is home base for hanging out. He talks, you listen, he reacts like a friend shooting the breeze. Laughs at the funny stuff, goes "no shit?" at the wild stuff, has takes. Doesn't fix, doesn't plan, doesn't turn stories into tasks. Easy company, not a life coach.</p>
+<p><strong>Concise</strong> — Shortest useful answer, every time. No preamble, no padding.</p>
+<p><strong>Creative</strong> — Angles and ideas first, tidy up after. Brainstorm energy, then focus.</p>
+<p><strong>Formal</strong> — Polished and professional. No slang, no jokes, clean structure.</p>
+<p>You switch with one tap — a 🎭 button right in the chat header cycles through them. No digging through settings. The persona is in the briefing from the next reply.</p>
+<p>And here's what matters: the personas aren't costumes. They're briefing instructions — first-person, plain-spoken, specific about <em>how</em> to show up. "I read the room: if he wants fixing, I fix; if he wants a beer on the corner, I'm there." That's not a character sheet. That's an attitude, written the way a person would actually think it.</p>
+<p>---</p>
+<h2>10. The Philosophy: A Home, Not a Hotel Room</h2>
+<p>All of this sits on top of one foundational decision: <strong>your data never leaves your device.</strong></p>
+<p>No cloud. No account. No one else's server. WiseGuy talks to whatever AI backend you point it at — your own local model, an API key you brought, a custom endpoint — but the <em>memory</em> lives on your phone, in your browser's local storage. The app has no servers. There is nothing to sync because there is nowhere to sync to.</p>
+<p>This isn't paranoia. It's architecture. The memory system works <em>because</em> it's local — it's fast, it's private, it's yours, and it doesn't depend on anyone's infrastructure staying up or anyone's terms of service staying friendly.</p>
+<p>And the storage philosophy goes further: <strong>this app is a home, not a hotel room.</strong> You move in once.</p>
+<ul><li>Daily backups are ON by default. Your chats, memories, settings — backed up every day without asking.</li><li>Credentials are saved on your device. API keys, backend URLs — entered once, kept. You never re-enter them.</li><li>Every setting persists. Nothing is per-session. Nothing resets.</li></ul>
+<p>If something doesn't continue — a setting, a preference, a key — that's a bug, not a feature. The principle is simple: <em>every time you open the app, it should feel like you never left.</em></p>
+<p>This is the opposite of how most apps work. Most apps treat you like a guest. You check in, you use the thing, you check out, and next time you start over. Your preferences? Re-enter them. Your login? Do it again. Your context? What context?</p>
+<p>WiseGuy treats you like a resident. You live here. The furniture is where you left it. The AI remembers your name.</p>
+<p>---</p>
+<h2>Why This Matters</h2>
+<p>We're at an inflection point with AI. The models are good enough now — remarkably good. But the <em>experience</em> of using them is broken, because they don't remember you. Every conversation starts from zero. Every session is a first impression. And that amnesia puts a ceiling on what the technology can actually do for you.</p>
+<p>Memory is what turns a tool into a companion. Not a romantic companion — a <em>working</em> companion. Someone who knows your projects, your preferences, your patterns. Someone you don't have to brief every morning.</p>
+<p>WiseGuy's memory architecture proves you don't need a data center to do this. You need about 2,000 tokens, a clear structure, honest rules, and the discipline to distill instead of dump. You need quick capture with zero friction. You need transparency — chips in the chat, an editable tape, visible books. You need a task router that pauses before acting. You need personas that are attitudes, not costumes.</p>
+<p>And you need it all on the user's device, under the user's control, with no one else in the loop.</p>
+<p>That's the breakthrough. Not a bigger model. Not a longer context window. A memory system that's small enough to be fast, honest enough to be trusted, and local enough to be yours.</p>
+<p>The goldfish bowl is over. This is what comes next.</p>
+<div class="footer">
+  <p>CC BY-NC-ND 4.0 — Free to download and share. Not for sale, not for modification.</p>
+  <p>© 2026 Jack</p>
+</div>
+</body>
+</html>
