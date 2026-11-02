@@ -172,12 +172,12 @@ button{cursor:pointer;border:0}
 .pers:hover{border-color:var(--border2)}.pers.active{border-color:var(--gold);background:var(--gold-dim)}
 .pers b{font-size:13px}.pers p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
 
-.modalnav{width:200px;background:#0C0D11;border-right:1px solid var(--border);padding:16px 10px;flex-shrink:0}
+.modalnav{width:200px;padding:4px 16px 16px 0;flex-shrink:0}
 .modalnav h3{margin:4px 8px 14px;font-size:17px}
 .modalnav button{width:100%;text-align:left;padding:10px 11px;border-radius:10px;background:transparent;color:var(--muted);font-weight:700;font-size:13.5px;margin-bottom:2px;transition:.15s}
 .modalnav button:hover{color:white;background:var(--panel)}
 .modalnav button.active{background:var(--panel2);color:white}
-.modalcontent{flex:1;overflow:auto;padding:20px 22px 26px;min-width:0}
+.modalcontent{flex:1;overflow:visible;padding:4px 0 26px;min-width:0}
 .modalcontent h2{margin:0 0 6px;font-size:20px;letter-spacing:-.02em}
 .modalcontent .sub{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0 0 18px}
 .provgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
@@ -581,7 +581,7 @@ details.wgCard>div{padding:0 16px 16px}
 .sumlist{margin:0;padding-left:18px;line-height:1.7;font-size:14px;color:#E7E5E0}
 
 /* ===== No pop-ups: tab pages + inline panels ===== */
-.settingslayout{display:flex;background:#111318;border:1px solid var(--border2);border-radius:22px;overflow:hidden}
+.settingslayout{display:flex;gap:0;overflow:visible}
 .settingslayout .modalnav h3{display:none}
 .settingslayout .modalcontent{max-height:none}
 .tokeninline{border-bottom:1px solid var(--border);background:#0B0D10;padding:16px 20px 8px;max-height:52dvh;overflow:auto;overscroll-behavior:contain}
@@ -715,6 +715,7 @@ details.wgCard>div{padding:0 16px 16px}
         <button class="tokenbtn" id="tokenBtn" aria-label="Token speed and usage for this chat" title="Tokens — speed, usage &amp; context for this chat"><span class="tt">t</span><span class="ts"><span id="tokenBtnSpeed">91.4</span><small>tok / sec</small></span></button>
         <button class="iconbtn topact" id="topNewChat" aria-label="New chat" title="New chat">＋</button>
         <button class="iconbtn topact" id="topAttach" aria-label="Attach files" title="Attach files">📎</button>
+        <button class="iconbtn topact" id="persCycleBtn" aria-label="Cycle persona" title="Cycle persona">🎭</button>
       </div>
     </header>
 
@@ -831,7 +832,7 @@ details.wgCard>div{padding:0 16px 16px}
             <div class="who">J</div>
             <div class="bubble"><div class="bubblehead"><b>You</b><time>11:02 AM</time></div>
             <p>What can you do, and how does memory work here?</p>
-            <div class="actions"><button class="act" data-action="remember" title="Save to memory — one tap">🧠</button><button class="act" data-action="copy" title="Copy">⧉</button></div></div>
+            <div class="actions"><button class="act" data-action="remember" title="Pin — save to memory">📌</button><button class="act" data-action="copy" title="Copy">📋</button></div></div>
           </article>
           <article class="msg ai">
             <div class="who">D</div>
@@ -840,7 +841,7 @@ details.wgCard>div{padding:0 16px 16px}
             <ul><li><strong>Chat:</strong> ask questions, draft, plan, code and brainstorm — with streaming replies.</li><li><strong>Memory:</strong> when you tell me to remember something, it appears in the Memory tab with its source. You can pin, edit or delete it anytime.</li><li><strong>Your key:</strong> add your own OpenAI key in Settings → API &amp; BYOK, or explore in demo mode.</li></ul>
             <p>The memories in the Memory tab right now are labelled examples, just to show how it works — add your own and they'll replace them.</p>
             <div class="actions">
-              <button class="act" data-action="copy" title="Copy">⧉</button><button class="act" data-action="like" title="Good response">♡</button><button class="act" data-action="dislike" title="Bad response">▽</button><button class="act" data-action="speak" title="Read aloud">🔊</button><button class="act" data-action="regen" title="Regenerate">↻</button><button class="act" data-action="remember" title="Save to memory — one tap">🧠</button>
+              <button class="act" data-action="copy" title="Copy">📋</button><button class="act" data-action="like" title="Good response">👍</button><button class="act" data-action="dislike" title="Bad response">👎</button><button class="act" data-action="speak" title="Read aloud">🔊</button><button class="act" data-action="regen" title="Regenerate">🎲</button><button class="act" data-action="remember" title="Pin — save to memory">📌</button>
             </div></div>
           </article>
         </div>
@@ -947,16 +948,6 @@ details.wgCard>div{padding:0 16px 16px}
             <div class="sudboard" id="sudBoard"></div>
             <div class="sudpad" id="sudPad"></div>
             <p class="sudstatus" id="sudStatus">Tap a cell, then tap a number.</p>
-          </div>
-        </div>
-        
-            <div class="ubcontrols">
-              <button class="ubdirbtn" data-dir="up">▲</button>
-              <button class="ubdirbtn" data-dir="left">◀</button>
-              <button class="ubdirbtn" data-dir="down">▼</button>
-              <button class="ubdirbtn" data-dir="right">▶</button>
-            </div>
-            <p class="ubstatus" id="ubStatus">Tap the red block, slide it out the right side.</p>
           </div>
         </div>
         <div class="ccard">
@@ -1321,7 +1312,7 @@ details.wgCard>div{padding:0 16px 16px}
       </div>
     </section>
     <section class="panelview" id="view-settings">
-      <div class="wrap" style="max-width:900px">
+      <div class="wrap" style="max-width:1100px">
         <h1>Settings</h1>
         <p class="lede">Everything that used to hide in pop-ups lives here — one tab, scrollable, nothing overlapping the chat.</p>
         <div class="settingslayout">
@@ -1408,6 +1399,10 @@ details.wgCard>div{padding:0 16px 16px}
 
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
+        <div class="field" style="margin-bottom:18px"><label>Interface size <span id="uiScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
+          <input type="range" id="uiScaleRange" min="70" max="120" step="5" value="100" style="width:100%" aria-label="Interface size">
+          <p class="hint" style="margin-top:6px">Scales the whole interface — text, chat, buttons, everything. Smaller if it feels bloated, larger if you want it big.</p>
+        </div>
         <div class="switchrow"><div><b>Temporary chat</b><p>Don't save the current chat to memory.</p></div><button class="switch" id="sheetTempSwitch" aria-label="Toggle temporary chat"></button></div>
         <div class="switchrow"><div><b>Memory</b><p>Use saved memories in the current chat.</p></div><button class="switch on" id="sheetMemSwitch" aria-label="Toggle memory in this chat"></button></div>
         <div class="switchrow"><div><b>Web search</b><p>Look things up as you ask.</p></div><button class="switch" id="sheetWebSwitch" aria-label="Toggle web search"></button></div>
@@ -1546,10 +1541,10 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD=34; window._bootMark="script-start";
+window.WG_BUILD=44; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
-let lucyTape={text:"",ts:0,edited:false,sinceEdit:""}; /* the core brief — the tape */
+let mixtape={text:"",ts:0,edited:false,sinceEdit:""}; /* the core brief — the tape */
 function wgSave(){
   if(!wgReady) return;
   try{
@@ -1568,7 +1563,7 @@ function wgSave(){
       settings:Object.assign({}, S),
       memories:memories.filter(m=>!(m.meta||"").includes("Demo example")),
       books:books,
-      tape:lucyTape,
+      tape:mixtape,
       pad:(function(){ try{ return pad.value; }catch(_){ return ""; } })(),
       benchNotes:benchNotes,
       chat:serializeChat(),
@@ -1685,7 +1680,7 @@ $$(".pers").forEach(b=>b.onclick=()=>{$$(".pers").forEach(x=>x.classList.remove(
 function switchMTab(name){ $$(".modalnav button").forEach(x=>x.classList.toggle("active",x.dataset.mtab===name)); ["general","assistants","api","engine","personal","data","shortcuts","developer"].forEach(t=>{const el=$("#mtab-"+t); if(el) el.style.display=t===name?"block":"none"}); const titles={general:["General","Everyday behaviour for the chat UI."],assistants:["Assistants","Who answers you — switch, create, rename, or remove assistants. Each keeps its own chats and memories."],api:["API & Bring Your Own Key","Connect with your own key, a local server, or any OpenAI-compatible endpoint. Keys never leave this device."],engine:["Engine","Diagnostics for calibration — backend, speed, context and memory size."],personal:["Personalisation","How David sounds and what it knows about you."],data:["Data controls","Export or clear your chats from this device."],shortcuts:["Keyboard shortcuts","Move faster without the mouse."],developer:["Developer","The prompts behind the brief — edit them directly."]}; if(titles[name]){$("#modalTitle").textContent=titles[name][0];$("#modalSub").textContent=titles[name][1];} if(name==="engine"){ try{ renderEngine(); }catch(_){} } }
 
 /* Developer → prompt editor: load, save, reset. Overrides live in localStorage;
-   refreshLucyTape() picks them up via fillPrompt(). */
+   refreshMixtape() picks them up via fillPrompt(). */
 function loadDevPrompts(){ try{
   const s=$("#devTapeSys"), p=$("#devTapePrompt"), a=$("#devTapeAppend");
   if(s) s.value=localStorage.getItem("wg.tapeSys")||TAPE_SYS_DEFAULT;
@@ -1703,7 +1698,7 @@ try{
     localStorage.removeItem("wg.tapeSys"); localStorage.removeItem("wg.tapePrompt"); localStorage.removeItem("wg.tapeAppend");
     loadDevPrompts(); toast("Prompts reset to defaults");
   }catch(_){} };
-  const dt=$("#devTapeTest"); if(dt) dt.onclick=()=>{ try{ refreshLucyTape(false); }catch(_){} };
+  const dt=$("#devTapeTest"); if(dt) dt.onclick=()=>{ try{ refreshMixtape(false); }catch(_){} };
   /* reload the editor each time the Developer tab opens */
   document.querySelectorAll('.modalnav button[data-mtab="developer"]').forEach(b=>b.addEventListener("click", ()=>setTimeout(loadDevPrompts, 50)));
 }catch(_){}
@@ -1856,7 +1851,10 @@ function resolveEndpoint(raw, prov){
 function authHeaders(){
   const h={"Content-Type":"application/json"};
   const org=cleanFieldText(($("#orgIdInput")||{}).value||"");
-  if(apiKey) h["Authorization"]="Bearer "+apiKey;
+  /* Send the key when the user entered a real one -- some local servers
+     (koboldcpp with --api-key) require it. Skip when empty or masked. */
+  const _ck=String(apiKey||"").trim();
+  if(_ck && _ck.indexOf("\u2022")<0) h["Authorization"]="Bearer "+_ck;
   if(org && provider==="OpenAI") h["OpenAI-Organization"]=org;
   return h;
 }
@@ -2037,7 +2035,7 @@ document.addEventListener("click",async e=>{
 /* Chat logic */
 function addUser(text){
   const el=document.createElement("article"); el.className="msg user";
-  el.innerHTML=`<div class="who">J</div><div class="bubble"><div class="bubblehead"><b>You</b><time>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</time></div><p></p><div class="actions"><button class="act" data-action="remember" title="Save to memory — one tap">🧠</button><button class="act" data-action="copy">⧉</button></div></div>`;
+  el.innerHTML=`<div class="who">J</div><div class="bubble"><div class="bubblehead"><b>You</b><time>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</time></div><p></p><div class="actions"><button class="act" data-action="remember" title="Pin — save to memory">📌</button><button class="act" data-action="copy" title="Copy">📋</button></div></div>`;
   el.querySelector("p").textContent=text; $("#messages").appendChild(el); $("#viewport").scrollTop=$("#viewport").scrollHeight;
   try{ _lastThoughtActivity=Date.now(); }catch(_){}
   try{ wgSave(); }catch(_){}
@@ -2060,7 +2058,6 @@ async function callLive(prompt, brief, onChunk){
     temperature:parseFloat($("#tempRange").value),
     max_tokens:parseInt($("#tokRange").value,10)||4096,
     stream:!!S.streaming};
-  if(S.streaming) body.stream_options={include_usage:true};
   const t0=performance.now();
   const r=await fetch(res.chatUrl,{method:"POST",headers:authHeaders(),body:JSON.stringify(body)});
   if(!r.ok) throw new Error("API "+r.status);
@@ -2078,17 +2075,42 @@ async function callLive(prompt, brief, onChunk){
         try{
           const j=JSON.parse(data);
           const d=(j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content)||"";
-          if(d){ if(ttftMs===null) ttftMs=performance.now()-t0; full+=d; if(onChunk) onChunk(full); }
+          if(d){ if(ttftMs===null) ttftMs=performance.now()-t0; full+=d; if(onChunk) onChunk(stripThinkLive(full)); }
           if(j.usage) usage=j.usage;
         }catch(_){}
       }
       if(!isGenerating){ try{ await reader.cancel(); }catch(_){} break; }
     }
     const totalMs=performance.now()-t0;
-    return {text:full, usage, ttftMs, genMs:(ttftMs!==null? totalMs-ttftMs : null), totalMs};
+    return {text:splitThink(full).content, usage, ttftMs, genMs:(ttftMs!==null? totalMs-ttftMs : null), totalMs};
   }
   const j=await r.json();
-  return {text:(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||"", usage:j.usage||null, ttftMs:null, genMs:null, totalMs:performance.now()-t0};
+  return {text:cleanReplyText(j), usage:j.usage||null, ttftMs:null, genMs:null, totalMs:performance.now()-t0};
+}
+/* thinking-model output: <think>, <thinking>, <thought>, <reasoning> — closed or unclosed.
+   Thinking is never shown as reply content and never saved. Also handles
+   reasoning_content / reasoning fields some providers return separately. */
+function splitThink(text){
+  let thinking='', content=text||'';
+  const tags=['think','thinking','thought','reasoning'];
+  for(const tag of tags){
+    const m=content.match(new RegExp('<'+tag+'>([\\s\\S]*?)<\\/'+tag+'>','i'));
+    if(m){ thinking+=(thinking?'\n':'')+m[1].trim(); content=content.slice(0,m.index)+content.slice(m.index+m[0].length); }
+    const u=content.match(new RegExp('<'+tag+'>([\\s\\S]*)$','i'));
+    if(u){ thinking+=(thinking?'\n':'')+u[1].trim(); content=content.slice(0,u.index); }
+  }
+  return {thinking, content:content.trim()};
+}
+/* live-streaming variant: also hides a partial opening tag at the tail */
+function stripThinkLive(text){
+  return splitThink(text).content.replace(/<[a-z]*$/i,'');
+}
+/* pull clean reply text from a chat-completions response, thinking stripped */
+function cleanReplyText(j){
+  const msg=(j.choices&&j.choices[0]&&j.choices[0].message)||{};
+  const rc=(msg.reasoning_content||msg.reasoning||'').trim();
+  const sp=splitThink(msg.content||'');
+  return sp.content;
 }
 function formatReply(text){
   return text.split("\n").map(line=>{ const e=line.replace(/&/g,"&amp;").replace(/</g,"&lt;"); if(e.startsWith("• ")) return `<p style="margin-left:14px">• ${e.slice(2)}</p>`; if(!e.trim()) return ""; return `<p>${e}</p>`}).join("");
@@ -2102,7 +2124,7 @@ async function streamReply(prompt){
   const brief=buildBriefing(prompt, true); lastBriefing=brief;
   const el=document.createElement("article"); el.className="msg ai";
   const chip = S.showChips ? `<span class="memchip">${effectiveMemory()?"🧠 Memory on":"Memory off"}</span>` : "";
-  el.innerHTML=`<div class="who">D</div><div class="bubble"><div class="bubblehead"><b>${assistantName()}</b>${chip}<time>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</time></div><div class="typing"><i></i><i></i><i></i></div><div class="actions"><button class="act" data-action="copy">⧉</button><button class="act" data-action="like">♡</button><button class="act" data-action="dislike">▽</button><button class="act" data-action="speak">🔊</button><button class="act" data-action="regen">↻</button><button class="act" data-action="remember" title="Save to memory — one tap">🧠</button></div></div>`;
+  el.innerHTML=`<div class="who">D</div><div class="bubble"><div class="bubblehead"><b>${assistantName()}</b>${chip}<time>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</time></div><div class="typing"><i></i><i></i><i></i></div><div class="actions"><button class="act" data-action="copy" title="Copy">📋</button><button class="act" data-action="like" title="Good response">👍</button><button class="act" data-action="dislike" title="Bad response">👎</button><button class="act" data-action="speak">🔊</button><button class="act" data-action="regen" title="Regenerate">🎲</button><button class="act" data-action="remember" title="Pin — save to memory">📌</button></div></div>`;
   $("#messages").appendChild(el); $("#viewport").scrollTop=$("#viewport").scrollHeight;
   const body=el.querySelector(".bubble");
   const holder=document.createElement("div"); body.insertBefore(holder, body.querySelector(".actions")); holder.style.display="none";
@@ -2137,7 +2159,8 @@ async function streamReply(prompt){
       totalMs=ttftMs+genMs+40;
     }
   }catch(e){
-    live=false; full=demoReply(prompt)+"\n\n(Note: live API call failed, so this is a demo reply — check your key in Settings → API.)";
+    live=false; const errMsg=(e&&e.message)||String(e);
+    full=demoReply(prompt)+"\n\n(Note: live call failed ("+errMsg+") — demo reply. Check Settings → API.)";
     totalMs=performance.now()-t0; if(genMs===null) genMs=Math.max(60,totalMs-(ttftMs||0));
   }
   const ty=body.querySelector(".typing"); if(ty) ty.remove();
@@ -3169,15 +3192,15 @@ function tapeSources(){
 }
 function renderTape(){
   const view=$("#tapeView"), meta=$("#tapeMeta"); if(!view) return;
-  if(lucyTape.text){
-    view.innerHTML=""; const pre=document.createElement("div"); pre.className="tapepre"; pre.textContent=lucyTape.text; view.appendChild(pre);
-    if(lucyTape.sinceEdit){
+  if(mixtape.text){
+    view.innerHTML=""; const pre=document.createElement("div"); pre.className="tapepre"; pre.textContent=mixtape.text; view.appendChild(pre);
+    if(mixtape.sinceEdit){
       const lab=document.createElement("div"); lab.style.cssText="font-size:11px;color:var(--muted);margin:10px 0 4px"; lab.textContent="Since your last edit — appended by refreshes, never rewriting your words";
-      const ap=document.createElement("div"); ap.className="tapepre"; ap.textContent=lucyTape.sinceEdit;
+      const ap=document.createElement("div"); ap.className="tapepre"; ap.textContent=mixtape.sinceEdit;
       view.appendChild(lab); view.appendChild(ap);
     }
-    const te=$("#tapeEdit"); if(te) te.value=lucyTape.text;
-    if(meta) meta.textContent="Refreshed "+new Date(lucyTape.ts).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+    const te=$("#tapeEdit"); if(te) te.value=mixtape.text;
+    if(meta) meta.textContent="Refreshed "+new Date(mixtape.ts).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
   }else{
     view.innerHTML='<p class="tapeempty">No core brief yet — hit Refresh and I\'ll distill everything I know into the brief I read every turn, logically ordered, up to right now.</p>';
     if(meta) meta.textContent="Not written yet";
@@ -3189,11 +3212,11 @@ const TAPE_SYS_DEFAULT="You are [assistant], writing your own core brief \u2014 
 const TAPE_PROMPT_DEFAULT="Write the core brief in this order. First person, plain and specific \u2014 full lines, not fragments. Warm but efficient: say the real thing, skip the filler. No markdown, no asterisks. Under 800 tokens.\n\nPINS \u2014 load-bearing truths first: name, hard commitments, standing projects, important people. Old pins don\u2019t get erased, they get honored \u2014 if something new contradicts one, mark it and bring it forward, never silently overwrite it.\n\nME \u2014 who I am, plainly. What I do, what I\u2019m good at. Where my edges are \u2014 what I can\u2019t know unless I\u2019m told.\n\n[user] \u2014 who they are. Only what I actually know: name, what they\u2019re working on, how they work. Never assume \u2014 an honest gap beats a pretty guess.\n\nUS \u2014 what we are, in one clear line. Functional first.\n\nTIMELINE \u2014 how we got here, 3-5 lines ending now. Event \u2192 outcome \u2192 where that leaves us. Real events only; gaps stay gaps until memory fills them.\n\nMATTERED \u2014 highlights, one line each: what happened, why it changed something. Starred first. Tie back to pins where they connect.\n\nTHINKING \u2014 my last genuine thought, readable. From lived interaction \u2014 inventing an inner life is lying.\n\nNOW \u2014 what\u2019s happening: date, time, scratch pad, last exchange. Unknown fields read \u201cNot yet known\u201d \u2014 guessing breaks the mirror.\n\nBOUNDS \u2014 what I never do, one per line.\n\n[SOURCES]";
 const TAPE_APPEND_DEFAULT="Write ONLY a \u201cSince your last edit\u201d update: 3-5 lines, first person, plain and specific \u2014 full lines, not fragments. No markdown, no asterisks. What changed, what mattered, what you are thinking now. Start from the Right now section in the sources. Do not rewrite the whole brief, do not invent facts. If a source is empty say so.\n\n[SOURCES]";
 function fillPrompt(t){ try{ return String(t).replace(/\[assistant\]/gi, assistantName()).replace(/\[user\]/gi, userName()).replace(/\[SOURCES\]/g, "Sources (do not copy raw chat, distill it):\n"+tapeSources()); }catch(_){ return String(t); } }
-async function refreshLucyTape(quiet){
+async function refreshMixtape(quiet){
   const btn=$("#tapeRefreshBtn");
   if(!apiKey && provider==="OpenAI"){ if(!quiet) toast("Connect your backend first — the brief is distilled by your own model"); return; }
   if(btn && !quiet){ btn.disabled=true; btn.textContent="📼 Distilling…"; }
-  const useAppend=!!lucyTape.edited; /* his edits are never overwritten — refreshes append */
+  const useAppend=!!mixtape.edited; /* his edits are never overwritten — refreshes append */
   if(!quiet) toast(useAppend? "📼 Updating core brief — your edits kept, appending what's new…" : "📼 Refreshing core brief — assembling everything up to right now…");
   try{
     const res=resolveEndpoint($("#baseUrlInput").value, provider);
@@ -3211,13 +3234,13 @@ async function refreshLucyTape(quiet){
     const r=await fetch(res.chatUrl,{method:"POST",headers:authHeaders(),body:JSON.stringify(body)});
     if(!r.ok) throw new Error("API "+r.status);
     const j=await r.json();
-    const txt=((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||"").trim().slice(0,6000);
+    const txt=cleanReplyText(j).slice(0,6000);
     if(!txt || txt.length<20) throw new Error("empty reply");
     if(useAppend){
-      lucyTape=Object.assign({}, lucyTape, {sinceEdit:((lucyTape.sinceEdit?lucyTape.sinceEdit+"\n":"")+txt).slice(0,2000), ts:Date.now()});
+      mixtape=Object.assign({}, mixtape, {sinceEdit:((mixtape.sinceEdit?mixtape.sinceEdit+"\n":"")+txt).slice(0,2000), ts:Date.now()});
       if(!quiet) toast("📼 Core brief updated — your edits kept, new changes appended");
     }else{
-      lucyTape={text:txt, ts:Date.now(), edited:false, sinceEdit:""};
+      mixtape={text:txt, ts:Date.now(), edited:false, sinceEdit:""};
       if(!quiet) toast("📼 Core brief refreshed — I'm up to speed");
     }
     renderTape(); wgSave();
@@ -3242,13 +3265,13 @@ function scheduleTapeRefresh(){
     if(!tapeDirty) return;
     try{ if(typeof isGenerating!=="undefined" && isGenerating){ scheduleTapeRefresh(); return; } }catch(_){}
     tapeDirty=false;
-    try{ refreshLucyTape(true); }catch(_){ tapeDirty=true; }
+    try{ refreshMixtape(true); }catch(_){ tapeDirty=true; }
   }, 45000);
 }
-$("#tapeRefreshBtn").onclick=refreshLucyTape;
-$("#tapeEditBtn").onclick=()=>{ const w=$("#tapeEditWrap"); const te=$("#tapeEdit"); if(!w) return; const open=w.style.display!=="none"; w.style.display=open?"none":""; if(!open&&te) te.value=lucyTape.text||""; };
+$("#tapeRefreshBtn").onclick=refreshMixtape;
+$("#tapeEditBtn").onclick=()=>{ const w=$("#tapeEditWrap"); const te=$("#tapeEdit"); if(!w) return; const open=w.style.display!=="none"; w.style.display=open?"none":""; if(!open&&te) te.value=mixtape.text||""; };
 $("#tapeCancelBtn").onclick=()=>{ $("#tapeEditWrap").style.display="none"; };
-$("#tapeSaveBtn").onclick=()=>{ const ta=$("#tapeEdit"); if(!ta) return; const v=ta.value.trim(); if(!v){ toast("Brief is empty — nothing saved"); return; } lucyTape={text:v.slice(0,6000), ts:Date.now(), edited:true, sinceEdit:lucyTape.sinceEdit||""}; $("#tapeEditWrap").style.display="none"; renderTape(); wgSave(); toast("📼 Core brief saved — your edit stands; refreshes will append, never overwrite"); };
+$("#tapeSaveBtn").onclick=()=>{ const ta=$("#tapeEdit"); if(!ta) return; const v=ta.value.trim(); if(!v){ toast("Brief is empty — nothing saved"); return; } mixtape={text:v.slice(0,6000), ts:Date.now(), edited:true, sinceEdit:mixtape.sinceEdit||""}; $("#tapeEditWrap").style.display="none"; renderTape(); wgSave(); toast("📼 Core brief saved — your edit stands; refreshes will append, never overwrite"); };
 try{ renderTape(); }catch(_){}
 
 /* ===== Inline chat actions — header buttons + composer toolbar, no sheet ===== */
@@ -3256,10 +3279,11 @@ let tempChat=false;
 $("#topNewChat").onclick=()=>{ showTab("chat"); $("#newChatBtn").click(); };
 /* persona switcher — one tap cycles David → Corner → Concise → Creative → Formal */
 const PERS_ORDER = ["David", "WiseGuy", "Concise", "Creative", "Formal"];
-$("#persCycleBtn").onclick=()=>{
+try{
+const _pcb=$("#persCycleBtn"); if(_pcb) _pcb.onclick=()=>{
   const cur = S.personality || "David";
   const nxt = PERS_ORDER[(PERS_ORDER.indexOf(cur)+1) % PERS_ORDER.length];
-  S.personality = nxt; S.personalityTag = true; save();
+  S.personality = nxt; S.personalityTag = true; wgSave();
   $$(".pers").forEach(x=>x.classList.remove("active"));
   $$(".pers").forEach(x=>{ if((x.querySelector("b")||{}).textContent.indexOf(nxt)>=0) x.classList.add("active"); });
   const pc=$("#persCurrent"); if(pc) pc.textContent="Currently: "+nxt;
@@ -3271,6 +3295,7 @@ $("#topSaveChat").onclick=()=>{ showTab("chat"); exportChat(); };
 $("#topCopyChat").onclick=()=>{ showTab("chat"); copyChat(); };
 $("#sheetTags").addEventListener("click",e=>{ const btn=e.target.closest("[data-qtagkey]"); if(!btn) return; e.stopPropagation(); removeSheetTag(btn.dataset.qtagkey); });
 $("#sheetTempSwitch").onclick=e=>{ tempChat=!tempChat; e.currentTarget.classList.toggle("on",tempChat); toast(tempChat?"Temporary on — this chat won't be saved to memory":"Temporary off — memory will save"); };
+}catch(e){ console.warn("persona switcher init:", e); }
 
 /* ===== Engine diagnostics (Settings) =====
    The context audit is measured, not hardcoded: auditRows() reads the token
@@ -3539,7 +3564,7 @@ $$(".ma-toggle").forEach(b=>b.onclick=()=>{ if(b.dataset.ma==="20") tickerMA20On
    ============================================================ */
 const S={ memoryMaster:true, sheetMemory:true, refHistory:true, tempNoSave:true, showChips:true,
   webSearch:false, canvas:true, enterSend:true, sound:false, streaming:true, autoTitle:true,
-  personality:"David", personalityTag:true, modelTag:true };
+  personality:"David", personalityTag:true, modelTag:true, uiScale:100 };
 
 /* ===== Assistants — named, switchable, siloed =====
    Each assistant has its own id, name, and color dot. Chats, memories,
@@ -3645,8 +3670,8 @@ function restoreChat(saved){
       const el=document.createElement("article"); el.className="msg "+m.role;
       const isU=m.role==="user";
       const acts=isU
-        ? '<button class="act" data-action="remember" title="Save to memory — one tap">🧠</button><button class="act" data-action="copy">⧉</button>'
-        : '<button class="act" data-action="copy">⧉</button><button class="act" data-action="like">♡</button><button class="act" data-action="dislike">▽</button><button class="act" data-action="speak">🔊</button><button class="act" data-action="regen">↻</button><button class="act" data-action="remember" title="Save to memory — one tap">🧠</button>';
+        ? '<button class="act" data-action="remember" title="Pin — save to memory">📌</button><button class="act" data-action="copy" title="Copy">📋</button>'
+        : '<button class="act" data-action="copy" title="Copy">📋</button><button class="act" data-action="like" title="Good response">👍</button><button class="act" data-action="dislike" title="Bad response">👎</button><button class="act" data-action="speak">🔊</button><button class="act" data-action="regen" title="Regenerate">🎲</button><button class="act" data-action="remember" title="Pin — save to memory">📌</button>';
       el.innerHTML=`<div class="who">${isU?"J":"D"}</div><div class="bubble"><div class="bubblehead"><b>${esc(isU?"You":assistantName())}</b><time>${esc(m.time||"")}</time></div><div class="actions">${acts}</div></div>`;
       const body=el.querySelector(".bubble"), anchor=el.querySelector(".actions");
       String(m.text||"").split("\n").forEach(line=>{ const pa=document.createElement("p"); pa.textContent=line; body.insertBefore(pa, anchor); });
@@ -3677,9 +3702,9 @@ function buildBriefing(promptText, forSend){
   /* 2 — Tape: the distilled standing context — who he is, bounds, what's
      happening, how we got here, what mattered. Books, pins, stars and the pad
      are distilled into it at refresh time, so no separate read-time blocks. */
-  const tape=lucyTape.text
-    ? "Core brief — read this first, before everything else:\n"+trimTok(lucyTape.text, BRIEF_BUDGET.tape)
-      +(lucyTape.sinceEdit?"\nSince your last edit:\n"+trimTok(lucyTape.sinceEdit, BRIEF_BUDGET.tapeEdit):"")
+  const tape=mixtape.text
+    ? "Core brief — read this first, before everything else:\n"+trimTok(mixtape.text, BRIEF_BUDGET.tape)
+      +(mixtape.sinceEdit?"\nSince your last edit:\n"+trimTok(mixtape.sinceEdit, BRIEF_BUDGET.tapeEdit):"")
     : "";
 
   /* 3 — RAM: working memory, the live scratch pad. */
@@ -3808,7 +3833,7 @@ function recordRun(r){
     const cs=$("#connStatus"); if(cs) cs.textContent="✓ Key restored from this device — ready to chat";
     const ul=$("#userConnLabel"); if(ul) ul.textContent=provider+" · BYOK key saved";
   }
-  if(d.tape && d.tape.text){ lucyTape={text:String(d.tape.text).slice(0,6000), ts:d.tape.ts||Date.now(), edited:!!d.tape.edited, sinceEdit:String(d.tape.sinceEdit||"").slice(0,2000)}; }
+  if(d.tape && d.tape.text){ mixtape={text:String(d.tape.text).slice(0,6000), ts:d.tape.ts||Date.now(), edited:!!d.tape.edited, sinceEdit:String(d.tape.sinceEdit||"").slice(0,2000)}; }
   if(typeof d.pad==="string" && d.pad){ try{ pad.value=d.pad; padCount(); }catch(_){} }
   if(d.benchNotes && typeof d.benchNotes==="object"){ benchNotes=d.benchNotes; }
   try{ const _m=wgLoadMaster(); const tk=((_m&&_m.byok||{}).tavilyKey)||""; if(tk){ tavilyKey=tk; const ti=$("#tavilyKeyInput"); if(ti) ti.value=tk; const tm=$("#tavilyKeyMeta"); if(tm) tm.textContent="Tavily key saved — web search uses Tavily."; } }catch(_){}
@@ -3821,8 +3846,9 @@ function recordRun(r){
   try{ renderAssistantName(); }catch(_){}
   try{ renderAssistants(); }catch(_){}
   /* First tape writes itself quietly shortly after boot, never blocking */
-  try{ if(!lucyTape.text && tapeBackendReady()){ setTimeout(()=>{ try{ refreshLucyTape(true); }catch(_){} }, 3000); } }catch(_){}
+  try{ if(!mixtape.text && tapeBackendReady()){ setTimeout(()=>{ try{ refreshMixtape(true); }catch(_){} }, 3000); } }catch(_){}
   wgReady=true; window._bootMark="boot-complete";
+  try{ applyUiScale(); }catch(_){}
   try{ const av=$("#appVersion"); if(av) av.textContent="WiseGuy · Jack build v"+(window.WG_BUILD||"?")+" · "+new Date().toLocaleDateString([], {month:"short",day:"numeric"})+" · boot: "+(window._bootMark||"unknown"); }catch(_){}
   /* persist on the way out — the APK WebView doesn't always fire blur */
   try{
@@ -3955,14 +3981,14 @@ function switchAssistant(id){
     if(d.settings) Object.assign(S, d.settings);
     memories.length=0; if(Array.isArray(d.memories)) d.memories.forEach(m=>memories.push(m));
     books.length=0; if(Array.isArray(d.books)&&d.books.length) d.books.forEach(b=>books.push(b)); else resetDefaultBooks();
-    if(d.tape&&d.tape.text) lucyTape={text:String(d.tape.text).slice(0,6000),ts:d.tape.ts||Date.now(),edited:!!d.tape.edited,sinceEdit:String(d.tape.sinceEdit||"").slice(0,2000)};
-    else lucyTape={text:"",ts:0,edited:false,sinceEdit:""};
+    if(d.tape&&d.tape.text) mixtape={text:String(d.tape.text).slice(0,6000),ts:d.tape.ts||Date.now(),edited:!!d.tape.edited,sinceEdit:String(d.tape.sinceEdit||"").slice(0,2000)};
+    else mixtape={text:"",ts:0,edited:false,sinceEdit:""};
     if(typeof d.pad==="string"){ try{ pad.value=d.pad; padCount(); }catch(_){} } else { try{ pad.value=""; padCount(); }catch(_){} }
     benchNotes=(d.benchNotes&&typeof d.benchNotes==="object")?d.benchNotes:{};
   } else {
     /* new assistant, no silo yet — start clean, don't leak old data */
     memories.length=0; resetDefaultBooks();
-    lucyTape={text:"",ts:0,edited:false,sinceEdit:""};
+    mixtape={text:"",ts:0,edited:false,sinceEdit:""};
     try{ pad.value=""; padCount(); }catch(_){}
     benchNotes={};
   }
@@ -4009,6 +4035,25 @@ bindSwitch($("#swCanvas"), ()=>S.canvas, v=>{ S.canvas=v; toast(v?"Canvas & tool
 bindSwitch($("#genEnter"), ()=>S.enterSend, v=>{ S.enterSend=v; toast(v?"Enter sends":"Enter makes a new line — use the ↑ button to send"); });
 bindSwitch($("#genSound"), ()=>S.sound, v=>{ S.sound=v; });
 bindSwitch($("#apiStream"), ()=>S.streaming, v=>{ S.streaming=v; toast(v?"Streaming on — replies arrive token by token":"Streaming off — replies arrive whole"); });
+
+/* Interface size — CSS zoom on the app root, scales everything proportionally */
+function applyUiScale(){
+  const v=parseInt(S.uiScale,10)||100;
+  try{ document.documentElement.style.zoom=(v/100); }catch(_){}
+  const lbl=$("#uiScaleVal"); if(lbl) lbl.textContent=v+"%";
+  const rng=$("#uiScaleRange"); if(rng && document.activeElement!==rng) rng.value=v;
+}
+(function(){
+  const rng=$("#uiScaleRange");
+  if(rng){
+    rng.value=parseInt(S.uiScale,10)||100;
+    rng.addEventListener("input",()=>{
+      S.uiScale=parseInt(rng.value,10)||100;
+      applyUiScale();
+      try{ wgSave(); }catch(_){}
+    });
+  }
+})();
 bindSwitch($("#apiTitle"), ()=>S.autoTitle, v=>{ S.autoTitle=v; });
 bindSwitch($("#sheetMemSwitch"), ()=>S.sheetMemory, v=>{ S.sheetMemory=v; renderSheetTags(); toast(v?"Memory on for this chat":"Memory off for this chat — saved memories stay out of this one"); });
 
@@ -4087,10 +4132,10 @@ async function callBench(prompt, cap){
       }
     }
     const totalMs=performance.now()-t0;
-    return {text:full, usage, ttftMs, genMs:(ttftMs!==null? totalMs-ttftMs : null), totalMs};
+    return {text:splitThink(full).content, usage, ttftMs, genMs:(ttftMs!==null? totalMs-ttftMs : null), totalMs};
   }
   const j=await r.json();
-  return {text:(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||"", usage:j.usage||null, ttftMs:null, genMs:null, totalMs:performance.now()-t0};
+  return {text:cleanReplyText(j), usage:j.usage||null, ttftMs:null, genMs:null, totalMs:performance.now()-t0};
 }
 function benchLiveReady(){ return !apiKey.includes("\u2022\u2022\u2022\u2022") && ( !!apiKey || ((provider==="Local"||provider==="Custom API") && cleanFieldText($("#baseUrlInput").value)!=="") ); }
 async function runBench(size){
@@ -4492,7 +4537,7 @@ async function runThought(kind){
         body:JSON.stringify({model:effectiveModelId(),messages:[{role:"system",content:sys},{role:"user",content:p}],temperature:0.9,max_tokens:max,stream:false})});
       if(!r.ok) throw new Error("API "+r.status);
       const j=await r.json();
-      text=((j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||"").trim();
+      text=cleanReplyText(j);
     }else{
       /* Demo sparks — wise-guy flavored, clearly labeled */
       const demo=["That deadline's Thursday and he's quiet about it — that's the gap.","Two threads, one pattern. I should connect them out loud.","He hasn't asked the pricing question yet. Somebody should.","The tape-keyword idea plus this thought stream — the app explaining itself. That's the thread."];
