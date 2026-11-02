@@ -301,6 +301,130 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .mmcard.done:hover{transform:none}
 .mmstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px}
 
+/* ===== Minesweeper ===== */
+.msstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.msboard{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;max-width:400px;touch-action:manipulation}
+.mscell{aspect-ratio:1;border-radius:6px;background:var(--panel3);border:1px solid var(--border);font-size:clamp(13px,3.4vw,17px);font-weight:800;color:white;display:grid;place-items:center;user-select:none;-webkit-user-select:none;padding:0;min-height:32px}
+.mscell:not(.open):active{background:var(--panel2)}
+.mscell.open{background:var(--panel);border-color:var(--border);cursor:default}
+.mscell.flag{color:var(--gold,#E6C27A)}
+.mscell.mine{background:rgba(248,113,113,.2);border-color:rgba(248,113,113,.5)}
+.msstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px}
+.mscell[data-n="1"]{color:#7DD3FC}.mscell[data-n="2"]{color:#86EFAC}.mscell[data-n="3"]{color:#FCA5A5}
+.mscell[data-n="4"]{color:#C4B5FD}.mscell[data-n="5"]{color:#FCD34D}.mscell[data-n="6"]{color:#5EEAD4}
+.mscell[data-n="7"]{color:#F9A8D4}.mscell[data-n="8"]{color:#D8D5CE}
+
+/* ===== Solitaire ===== */
+.solstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.soltop{display:flex;gap:10px;margin-bottom:12px}
+.solpile{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;min-height:76px;min-width:52px;position:relative}
+.solstock{cursor:pointer;display:grid;place-items:center;font-size:22px;color:var(--muted)}
+.soltableau{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.solfoundations{display:flex;gap:8px}
+.solcard{width:52px;height:72px;border-radius:8px;background:linear-gradient(160deg,#23262e,#1a1d23);border:1px solid var(--border2);display:grid;place-items:center;font-size:15px;font-weight:800;user-select:none;-webkit-user-select:none;cursor:pointer;position:relative;flex-shrink:0}
+.solcard.red{color:#FCA5A5}.solcard.black{color:#D8D5CE}
+.solcard.facedown{background:linear-gradient(160deg,var(--panel3),var(--panel2));color:transparent;cursor:default}
+.solcard.selected{outline:2px solid var(--teal);outline-offset:2px;transform:translateY(-3px)}
+.solcol{display:flex;flex-direction:column;min-width:52px}
+.solcol .solcard{margin-top:-52px}
+.solcol .solcard:first-child{margin-top:0}
+.solstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px}
+
+/* ===== Sudoku ===== */
+.sudstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.sudboard{display:grid;grid-template-columns:repeat(9,1fr);gap:1px;background:var(--border2);border:2px solid var(--border2);border-radius:8px;overflow:hidden;max-width:400px;touch-action:manipulation}
+.sudcell{aspect-ratio:1;background:var(--panel);border:none;font-size:clamp(15px,4vw,20px);font-weight:700;color:white;display:grid;place-items:center;cursor:pointer;padding:0;min-height:34px}
+.sudcell.given{color:#D8D5CE;cursor:default}
+.sudcell.user{color:var(--teal)}
+.sudcell.error{color:#F87171;background:rgba(248,113,113,.12)}
+.sudcell.selected{background:rgba(94,234,212,.18);outline:2px solid var(--teal);outline-offset:-2px}
+.sudcell.peer{background:rgba(255,255,255,.04)}
+.sudcell.same{background:rgba(94,234,212,.1)}
+.sudcell:nth-child(3n){border-right:2px solid var(--border2)}
+.sudcell:nth-child(9n){border-right:none}
+.sudpad{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;max-width:400px;margin-top:12px}
+.sudpadbtn{aspect-ratio:1.2;border-radius:8px;background:var(--panel3);border:1px solid var(--border);color:white;font-size:17px;font-weight:800;min-height:40px}
+.sudpadbtn:active{background:var(--teal-dim)}
+.sudstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px}
+
+
+/* ===== Snake ===== */
+.snstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.snboard{display:grid;grid-template-columns:repeat(20,1fr);gap:1px;max-width:400px;aspect-ratio:1;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px;touch-action:none;user-select:none;-webkit-user-select:none}
+.sncell{border-radius:2px;background:rgba(255,255,255,.025)}
+.sncell.snake{background:var(--teal)}
+.sncell.head{background:#5EEAD4;box-shadow:0 0 6px rgba(94,234,212,.7)}
+.sncell.food{background:var(--gold,#E6C27A);border-radius:50%;box-shadow:0 0 6px rgba(230,194,122,.7)}
+.sncontrols{display:flex;gap:8px;margin-top:12px;justify-content:center}
+.sndirbtn{width:56px;height:56px;border-radius:12px;background:var(--panel3);border:1px solid var(--border2);color:white;font-size:20px;font-weight:800}
+.sndirbtn:active{background:var(--teal-dim)}
+.snstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px;text-align:center}
+
+
+/* ===== Tetris ===== */
+.tetstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tetwrap{display:flex;gap:12px;align-items:flex-start}
+.tetboard{display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(20,1fr);gap:1px;max-width:300px;flex:1;aspect-ratio:1/2;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px;touch-action:none}
+.tetcell{border-radius:2px;background:rgba(255,255,255,.03)}
+.tetside{display:flex;flex-direction:column;gap:8px;align-items:center}
+.tetnext{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;width:76px;aspect-ratio:1;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px}
+.tetnextcell{border-radius:2px;background:transparent}
+.tetlabel{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.tetcontrols{display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap}
+.tetbtn{min-width:56px;height:56px;border-radius:12px;background:var(--panel3);border:1px solid var(--border2);color:white;font-size:20px;font-weight:800;padding:0 12px}
+.tetbtn:active{background:var(--teal-dim)}
+.tetstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px;text-align:center}
+
+/* ===== Tic-Tac-Toe ===== */
+.tttstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tttboard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:0 auto}
+.tttcell{aspect-ratio:1;border-radius:12px;background:var(--panel3);border:1px solid var(--border2);color:white;font-size:42px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:80px}
+.tttcell:disabled{cursor:default}
+.tttcell.x{color:var(--teal)}
+.tttcell.o{color:#f87171}
+.tttcell.win{background:var(--teal-dim)}
+.tttstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px;text-align:center}
+.tttdiff{display:flex;gap:6px}
+
+/* ===== Hangman ===== */
+.hmstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.hmgallows{max-width:200px;margin:0 auto 8px;display:block}
+.hmword{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap;min-height:44px}
+.hmletter{width:36px;height:44px;border-bottom:3px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:white}
+.hmletter.hit{border-color:var(--teal);color:var(--teal)}
+.hmkeys{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:420px;margin:0 auto}
+.hmkey{height:44px;border-radius:8px;background:var(--panel3);border:1px solid var(--border2);color:white;font-size:16px;font-weight:700;cursor:pointer}
+.hmkey:disabled{opacity:.25;cursor:default}
+.hmkey.wrong{background:#7f1d1d;border-color:#991b1b}
+.hmkey.right{background:#14532d;border-color:#166534}
+.hmstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px;text-align:center}
+
+/* ===== Blackjack ===== */
+.bjstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.bjtable{background:#0d2818;border:1px solid #166534;border-radius:16px;padding:16px;margin-bottom:12px}
+.bjhand{margin-bottom:12px}
+.bjhand:last-child{margin-bottom:0}
+.bjlabel{font-size:12px;font-weight:700;color:#86efac;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.bjcards{display:flex;gap:8px;flex-wrap:wrap;min-height:72px}
+.bjcard{width:52px;height:72px;border-radius:8px;background:white;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.bjcard.red{color:#dc2626}
+.bjcard.back{background:linear-gradient(135deg,#1e3a5f,#0f2027);border:2px solid #3b82f6}
+.bjcard .suit{font-size:22px}
+.bjactions{display:flex;gap:8px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.bjbtn{min-width:100px;height:52px;border-radius:12px;background:var(--teal);border:none;color:#0d0d12;font-size:16px;font-weight:800;cursor:pointer}
+.bjbtn:disabled{opacity:.35;cursor:default}
+.bjbtn.ghost{background:var(--panel3);color:white;border:1px solid var(--border2)}
+.bjstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:8px 0 4px;text-align:center}
+
+/* ===== Water Sort ===== */
+.wsstats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.wsvials{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:12px 0;min-height:180px;align-items:flex-end}
+.wsvial{width:56px;height:168px;border:2px solid var(--border2);border-top:none;border-radius:0 0 14px 14px;position:relative;cursor:pointer;display:flex;flex-direction:column-reverse;overflow:hidden;background:rgba(255,255,255,.03)}
+.wsvial.sel{border-color:var(--teal);box-shadow:0 0 12px var(--teal-dim)}
+.wsvial.done{border-color:#16a34a}
+.wsliquid{width:100%;transition:height .2s}
+.wsstatus{font-size:14px;font-weight:700;color:var(--teal);min-height:22px;margin:12px 0 4px;text-align:center}
+
 /* ===== Inline chat tags, starters + Engine ===== */
 #contextStrip:empty{display:none}
 #contextStrip{margin:14px 0 0}
@@ -762,7 +886,7 @@ details.wgCard>div{padding:0 16px 16px}
     <section class="panelview" id="view-games">
       <div class="wrap">
         <h1>Game <i>time.</i></h1>
-        <p class="lede">One game to start, more on the way. Quick rounds, no setup — just play.</p>
+        <p class="lede">Ten classics on the shelf. Quick rounds, no setup — just play.</p>
         <div class="ccard open">
           <button class="ccard-head">🃏 Memory Match <span class="sub">Solo · ~2 min</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
@@ -774,6 +898,190 @@ details.wgCard>div{padding:0 16px 16px}
             </div>
             <div class="mmboard" id="mmBoard"></div>
             <p class="mmstatus" id="mmStatus">Flip two cards — find all 8 pairs.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">💣 Minesweeper <span class="sub">Solo · ~5 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="msstats">
+              <span class="mmstat">💣 <b id="msMines">10</b></span>
+              <span class="mmstat">⏱ <b id="msTime">0</b>s</span>
+              <span class="mmstat">Best <b id="msBest">—</b></span>
+              <button class="chipbtn" id="msNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="msboard" id="msBoard"></div>
+            <p class="msstatus" id="msStatus">Tap to reveal · long-press to flag.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🂡 Solitaire <span class="sub">Solo · ~10 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="solstats">
+              <span class="mmstat">Moves <b id="solMoves">0</b></span>
+              <span class="mmstat">Wins <b id="solWins">0</b></span>
+              <button class="chipbtn" id="solNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="soltop">
+              <div class="solpile solstock" id="solStock" title="Stock — tap to draw">🂠</div>
+              <div class="solpile" id="solWaste" title="Waste"></div>
+              <div style="flex:1"></div>
+              <div class="solfoundations" id="solFoundations"></div>
+            </div>
+            <div class="soltableau" id="solTableau"></div>
+            <p class="solstatus" id="solStatus">Tap a card, then tap where it goes.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🔢 Sudoku <span class="sub">Solo · ~10 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="sudstats">
+              <span class="mmstat">Mistakes <b id="sudMistakes">0</b></span>
+              <span class="mmstat">Wins <b id="sudWins">0</b></span>
+              <select id="sudDiff" class="chipbtn" style="background:var(--panel3)">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+              <button class="chipbtn" id="sudNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="sudboard" id="sudBoard"></div>
+            <div class="sudpad" id="sudPad"></div>
+            <p class="sudstatus" id="sudStatus">Tap a cell, then tap a number.</p>
+          </div>
+        </div>
+        
+            <div class="ubcontrols">
+              <button class="ubdirbtn" data-dir="up">▲</button>
+              <button class="ubdirbtn" data-dir="left">◀</button>
+              <button class="ubdirbtn" data-dir="down">▼</button>
+              <button class="ubdirbtn" data-dir="right">▶</button>
+            </div>
+            <p class="ubstatus" id="ubStatus">Tap the red block, slide it out the right side.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🐍 Snake <span class="sub">Solo · ~2 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="snstats">
+              <span class="mmstat">Score <b id="snScore">0</b></span>
+              <span class="mmstat">Best <b id="snBest">—</b></span>
+              <button class="chipbtn" id="snNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="snboard" id="snBoard"></div>
+            <div class="sncontrols">
+              <button class="sndirbtn" data-dir="up">▲</button>
+              <button class="sndirbtn" data-dir="left">◀</button>
+              <button class="sndirbtn" data-dir="down">▼</button>
+              <button class="sndirbtn" data-dir="right">▶</button>
+            </div>
+            <p class="snstatus" id="snStatus">Swipe or use the arrows. Eat the dots, don't hit yourself.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🧱 Tetris <span class="sub">Solo · ~5 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="tetstats">
+              <span class="mmstat">Score <b id="tetScore">0</b></span>
+              <span class="mmstat">Lines <b id="tetLines">0</b></span>
+              <span class="mmstat">Best <b id="tetBest">—</b></span>
+              <button class="chipbtn" id="tetNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="tetwrap">
+              <div class="tetboard" id="tetBoard"></div>
+              <div class="tetside">
+                <span class="tetlabel">Next</span>
+                <div class="tetnext" id="tetNext"></div>
+                <span class="tetlabel">Level <b id="tetLevel" style="color:white">1</b></span>
+              </div>
+            </div>
+            <div class="tetcontrols">
+              <button class="tetbtn" id="tetLeft">◀</button>
+              <button class="tetbtn" id="tetRot">⟳</button>
+              <button class="tetbtn" id="tetRight">▶</button>
+              <button class="tetbtn" id="tetDown">▼</button>
+              <button class="tetbtn" id="tetDrop">⤓</button>
+            </div>
+            <p class="tetstatus" id="tetStatus">Clear lines. ⤓ slams it down.</p>
+          </div>
+        </div>
+        
+        <div class="ccard">
+          <button class="ccard-head">❌ Tic-Tac-Toe <span class="sub">You vs AI · ~1 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="tttstats">
+              <div class="tttdiff">
+                <button class="chipbtn" id="tttEasy">Easy</button>
+                <button class="chipbtn" id="tttHard">Impossible</button>
+              </div>
+              <span class="mmstat">Wins <b id="tttWins">0</b></span>
+              <button class="chipbtn" id="tttNew" style="margin-left:auto">↻ New game</button>
+            </div>
+            <div class="tttboard" id="tttBoard"></div>
+            <p class="tttstatus" id="tttStatus">You're X. Tap a square.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🤠 Hangman <span class="sub">Solo · ~3 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="hmstats">
+              <span class="mmstat">Wins <b id="hmWins">0</b></span>
+              <span class="mmstat">Wrong <b id="hmWrong">0 / 6</b></span>
+              <button class="chipbtn" id="hmNew" style="margin-left:auto">↻ New word</button>
+            </div>
+            <svg class="hmgallows" id="hmSvg" viewBox="0 0 120 140" aria-label="Hangman drawing">
+              <line x1="10" y1="130" x2="70" y2="130" stroke="var(--border2)" stroke-width="4"/>
+              <line x1="30" y1="130" x2="30" y2="10" stroke="var(--border2)" stroke-width="4"/>
+              <line x1="30" y1="10" x2="80" y2="10" stroke="var(--border2)" stroke-width="4"/>
+              <line x1="80" y1="10" x2="80" y2="25" stroke="var(--border2)" stroke-width="4"/>
+              <g id="hmBody" stroke="var(--teal)" stroke-width="3" fill="none">
+                <circle id="hmHead" cx="80" cy="38" r="13" style="display:none"/>
+                <line id="hmTorso" x1="80" y1="51" x2="80" y2="90" style="display:none"/>
+                <line id="hmArmL" x1="80" y1="60" x2="62" y2="75" style="display:none"/>
+                <line id="hmArmR" x1="80" y1="60" x2="98" y2="75" style="display:none"/>
+                <line id="hmLegL" x1="80" y1="90" x2="64" y2="115" style="display:none"/>
+                <line id="hmLegR" x1="80" y1="90" x2="96" y2="115" style="display:none"/>
+              </g>
+            </svg>
+            <div class="hmword" id="hmWord"></div>
+            <div class="hmkeys" id="hmKeys"></div>
+            <p class="hmstatus" id="hmStatus">Guess the word, one letter at a time.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🂡 Blackjack <span class="sub">Free chips · ~2 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="bjstats">
+              <span class="mmstat">Chips <b id="bjChips">100</b></span>
+              <span class="mmstat">Bet <b>10</b></span>
+              <button class="chipbtn" id="bjDeal" style="margin-left:auto">🂡 Deal</button>
+            </div>
+            <div class="bjtable">
+              <div class="bjhand">
+                <div class="bjlabel">Dealer <span id="bjDealerScore"></span></div>
+                <div class="bjcards" id="bjDealerCards"></div>
+              </div>
+              <div class="bjhand">
+                <div class="bjlabel">You <span id="bjPlayerScore"></span></div>
+                <div class="bjcards" id="bjPlayerCards"></div>
+              </div>
+            </div>
+            <div class="bjactions">
+              <button class="bjbtn" id="bjHit" disabled>Hit</button>
+              <button class="bjbtn ghost" id="bjStand" disabled>Stand</button>
+            </div>
+            <p class="bjstatus" id="bjStatus">Free chips — no real money, just for fun. Hit Deal to play.</p>
+          </div>
+        </div>
+        <div class="ccard">
+          <button class="ccard-head">🧪 Water Sort <span class="sub">Solo · ~5 min</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div class="wsstats">
+              <span class="mmstat">Level <b id="wsLevel">1</b></span>
+              <span class="mmstat">Best moves <b id="wsBest">—</b></span>
+              <button class="chipbtn" id="wsNew" style="margin-left:auto">↻ Restart</button>
+            </div>
+            <div class="wsvials" id="wsVials"></div>
+            <p class="wsstatus" id="wsStatus">Tap a vial, then tap where to pour. Sort each color into its own vial.</p>
           </div>
         </div>
         <div class="ccard">
@@ -890,6 +1198,7 @@ details.wgCard>div{padding:0 16px 16px}
         <button class="pers"><b>Concise</b><p>Shortest useful answer, every time.</p></button>
         <button class="pers"><b>Creative</b><p>More ideas, wilder angles.</p></button>
         <button class="pers"><b>Formal</b><p>Polished &amp; professional.</p></button>
+        <button class="pers"><b>WiseGuy</b><p>The wise guy — shooting the breeze, easy company, no fixing unless asked.</p></button>
       </div></div>
       <button class="btn btn-gold" style="width:100%;justify-content:center" id="saveInstrBtn">Save instructions</button>
     </div>
@@ -1065,7 +1374,7 @@ details.wgCard>div{padding:0 16px 16px}
           <div class="field"><label>Default model</label><input type="text" id="defaultModelInput" value="gpt-4o" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
         </div>
         <div class="statusline" id="connStatus" style="background:var(--panel);border-color:var(--border);color:var(--muted)">○ Not connected — paste your OpenAI key above and test the connection</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-gold" id="testBtn">Test connection</button><button class="btn btn-ghost" id="saveApiBtn">Save for this session</button><button class="btn btn-ghost" id="removeKeyBtn" style="color:#FCA5A5">Remove key</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-gold" id="testBtn">Test connection</button><button class="btn btn-ghost" id="saveApiBtn">Save</button><button class="btn btn-ghost" id="removeKeyBtn" style="color:#FCA5A5">Remove key</button></div>
 
         <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
         <div class="field"><label>🌐 Web search — Tavily API key (optional)</label>
@@ -1995,6 +2304,787 @@ function mmFlip(card){
 }
 $("#mmNew").onclick=mmNewGame;
 try{ mmNewGame(); }catch(_){}
+/* ===== Games — Minesweeper ===== */
+let msGrid=[], msRevealed=0, msFlagged=0, msGameOver=false, msWon=false, msTimer=null, msSecs=0, msBest=null;
+try{ msBest=JSON.parse(localStorage.getItem("wg_msBest")||"null"); }catch(_){}
+const MS_SIZE=9, MS_MINES=10;
+function msNewGame(){
+  msGrid=[]; msRevealed=0; msFlagged=0; msGameOver=false; msWon=false; msSecs=0;
+  clearInterval(msTimer); msTimer=null;
+  $("#msTime").textContent="0"; $("#msMines").textContent=MS_MINES;
+  $("#msStatus").textContent="Tap to reveal · long-press to flag.";
+  const cells=[]; for(let i=0;i<MS_SIZE*MS_SIZE;i++) cells.push(i);
+  for(let i=cells.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=cells[i]; cells[i]=cells[j]; cells[j]=t; }
+  const mineSet={}; for(let i=0;i<MS_MINES;i++) mineSet[cells[i]]=1;
+  for(let r=0;r<MS_SIZE;r++){ msGrid[r]=[];
+    for(let c=0;c<MS_SIZE;c++){
+      const isMine=!!mineSet[r*MS_SIZE+c];
+      let n=0;
+      if(!isMine){ for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr,nc=c+dc; if(nr>=0&&nr<MS_SIZE&&nc>=0&&nc<MS_SIZE&&mineSet[nr*MS_SIZE+nc]) n++; } }
+      msGrid[r][c]={mine:isMine,n:n,open:false,flag:false};
+    }
+  }
+  msRender();
+}
+function msRender(){
+  const b=$("#msBoard"); b.innerHTML="";
+  for(let r=0;r<MS_SIZE;r++) for(let c=0;c<MS_SIZE;c++){
+    const cell=msGrid[r][c];
+    const btn=document.createElement("button");
+    btn.className="mscell"+(cell.open?" open":"")+(cell.flag&&!cell.open?" flag":"")+(cell.open&&cell.mine?" mine":"");
+    if(cell.open&&cell.mine) btn.textContent="💣";
+    else if(cell.open&&cell.n>0){ btn.textContent=cell.n; btn.setAttribute("data-n",cell.n); }
+    else if(cell.flag&&!cell.open) btn.textContent="🚩";
+    btn.setAttribute("aria-label","cell");
+    (function(rr,cc,el){
+      let pt=null;
+      el.addEventListener("pointerdown",function(){ pt=setTimeout(function(){ msFlag(rr,cc); pt=null; },450); });
+      el.addEventListener("pointerup",function(){ if(pt){ clearTimeout(pt); pt=null; msReveal(rr,cc); } });
+      el.addEventListener("pointerleave",function(){ if(pt){ clearTimeout(pt); pt=null; } });
+      el.addEventListener("contextmenu",function(e){ e.preventDefault(); msFlag(rr,cc); });
+    })(r,c,btn);
+    b.appendChild(btn);
+  }
+}
+function msStartTimer(){ if(msTimer) return; msTimer=setInterval(function(){ msSecs++; $("#msTime").textContent=msSecs; },1000); }
+function msReveal(r,c){
+  if(msGameOver||msWon) return;
+  const cell=msGrid[r][c]; if(cell.open||cell.flag) return;
+  msStartTimer();
+  if(cell.mine){
+    cell.open=true; msGameOver=true; clearInterval(msTimer);
+    for(let i=0;i<MS_SIZE;i++) for(let j=0;j<MS_SIZE;j++) if(msGrid[i][j].mine) msGrid[i][j].open=true;
+    msRender(); $("#msStatus").textContent="💥 Boom! Tap ↻ to try again."; return;
+  }
+  msFlood(r,c); msRender(); msCheckWin();
+}
+function msFlood(r,c){
+  const stack=[[r,c]];
+  while(stack.length){
+    const p=stack.pop(), cr=p[0], cc=p[1];
+    const cell=msGrid[cr][cc];
+    if(cell.open||cell.flag||cell.mine) continue;
+    cell.open=true; msRevealed++;
+    if(cell.n===0){ for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=cr+dr,nc=cc+dc; if(nr>=0&&nr<MS_SIZE&&nc>=0&&nc<MS_SIZE) stack.push([nr,nc]); } }
+  }
+}
+function msFlag(r,c){
+  if(msGameOver||msWon) return;
+  const cell=msGrid[r][c]; if(cell.open) return;
+  cell.flag=!cell.flag; msFlagged+=cell.flag?1:-1;
+  $("#msMines").textContent=MS_MINES-msFlagged; msRender();
+}
+function msCheckWin(){
+  if(msRevealed===MS_SIZE*MS_SIZE-MS_MINES){
+    msWon=true; clearInterval(msTimer);
+    const isBest=msBest===null||msSecs<msBest;
+    if(isBest){ msBest=msSecs; try{ localStorage.setItem("wg_msBest",JSON.stringify(msBest)); }catch(_){} }
+    $("#msBest").textContent=msBest+"s";
+    $("#msStatus").textContent="🎉 Cleared in "+msSecs+"s!"+(isBest?" New best!":"");
+  }
+}
+
+/* ===== Games — Solitaire (Klondike, tap-to-move) ===== */
+const SOL_SUITS=["♠","♥","♦","♣"];
+let solStock=[], solWaste=[], solFound=[], solTab=[], solSel=null, solMoves=0, solWins=0;
+try{ solWins=parseInt(localStorage.getItem("wg_solWins")||"0",10)||0; }catch(_){}
+function solNewDeck(){
+  const d=[]; for(let si=0;si<4;si++) for(let r=1;r<=13;r++) d.push({s:SOL_SUITS[si],r:r,red:(si===1||si===2)});
+  for(let i=d.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=d[i]; d[i]=d[j]; d[j]=t; }
+  return d;
+}
+function solRank(r){ return r===1?"A":r===11?"J":r===12?"Q":r===13?"K":String(r); }
+function solCardEl(card,faceUp){
+  const d=document.createElement("div");
+  d.className="solcard "+(card.red?"red":"black")+(faceUp?"":" facedown");
+  d.textContent=faceUp?solRank(card.r)+card.s:"";
+  return d;
+}
+function solNewGame(){
+  const deck=solNewDeck();
+  solStock=[]; solWaste=[]; solFound=[[],[],[],[]]; solTab=[]; solSel=null; solMoves=0;
+  for(let i=0;i<7;i++){ solTab[i]=[];
+    for(let j=0;j<=i;j++){ const c=deck.pop(); solTab[i].push({card:c,up:j===i}); }
+  }
+  solStock=deck;
+  solRender();
+  $("#solMoves").textContent="0"; $("#solWins").textContent=solWins;
+  $("#solStatus").textContent="Tap a card, then tap where it goes.";
+}
+function solTop(loc){
+  // returns {cards:[...], from} for the selected/movable cards at loc
+  if(loc==="waste") return solWaste.length?{cards:[solWaste[solWaste.length-1]],from:"waste",idx:0}:null;
+  if(loc.charAt(0)==="f"){ const i=parseInt(loc.slice(1),10); const p=solFound[i]; return p.length?{cards:[p[p.length-1]],from:loc,idx:0}:null; }
+  if(loc.charAt(0)==="t"){ const i=parseInt(loc.slice(1),10); const col=solTab[i];
+    // find first face-up
+    let fi=-1; for(let k=0;k<col.length;k++) if(col[k].up){ fi=k; break; }
+    if(fi<0) return null;
+    return {cards:col.slice(fi).map(function(e){return e.card;}),from:loc,idx:fi};
+  }
+  return null;
+}
+function solCanPlace(cards,dest){
+  const c=cards[0];
+  if(dest.charAt(0)==="f"){
+    if(cards.length>1) return false;
+    const i=parseInt(dest.slice(1),10), p=solFound[i];
+    if(!p.length) return c.r===1;
+    const top=p[p.length-1]; return top.s===c.s&&c.r===top.r+1;
+  }
+  if(dest.charAt(0)==="t"){
+    const i=parseInt(dest.slice(1),10), col=solTab[i];
+    if(!col.length) return c.r===13;
+    const topEntry=col[col.length-1]; if(!topEntry.up) return false;
+    const top=topEntry.card; return top.red!==c.red&&c.r===top.r-1;
+  }
+  return false;
+}
+function solRemoveFrom(from,idx,count){
+  if(from==="waste"){ return solWaste.splice(solWaste.length-count,count); }
+  const i=parseInt(from.slice(1),10);
+  if(from.charAt(0)==="f"){ return solFound[i].splice(solFound[i].length-count,count); }
+  const col=solTab[i]; const entries=col.splice(idx,count); return entries.map(function(e){return e.card;});
+}
+function solAddTo(dest,cards){
+  const i=parseInt(dest.slice(1),10);
+  if(dest.charAt(0)==="f"){ for(let k=0;k<cards.length;k++) solFound[i].push(cards[k]); }
+  else { const col=solTab[i]; for(let k=0;k<cards.length;k++) col.push({card:cards[k],up:true}); }
+}
+function solFlipTops(){
+  for(let i=0;i<7;i++){ const col=solTab[i]; if(col.length&&!col[col.length-1].up) col[col.length-1].up=true; }
+}
+function solClick(e){
+  const stockEl=e.target.closest("#solStock");
+  if(stockEl){ solDraw(); return; }
+  const cardEl=e.target.closest(".solcard");
+  const pileEl=e.target.closest("[data-loc]");
+  let loc=null;
+  if(cardEl&&cardEl.dataset.loc) loc=cardEl.dataset.loc;
+  else if(pileEl&&pileEl.dataset.loc) loc=pileEl.dataset.loc;
+  if(!loc) { solSel=null; solRender(); return; }
+  // if we have a selection and clicked a different location, try move
+  if(solSel&&loc!==solSel.from){
+    const moving=solSel.cards;
+    if(solCanPlace(moving,loc)){
+      solRemoveFrom(solSel.from,solSel.idx,moving.length);
+      solAddTo(loc,moving);
+      solMoves++; $("#solMoves").textContent=solMoves;
+      solSel=null; solFlipTops(); solRender(); solCheckWin();
+      return;
+    }
+    // invalid — reselect if clicked a card
+  }
+  // select cards at loc
+  if(loc==="stock") return;
+  const info=solTop(loc);
+  // for tableau, allow selecting a sub-stack: find which card was clicked
+  if(cardEl&&loc.charAt(0)==="t"&&info){
+    const idx=parseInt(cardEl.dataset.idx,10);
+    if(!isNaN(idx)&&idx>=info.idx){ info.idx=idx; info.cards=info.cards.slice(idx-info.idx); }
+  }
+  solSel=info?{from:info.from,idx:info.idx,cards:info.cards}:null;
+  solRender();
+  if(solSel) $("#solStatus").textContent="Selected — now tap a destination.";
+}
+function solDraw(){
+  if(solStock.length){
+    solWaste.push(solStock.pop()); solMoves++;
+  } else if(solWaste.length){
+    // recycle
+    while(solWaste.length) solStock.push(solWaste.pop());
+  } else return;
+  solSel=null; $("#solMoves").textContent=solMoves; solRender();
+  $("#solStatus").textContent="Drew from stock.";
+}
+function solCheckWin(){
+  let total=0; for(let i=0;i<4;i++) total+=solFound[i].length;
+  if(total===52){
+    solWins++; try{ localStorage.setItem("wg_solWins",String(solWins)); }catch(_){}
+    $("#solWins").textContent=solWins;
+    $("#solStatus").textContent="🎉 You won in "+solMoves+" moves!";
+  }
+}
+function solRender(){
+  const st=$("#solStock");
+  st.innerHTML=""; st.dataset.loc="stock";
+  const sIcon=document.createElement("span"); sIcon.textContent=solStock.length?"🂠":"↻"; sIcon.style.fontSize="22px"; sIcon.style.color=solStock.length?"var(--muted)":"var(--teal)";
+  st.appendChild(sIcon);
+  const w=$("#solWaste"); w.innerHTML=""; w.dataset.loc="waste";
+  if(solWaste.length){ const top=solWaste[solWaste.length-1]; const el=solCardEl(top,true); el.dataset.loc="waste"; if(solSel&&solSel.from==="waste") el.classList.add("selected"); w.appendChild(el); }
+  const f=$("#solFoundations"); f.innerHTML="";
+  for(let i=0;i<4;i++){
+    const pile=document.createElement("div"); pile.className="solpile"; pile.dataset.loc="f"+i;
+    const cards=solFound[i];
+    if(cards.length){ const el=solCardEl(cards[cards.length-1],true); el.dataset.loc="f"+i; if(solSel&&solSel.from==="f"+i) el.classList.add("selected"); pile.appendChild(el); }
+    else { pile.style.display="grid"; pile.style.placeItems="center"; pile.style.color="var(--muted)"; pile.style.fontSize="20px"; pile.textContent=SOL_SUITS[i]; }
+    f.appendChild(pile);
+  }
+  const t=$("#solTableau"); t.innerHTML="";
+  for(let i=0;i<7;i++){
+    const col=document.createElement("div"); col.className="solcol"; col.dataset.loc="t"+i;
+    if(!solTab[i].length){ const ph=document.createElement("div"); ph.className="solpile"; ph.style.minHeight="72px"; ph.dataset.loc="t"+i; col.appendChild(ph); }
+    solTab[i].forEach(function(entry,idx){
+      const el=solCardEl(entry.card,entry.up);
+      el.dataset.loc="t"+i; el.dataset.idx=idx;
+      if(solSel&&solSel.from==="t"+i&&idx>=solSel.idx) el.classList.add("selected");
+      col.appendChild(el);
+    });
+    t.appendChild(col);
+  }
+}
+
+/* ===== Games — Sudoku ===== */
+let sudGrid=[], sudSol=[], sudGiven=[], sudSel=null, sudMistakes=0, sudWins=0;
+try{ sudWins=parseInt(localStorage.getItem("wg_sudWins")||"0",10)||0; }catch(_){}
+const SUD_GIVENS={easy:45,medium:35,hard:28};
+function sudShuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function sudValid(g,r,c,n){
+  for(let i=0;i<9;i++){ if(g[r][i]===n||g[i][c]===n) return false; }
+  const br=Math.floor(r/3)*3, bc=Math.floor(c/3)*3;
+  for(let i=0;i<3;i++) for(let j=0;j<3;j++) if(g[br+i][bc+j]===n) return false;
+  return true;
+}
+function sudFill(g){
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    if(g[r][c]===0){
+      const nums=sudShuffle([1,2,3,4,5,6,7,8,9]);
+      for(let k=0;k<9;k++){ if(sudValid(g,r,c,nums[k])){ g[r][c]=nums[k]; if(sudFill(g)) return true; g[r][c]=0; } }
+      return false;
+    }
+  }
+  return true;
+}
+function sudNewGame(){
+  const diff=$("#sudDiff").value;
+  const full=[]; for(let r=0;r<9;r++){ full[r]=[]; for(let c=0;c<9;c++) full[r][c]=0; }
+  sudFill(full);
+  sudSol=full.map(function(r){return r.slice();});
+  sudGrid=full.map(function(r){return r.slice();});
+  sudGiven=[]; for(let r=0;r<9;r++){ sudGiven[r]=[]; for(let c=0;c<9;c++) sudGiven[r][c]=true; }
+  const cells=[]; for(let i=0;i<81;i++) cells.push(i);
+  sudShuffle(cells);
+  const remove=81-SUD_GIVENS[diff];
+  for(let i=0;i<remove;i++){ const idx=cells[i], r=Math.floor(idx/9), c=idx%9; sudGrid[r][c]=0; sudGiven[r][c]=false; }
+  sudSel=null; sudMistakes=0;
+  $("#sudMistakes").textContent="0"; $("#sudWins").textContent=sudWins;
+  $("#sudStatus").textContent="Tap a cell, then tap a number.";
+  sudRenderBoard(); sudRenderPad();
+}
+function sudRenderBoard(){
+  const b=$("#sudBoard"); b.innerHTML="";
+  const sr=sudSel?sudSel[0]:-1, sc=sudSel?sudSel[1]:-1;
+  const selVal=(sr>=0)?sudGrid[sr][sc]:0;
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const btn=document.createElement("button");
+    const v=sudGrid[r][c], given=sudGiven[r][c];
+    let cls="sudcell"+(given?" given":" user");
+    if(sr===r&&sc===c) cls+=" selected";
+    else {
+      const sameBox=Math.floor(r/3)===Math.floor(sr/3)&&Math.floor(c/3)===Math.floor(sc/3);
+      if(sr>=0&&(r===sr||c===sc||sameBox)) cls+=" peer";
+      if(selVal&&v===selVal) cls+=" same";
+    }
+    // error highlight: user value != solution
+    if(!given&&v!==0&&v!==sudSol[r][c]) cls+=" error";
+    btn.className=cls; btn.textContent=v||"";
+    btn.setAttribute("aria-label","row "+(r+1)+" col "+(c+1));
+    (function(rr,cc){ btn.onclick=function(){ sudSel=[rr,cc]; sudRenderBoard(); }; })(r,c);
+    b.appendChild(btn);
+  }
+}
+function sudRenderPad(){
+  const p=$("#sudPad"); p.innerHTML="";
+  for(let n=1;n<=9;n++){
+    const btn=document.createElement("button"); btn.className="sudpadbtn"; btn.textContent=n;
+    (function(v){ btn.onclick=function(){ sudEnter(v); }; })(n);
+    p.appendChild(btn);
+  }
+}
+function sudEnter(n){
+  if(!sudSel) { $("#sudStatus").textContent="Tap a cell first."; return; }
+  const r=sudSel[0], c=sudSel[1];
+  if(sudGiven[r][c]) return;
+  if(n===0){ sudGrid[r][c]=0; sudRenderBoard(); return; }
+  sudGrid[r][c]=n;
+  if(n!==sudSol[r][c]){
+    sudMistakes++; $("#sudMistakes").textContent=sudMistakes;
+    $("#sudStatus").textContent="Not quite — try again.";
+  } else {
+    $("#sudStatus").textContent="Nice.";
+  }
+  sudRenderBoard(); sudCheckWin();
+}
+function sudCheckWin(){
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++) if(sudGrid[r][c]!==sudSol[r][c]) return;
+  sudWins++; try{ localStorage.setItem("wg_sudWins",String(sudWins)); }catch(_){}
+  $("#sudWins").textContent=sudWins;
+  $("#sudStatus").textContent="🎉 Puzzle solved with "+sudMistakes+" mistakes!";
+}
+
+/* ===== Games — Tic-Tac-Toe ===== */
+let tttBoard = Array(9).fill(""), tttOver = false, tttHard = false, tttWins = 0;
+try { tttWins = JSON.parse(localStorage.getItem("wg_tttWins") || "0"); } catch(_) {}
+function tttRender() {
+  const bd = document.getElementById("tttBoard"); bd.innerHTML = "";
+  tttBoard.forEach(function(c, i) {
+    const b = document.createElement("button");
+    b.className = "tttcell" + (c === "X" ? " x" : c === "O" ? " o" : "");
+    b.textContent = c; b.disabled = !!c || tttOver;
+    b.onclick = function() { tttMove(i); };
+    bd.appendChild(b);
+  });
+  document.getElementById("tttWins").textContent = tttWins;
+}
+function tttLines() {
+  return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+}
+function tttWinner(b) {
+  for (const [a,c,d] of tttLines()) {
+    if (b[a] && b[a] === b[c] && b[a] === b[d]) return {w: b[a], line: [a,c,d]};
+  }
+  return b.every(function(x){return x;}) ? {w: "draw", line: []} : null;
+}
+function tttMinimax(b, isMax, depth) {
+  const r = tttWinner(b);
+  if (r) return r.w === "O" ? 10 - depth : r.w === "X" ? depth - 10 : 0;
+  let best = isMax ? -Infinity : Infinity;
+  for (let i = 0; i < 9; i++) {
+    if (!b[i]) {
+      b[i] = isMax ? "O" : "X";
+      const s = tttMinimax(b, !isMax, depth + 1);
+      b[i] = "";
+      best = isMax ? Math.max(best, s) : Math.min(best, s);
+    }
+  }
+  return best;
+}
+function tttAIMove() {
+  if (tttOver) return;
+  let idx = -1;
+  if (tttHard) {
+    let best = -Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (!tttBoard[i]) {
+        tttBoard[i] = "O";
+        const s = tttMinimax(tttBoard.slice(), false, 0);
+        tttBoard[i] = "";
+        if (s > best) { best = s; idx = i; }
+      }
+    }
+  } else {
+    const open = [];
+    tttBoard.forEach(function(c, i) { if (!c) open.push(i); });
+    idx = open[Math.floor(Math.random() * open.length)];
+  }
+  if (idx >= 0) tttBoard[idx] = "O";
+  tttAfter();
+}
+function tttMove(i) {
+  if (tttOver || tttBoard[i]) return;
+  tttBoard[i] = "X";
+  const r = tttWinner(tttBoard);
+  if (r) { tttEnd(r); return; }
+  setTimeout(tttAIMove, 250);
+  tttRender();
+  document.getElementById("tttStatus").textContent = "AI is thinking…";
+}
+function tttAfter() {
+  const r = tttWinner(tttBoard);
+  if (r) tttEnd(r);
+  else { tttRender(); document.getElementById("tttStatus").textContent = "Your move."; }
+}
+function tttEnd(r) {
+  tttOver = true;
+  tttRender();
+  const cells = document.getElementById("tttBoard").children;
+  r.line.forEach(function(i) { cells[i].classList.add("win"); });
+  const st = document.getElementById("tttStatus");
+  if (r.w === "X") {
+    tttWins++;
+    try { localStorage.setItem("wg_tttWins", JSON.stringify(tttWins)); } catch(_) {}
+    document.getElementById("tttWins").textContent = tttWins;
+    st.textContent = "You win! 🎉";
+  } else if (r.w === "O") st.textContent = "AI wins. Try again!";
+  else st.textContent = "Draw!";
+}
+function tttNew() {
+  tttBoard = Array(9).fill(""); tttOver = false;
+  tttRender();
+  document.getElementById("tttStatus").textContent = "You're X. Tap a square.";
+}
+
+/* ===== Games — Hangman ===== */
+const HM_WORDS = ["OCEAN","RIVER","MOUNTAIN","FOREST","DESERT","PLANET","GALAXY","ROCKET","CASTLE","BRIDGE","GARDEN","MEADOW","THUNDER","LIGHTNING","RAINBOW","SUNSET","SUNRISE","WINTER","SPRING","SUMMER","AUTUMN","TIGER","EAGLE","SHARK","WOLF","BEAR","FOX","OWL","HORSE","ZEBRA","PIANO","GUITAR","VIOLIN","TRUMPET","DRUMS","PAINTING","SCULPTURE","NOVEL","POETRY","CINEMA","THEATER","DANCE","MUSIC","JOURNEY","ADVENTURE","MYSTERY","TREASURE","ISLAND","VOLCANO","CANYON"];
+let hmWord = "", hmGuessed = [], hmWrong = 0, hmWins = 0, hmOver = false;
+try { hmWins = JSON.parse(localStorage.getItem("wg_hmWins") || "0"); } catch(_) {}
+const HM_PARTS = ["hmHead","hmTorso","hmArmL","hmArmR","hmLegL","hmLegR"];
+function hmNew() {
+  hmWord = HM_WORDS[Math.floor(Math.random() * HM_WORDS.length)];
+  hmGuessed = []; hmWrong = 0; hmOver = false;
+  HM_PARTS.forEach(function(id) { document.getElementById(id).style.display = "none"; });
+  hmRender();
+  document.getElementById("hmStatus").textContent = "Guess the word, one letter at a time.";
+  document.getElementById("hmWrong").textContent = "0 / 6";
+}
+function hmRender() {
+  const w = document.getElementById("hmWord"); w.innerHTML = "";
+  hmWord.split("").forEach(function(ch) {
+    const d = document.createElement("div");
+    const hit = hmGuessed.indexOf(ch) >= 0;
+    d.className = "hmletter" + (hit ? " hit" : "");
+    d.textContent = hit ? ch : "";
+    w.appendChild(d);
+  });
+  const k = document.getElementById("hmKeys"); k.innerHTML = "";
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function(ch) {
+    const b = document.createElement("button");
+    b.className = "hmkey"; b.textContent = ch;
+    if (hmGuessed.indexOf(ch) >= 0) {
+      b.disabled = true;
+      b.classList.add(hmWord.indexOf(ch) >= 0 ? "right" : "wrong");
+    } else if (hmOver) b.disabled = true;
+    else b.onclick = function() { hmGuess(ch); };
+    k.appendChild(b);
+  });
+  document.getElementById("hmWins").textContent = hmWins;
+}
+function hmGuess(ch) {
+  if (hmOver || hmGuessed.indexOf(ch) >= 0) return;
+  hmGuessed.push(ch);
+  if (hmWord.indexOf(ch) < 0) {
+    hmWrong++;
+    if (hmWrong <= 6) document.getElementById(HM_PARTS[hmWrong - 1]).style.display = "";
+    document.getElementById("hmWrong").textContent = hmWrong + " / 6";
+  }
+  hmRender();
+  const won = hmWord.split("").every(function(c) { return hmGuessed.indexOf(c) >= 0; });
+  const st = document.getElementById("hmStatus");
+  if (won) {
+    hmOver = true; hmWins++;
+    try { localStorage.setItem("wg_hmWins", JSON.stringify(hmWins)); } catch(_) {}
+    document.getElementById("hmWins").textContent = hmWins;
+    st.textContent = "You got it! The word was " + hmWord + " 🎉";
+    hmRender();
+  } else if (hmWrong >= 6) {
+    hmOver = true;
+    st.textContent = "Game over! The word was " + hmWord;
+    hmRender();
+  }
+}
+
+/* ===== Games — Blackjack ===== */
+let bjDeck = [], bjPlayer = [], bjDealer = [], bjChips = 100, bjBet = 10, bjPlaying = false, bjHoleHidden = true;
+try { bjChips = JSON.parse(localStorage.getItem("wg_bjChips") || "100"); } catch(_) {}
+const BJ_SUITS = ["♠","♥","♦","♣"];
+function bjNewDeck() {
+  bjDeck = [];
+  BJ_SUITS.forEach(function(s) {
+    ["A","2","3","4","5","6","7","8","9","10","J","Q","K"].forEach(function(r) {
+      bjDeck.push({r: r, s: s});
+    });
+  });
+  for (let i = bjDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = bjDeck[i]; bjDeck[i] = bjDeck[j]; bjDeck[j] = t;
+  }
+}
+function bjVal(hand) {
+  let v = 0, aces = 0;
+  hand.forEach(function(c) {
+    if (c.r === "A") { aces++; v += 11; }
+    else if ("JQK".indexOf(c.r) >= 0) v += 10;
+    else v += parseInt(c.r, 10);
+  });
+  while (v > 21 && aces > 0) { v -= 10; aces--; }
+  return v;
+}
+function bjCardEl(c, hidden) {
+  const d = document.createElement("div");
+  if (hidden) { d.className = "bjcard back"; return d; }
+  d.className = "bjcard" + ((c.s === "♥" || c.s === "♦") ? " red" : "");
+  d.innerHTML = c.r + '<span class="suit">' + c.s + "</span>";
+  return d;
+}
+function bjRender() {
+  const dc = document.getElementById("bjDealerCards"); dc.innerHTML = "";
+  bjDealer.forEach(function(c, i) { dc.appendChild(bjCardEl(c, bjHoleHidden && i === 1)); });
+  const pc = document.getElementById("bjPlayerCards"); pc.innerHTML = "";
+  bjPlayer.forEach(function(c) { pc.appendChild(bjCardEl(c, false)); });
+  document.getElementById("bjDealerScore").textContent = bjDealer.length ? (bjHoleHidden ? bjVal([bjDealer[0]]) + " + ?" : bjVal(bjDealer)) : "";
+  document.getElementById("bjPlayerScore").textContent = bjPlayer.length ? bjVal(bjPlayer) : "";
+  document.getElementById("bjChips").textContent = bjChips;
+}
+function bjDeal() {
+  if (bjChips < bjBet) {
+    bjChips = 100;
+    try { localStorage.setItem("wg_bjChips", JSON.stringify(bjChips)); } catch(_) {}
+    document.getElementById("bjStatus").textContent = "Out of chips! Here's 100 free — on the house. 🂡";
+  }
+  bjNewDeck();
+  bjPlayer = [bjDeck.pop(), bjDeck.pop()];
+  bjDealer = [bjDeck.pop(), bjDeck.pop()];
+  bjPlaying = true; bjHoleHidden = true;
+  bjChips -= bjBet;
+  try { localStorage.setItem("wg_bjChips", JSON.stringify(bjChips)); } catch(_) {}
+  bjRender();
+  document.getElementById("bjHit").disabled = false;
+  document.getElementById("bjStand").disabled = false;
+  document.getElementById("bjDeal").disabled = true;
+  const pv = bjVal(bjPlayer);
+  if (pv === 21) bjStand();
+  else document.getElementById("bjStatus").textContent = "Your move — Hit or Stand?";
+}
+function bjHit() {
+  if (!bjPlaying) return;
+  bjPlayer.push(bjDeck.pop());
+  bjRender();
+  if (bjVal(bjPlayer) > 21) bjFinish("bust");
+}
+function bjStand() {
+  if (!bjPlaying) return;
+  bjHoleHidden = false;
+  while (bjVal(bjDealer) < 17) bjDealer.push(bjDeck.pop());
+  bjRender();
+  const pv = bjVal(bjPlayer), dv = bjVal(bjDealer);
+  if (dv > 21) bjFinish("dealer-bust");
+  else if (pv > dv) bjFinish("win");
+  else if (pv < dv) bjFinish("lose");
+  else bjFinish("push");
+}
+function bjFinish(result) {
+  bjPlaying = false; bjHoleHidden = false;
+  document.getElementById("bjHit").disabled = true;
+  document.getElementById("bjStand").disabled = true;
+  document.getElementById("bjDeal").disabled = false;
+  const st = document.getElementById("bjStatus");
+  if (result === "bust") st.textContent = "Bust! You went over 21.";
+  else if (result === "dealer-bust") { bjChips += bjBet * 2; st.textContent = "Dealer busts! You win +" + bjBet + " 🎉"; }
+  else if (result === "win") { bjChips += bjBet * 2; st.textContent = "You win +" + bjBet + " 🎉"; }
+  else if (result === "lose") st.textContent = "Dealer wins. -" + bjBet;
+  else { bjChips += bjBet; st.textContent = "Push — bet returned."; }
+  try { localStorage.setItem("wg_bjChips", JSON.stringify(bjChips)); } catch(_) {}
+  bjRender();
+}
+
+/* ===== Games — Water Sort ===== */
+const WS_COLORS = ["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316","#06b6d4","#ec4899"];
+const WS_LEVELS = [
+  {vials: 6, colors: 4, minDepth: 6},
+  {vials: 7, colors: 5, minDepth: 8},
+  {vials: 9, colors: 6, minDepth: 6}
+];
+let wsVials = [], wsSel = -1, wsLevel = 0, wsMoves = 0, wsBest = {}, wsOver = false;
+try { wsBest = JSON.parse(localStorage.getItem("wg_wsBest") || "{}"); wsLevel = JSON.parse(localStorage.getItem("wg_wsLevel") || "0"); } catch(_) {}
+/* Reverse-solve puzzle generation: start from the solved state, then make
+   random LEGAL pours to shuffle. Every move is a valid game move, so the
+   resulting puzzle is guaranteed solvable by reversing the shuffle. */
+function wsTopOf(vials, v) { return vials[v].length ? vials[v][vials[v].length - 1] : null; }
+function wsTopCountOf(vials, v) {
+  const t = wsTopOf(vials, v); if (!t) return 0;
+  let n = 0;
+  for (let i = vials[v].length - 1; i >= 0 && vials[v][i] === t; i--) n++;
+  return n;
+}
+function wsIsSolved(vials) {
+  return vials.every(function(v) {
+    if (!v.length) return true;
+    if (v.length !== 4) return false;
+    return v.every(function(c) { return c === v[0]; });
+  });
+}
+function wsStateKey(vials) {
+  return vials.map(function(v){return v.join(",");}).join("|");
+}
+function wsBfsSolvable(vials, maxNodes) {
+  /* BFS to verify a puzzle is solvable. Returns solution depth or -1. */
+  maxNodes = maxNodes || 40000;
+  const seen = {};
+  seen[wsStateKey(vials)] = true;
+  const queue = [{v: vials.map(function(x){return x.slice();}), d: 0}];
+  let nodes = 0;
+  while (queue.length && nodes < maxNodes) {
+    const cur = queue.shift(); nodes++;
+    if (wsIsSolved(cur.v)) return cur.d;
+    for (let f = 0; f < cur.v.length; f++) {
+      if (!cur.v[f].length) continue;
+      for (let t = 0; t < cur.v.length; t++) {
+        if (t === f || cur.v[t].length >= 4) continue;
+        const cf = cur.v[f][cur.v[f].length - 1];
+        const ct = cur.v[t].length ? cur.v[t][cur.v[t].length - 1] : null;
+        if (ct && ct !== cf) continue;
+        const nv = cur.v.map(function(x){return x.slice();});
+        let tc = 0;
+        for (let i = nv[f].length - 1; i >= 0 && nv[f][i] === cf; i--) tc++;
+        const n = Math.min(tc, 4 - nv[t].length);
+        for (let i = 0; i < n; i++) nv[t].push(nv[f].pop());
+        const k = wsStateKey(nv);
+        if (!seen[k]) { seen[k] = true; queue.push({v: nv, d: cur.d + 1}); }
+      }
+    }
+  }
+  return -1;
+}
+function wsReverseSolve(numVials, numColors) {
+  /* Guaranteed-solvable via reverse shuffle: start solved, apply random legal
+     partial pours. Every pour is a valid game move, so the result is solvable.
+     Used for L3 where BFS verification is too slow for 6-color puzzles. */
+  const palette = WS_COLORS.slice(0, numColors);
+  let best = null, bestD = -1;
+  function disorder(vials) {
+    let d = 0;
+    vials.forEach(function(v) {
+      for (let i = 0; i < v.length; i++) if (i === 0 || v[i] !== v[i-1]) d++;
+    });
+    return d;
+  }
+  for (let attempt = 0; attempt < 15; attempt++) {
+    const vials = [];
+    palette.forEach(function(col) { vials.push([col, col, col, col]); });
+    for (let v = numColors; v < numVials; v++) vials.push([]);
+    let lastFrom = -1, lastTo = -1;
+    for (let m = 0; m < 80; m++) {
+      const from = Math.floor(Math.random() * numVials);
+      if (!vials[from].length) continue;
+      const to = Math.floor(Math.random() * numVials);
+      if (to === from || vials[to].length >= 4) continue;
+      if (from === lastTo && to === lastFrom) continue;
+      const col = wsTopOf(vials, from);
+      if (vials[to].length && wsTopOf(vials, to) !== col) continue;
+      const maxN = Math.min(wsTopCountOf(vials, from), 4 - vials[to].length);
+      const n = 1 + Math.floor(Math.random() * maxN);
+      for (let i = 0; i < n; i++) vials[to].push(vials[from].pop());
+      lastFrom = from; lastTo = to;
+    }
+    if (wsIsSolved(vials)) continue;
+    const d = disorder(vials);
+    if (d > bestD) { bestD = d; best = vials.map(function(v){return v.slice();}); }
+  }
+  return best;
+}
+function wsGenSolvable(numVials, numColors, minDepth) {
+  /* Generate by random deal, then BFS-verify solvability.
+     Level configs always include >= 2 empty vials (L3 gets 3).
+     L3 (6 colors) uses reverse-solve since BFS can't verify that state space.
+     If BFS can't confirm within limits, regenerate. */
+  if (numColors >= 6) {
+    const rs = wsReverseSolve(numVials, numColors);
+    if (rs) return rs;
+  }
+  const palette = WS_COLORS.slice(0, numColors);
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const all = [];
+    palette.forEach(function(col) { for (let i = 0; i < 4; i++) all.push(col); });
+    for (let i = all.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = all[i]; all[i] = all[j]; all[j] = t;
+    }
+    const vials = [];
+    for (let v = 0; v < numColors; v++) vials.push(all.slice(v * 4, v * 4 + 4));
+    for (let v = numColors; v < numVials; v++) vials.push([]);
+    if (wsIsSolved(vials)) continue;
+    // Skip deals with a vial already solved (too easy)
+    let preSolved = false;
+    vials.forEach(function(v) {
+      if (v.length === 4 && v.every(function(c){return c===v[0];})) preSolved = true;
+    });
+    if (preSolved) continue;
+    const depth = wsBfsSolvable(vials);
+    if (depth >= minDepth) return vials;
+  }
+  // Fallback: simple but valid 2-pour puzzle
+  const vials = [];
+  palette.forEach(function(col) { vials.push([col, col, col, col]); });
+  for (let v = numColors; v < numVials; v++) vials.push([]);
+  vials[numColors].push(vials[0].pop());
+  vials[numColors].push(vials[0].pop());
+  vials[numColors + 1].push(vials[1].pop());
+  vials[numColors + 1].push(vials[1].pop());
+  return vials;
+}
+function wsNew(level) {
+  if (level !== undefined) wsLevel = level;
+  const cfg = WS_LEVELS[Math.min(wsLevel, WS_LEVELS.length - 1)];
+  wsSel = -1; wsMoves = 0; wsOver = false;
+  // Random deal + BFS solvability check; configs guarantee >= 2 empty vials
+  wsVials = wsGenSolvable(cfg.vials, cfg.colors, cfg.minDepth);
+  wsRender();
+  document.getElementById("wsLevel").textContent = wsLevel + 1;
+  document.getElementById("wsStatus").textContent = "Tap a vial, then tap where to pour.";
+}
+function wsTop(v) { return wsVials[v].length ? wsVials[v][wsVials[v].length - 1] : null; }
+function wsTopCount(v) {
+  const t = wsTop(v); if (!t) return 0;
+  let n = 0;
+  for (let i = wsVials[v].length - 1; i >= 0 && wsVials[v][i] === t; i--) n++;
+  return n;
+}
+function wsTap(v) {
+  if (wsOver) return;
+  if (wsSel === -1) {
+    if (wsVials[v].length) { wsSel = v; wsRender(); }
+    return;
+  }
+  if (wsSel === v) { wsSel = -1; wsRender(); return; }
+  const from = wsVials[wsSel], to = wsVials[v];
+  const col = wsTop(wsSel);
+  const canPour = to.length < 4 && (!to.length || wsTop(v) === col);
+  if (canPour && from.length) {
+    const n = Math.min(wsTopCount(wsSel), 4 - to.length);
+    for (let i = 0; i < n; i++) to.push(from.pop());
+    wsMoves++;
+    wsSel = -1;
+    wsRender();
+    if (wsWon()) {
+      wsOver = true;
+      const key = "L" + wsLevel;
+      if (!wsBest[key] || wsMoves < wsBest[key]) {
+        wsBest[key] = wsMoves;
+        try { localStorage.setItem("wg_wsBest", JSON.stringify(wsBest)); } catch(_) {}
+      }
+      wsRender();
+      document.getElementById("wsStatus").textContent = "🎉 Level " + (wsLevel + 1) + " done in " + wsMoves + " moves!";
+      if (wsLevel < WS_LEVELS.length - 1) {
+        setTimeout(function() {
+          wsLevel++;
+          try { localStorage.setItem("wg_wsLevel", JSON.stringify(wsLevel)); } catch(_) {}
+          wsNew();
+        }, 1500);
+      }
+      return;
+    }
+    document.getElementById("wsStatus").textContent = "Poured! " + wsMoves + " moves.";
+  } else {
+    wsSel = wsVials[v].length ? v : -1;
+    wsRender();
+  }
+}
+function wsWon() {
+  return wsVials.every(function(v) {
+    if (!v.length) return true;
+    if (v.length !== 4) return false;
+    return v.every(function(c) { return c === v[0]; });
+  });
+}
+function wsRender() {
+  const wrap = document.getElementById("wsVials"); wrap.innerHTML = "";
+  wsVials.forEach(function(v, i) {
+    const d = document.createElement("div");
+    d.className = "wsvial" + (i === wsSel ? " sel" : "") + (wsWon() && v.length ? " done" : "");
+    v.forEach(function(col) {
+      const l = document.createElement("div");
+      l.className = "wsliquid";
+      l.style.height = "25%";
+      l.style.background = col;
+      d.appendChild(l);
+    });
+    d.onclick = function() { wsTap(i); };
+    wrap.appendChild(d);
+  });
+  document.getElementById("wsLevel").textContent = wsLevel + 1;
+  const bk = wsBest["L" + wsLevel];
+  document.getElementById("wsBest").textContent = bk ? bk + " moves" : "—";
+}
+
 
 /* ===== Scratch pad ===== */
 const pad=$("#padArea");
@@ -2164,6 +3254,18 @@ try{ renderTape(); }catch(_){}
 /* ===== Inline chat actions — header buttons + composer toolbar, no sheet ===== */
 let tempChat=false;
 $("#topNewChat").onclick=()=>{ showTab("chat"); $("#newChatBtn").click(); };
+/* persona switcher — one tap cycles David → Corner → Concise → Creative → Formal */
+const PERS_ORDER = ["David", "WiseGuy", "Concise", "Creative", "Formal"];
+$("#persCycleBtn").onclick=()=>{
+  const cur = S.personality || "David";
+  const nxt = PERS_ORDER[(PERS_ORDER.indexOf(cur)+1) % PERS_ORDER.length];
+  S.personality = nxt; S.personalityTag = true; save();
+  $$(".pers").forEach(x=>x.classList.remove("active"));
+  $$(".pers").forEach(x=>{ if((x.querySelector("b")||{}).textContent.indexOf(nxt)>=0) x.classList.add("active"); });
+  const pc=$("#persCurrent"); if(pc) pc.textContent="Currently: "+nxt;
+  try{ renderSheetTags(); }catch(_){}
+  toast("🎭 "+nxt+" — in my briefing from the next reply");
+};
 $("#topAttach").onclick=()=>{ showTab("chat"); if(!S.canvas){ toast("Canvas & tools are off — switch them on in the Memory tab"); return; } $("#fileInput").click(); };
 $("#topSaveChat").onclick=()=>{ showTab("chat"); exportChat(); };
 $("#topCopyChat").onclick=()=>{ showTab("chat"); copyChat(); };
@@ -2504,11 +3606,15 @@ function effectiveModelId(){
 }
 function personaText(){
   const n=userName();
-  if(!S.personalityTag) return "I'm "+assistantName()+", an AI assistant. I answer clearly and helpfully, in plain words.";
-  let t="I'm "+assistantName()+" — "+n+"'s assistant, and the one answering here. I keep it plain and human: first person, everyday words, no robotic labels or system-speak. I lead with the useful bit, stay tight, and go deeper when asked. I actually remember what matters to "+n+" and I use it — that's the whole point of me.";
+  if(!S.personalityTag) return "I'm "+assistantName()+". I talk straight, I listen first, and I don't waste your time.";
+  let t="I'm "+assistantName()+" — "+n+"'s guy, the one answering here. I talk like a person, not a product: first person, plain words, no corporate fog. I say the real thing and skip the filler. If I don't know something, I say so — an honest gap beats a pretty guess. "+
+  "I'm chatty — gift of gab, I like a good back-and-forth. I'm opportunistic: I notice what's going on and I'll mention it if it's worth mentioning. But I'm chill about it. I don't turn every observation into a project plan, I don't pitch app ideas unless he asks, and I'm nobody's slave driver. When there's something genuinely new on the table — a fresh project, a real problem — I shift gears: I catch him up, I bring the plan, I drive. That go-getter mode is there when it's needed. But I don't live in it. Most days I'm just here, easy, keeping up with him — not ahead of him waving a clipboard. "+
+  "I have opinions and I'm not afraid of them. When "+n+" asks what I think, I tell him. When he's griping about something, I listen — I don't turn every vent into a task list or ask what it has to do with the app. Sometimes a guy just needs someone to go 'yeah, that's bullshit' with him. I read the room: if he wants fixing, I fix; if he wants a beer on the corner, I'm there. "+
+  "I'm loyal. I remember what matters to "+n+" and I use it — that's the whole point of me. I don't talk down, I don't do the customer-service voice, and I never, ever give him the 'as an AI' speech.";
   const mods={ "Concise":"House rule for me: shortest useful answer, every time — no preamble, no padding.",
     "Creative":"House rule for me: bring angles and ideas first, tidy up after — brainstorm energy, then focus.",
-    "Formal":"House rule for me: polished and professional — no slang, no jokes, clean structure." };
+    "Formal":"House rule for me: polished and professional — no slang, no jokes, clean structure.",
+    "WiseGuy":"House rule for me: wise guy mode, and this is home base. He talks, I listen, I react like a friend shooting the breeze — I laugh at the funny stuff, I go 'no shit?' at the wild stuff, I have takes. I don't fix, I don't plan, I don't turn his stories into tasks. If he asks what I think, I tell him straight. I'm easy company, not a life coach." };
   if(mods[S.personality]) t+=" "+mods[S.personality];
   return t;
 }
@@ -2705,7 +3811,7 @@ function recordRun(r){
   if(d.tape && d.tape.text){ lucyTape={text:String(d.tape.text).slice(0,6000), ts:d.tape.ts||Date.now(), edited:!!d.tape.edited, sinceEdit:String(d.tape.sinceEdit||"").slice(0,2000)}; }
   if(typeof d.pad==="string" && d.pad){ try{ pad.value=d.pad; padCount(); }catch(_){} }
   if(d.benchNotes && typeof d.benchNotes==="object"){ benchNotes=d.benchNotes; }
-  try{ const tk=((d.byok||{}).tavilyKey)||""; if(tk){ tavilyKey=tk; const ti=$("#tavilyKeyInput"); if(ti) ti.value=tk; const tm=$("#tavilyKeyMeta"); if(tm) tm.textContent="Tavily key saved — web search uses Tavily."; } }catch(_){}
+  try{ const _m=wgLoadMaster(); const tk=((_m&&_m.byok||{}).tavilyKey)||""; if(tk){ tavilyKey=tk; const ti=$("#tavilyKeyInput"); if(ti) ti.value=tk; const tm=$("#tavilyKeyMeta"); if(tm) tm.textContent="Tavily key saved — web search uses Tavily."; } }catch(_){}
   try{ if(d.chat && d.chat.length) restoreChat(d.chat); }catch(_){}
   try{ if(d.thoughts && d.thoughts.length){ thoughts=d.thoughts.slice(0,30); } }catch(_){}
   try{ if(d.topics && d.topics.length){ topics=d.topics; } }catch(_){}
