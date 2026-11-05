@@ -655,8 +655,9 @@ details.wgCard>div{padding:0 16px 16px}
 #thoughtBg .bgthought.spark{color:#E6C27A}
 #thoughtBg .bgthought.deep{color:#5EEAD4}
 #thoughtBg[data-blur="frosted"] .bgthought{filter:none}
-/* frosted glass lives on the STATIC container, never on the animated track — backdrop-filter on a moving element forces a re-render every frame */
-#thoughtBg[data-blur="frosted"]{backdrop-filter:blur(var(--bgt-blur,4px));-webkit-backdrop-filter:blur(var(--bgt-blur,4px))}
+/* frosted glass: filter on the TRACK only — it holds nothing but background thoughts,
+   so the blur can never reach the composer, messages, or any UI element */
+#thoughtBg[data-blur="frosted"] #thoughtBgTrack{filter:blur(var(--bgt-blur,4px))}
 #thoughtBg::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,var(--bgt-dim,0));pointer-events:none}
 #messages .msg .bubble{background:rgba(23,25,31,var(--bgt-bubble,0));border-radius:12px;padding-left:10px;padding-right:10px}
 #messages{position:relative;z-index:1}
@@ -854,7 +855,7 @@ details.wgCard>div{padding:0 16px 16px}
       <div class="thoughtstrip" id="thoughtStrip">
         <button class="ts-btn" id="thoughtPlayBtn" title="Pause my thoughts">⏸</button>
         <div class="ts-text" id="thoughtText" title="What I'm thinking about"><span class="ts-label">💭</span><span id="thoughtCurrent">Warming up…</span></div>
-        <button class="ts-btn" id="thoughtExpandBtn" title="Recent thoughts">⌄</button>
+        <button class="ts-btn" id="thoughtExpandBtn" title="Memory — recent thoughts">🧠</button>
       </div>
       <div class="thoughtlist" id="thoughtList" hidden style="display:none">
         <div class="tl-head"><b>What I'm thinking about</b><span class="hint">my inner stream — sparks are quick hits, deep thoughts chew longer</span></div>
@@ -1777,7 +1778,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="158"; window._bootMark="script-start";
+window.WG_BUILD="159"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
