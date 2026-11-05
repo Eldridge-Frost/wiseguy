@@ -577,7 +577,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 /* Workbench instrument cards */
 details.wgCard{background:var(--panel);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;overflow:hidden}
 details.wgCard summary{cursor:pointer;padding:14px 16px;font-weight:800;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;color:var(--text)}
-details.wgCard summary::after{content:"\u2304";margin-left:auto;color:var(--muted);font-size:16px;line-height:1;transition:transform .25s;flex-shrink:0}
+details.wgCard summary::after{content:"⌄";margin-left:auto;color:var(--muted);font-size:16px;line-height:1;transition:transform .25s;flex-shrink:0}
 details.wgCard[open] summary::after{transform:rotate(180deg)}
 details.wgCard summary::-webkit-details-marker{display:none}
 details.wgCard summary .hint{margin:0}
@@ -1778,7 +1778,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="159"; window._bootMark="script-start";
+window.WG_BUILD="160"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
