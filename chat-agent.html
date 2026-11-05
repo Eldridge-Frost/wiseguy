@@ -653,7 +653,8 @@ details.wgCard>div{padding:0 16px 16px}
 #thoughtBg .bgthought.spark{color:#E6C27A}
 #thoughtBg .bgthought.deep{color:#5EEAD4}
 #thoughtBg[data-blur="frosted"] .bgthought{filter:none}
-#thoughtBg[data-blur="frosted"] #thoughtBgTrack{backdrop-filter:blur(var(--bgt-blur,4px));-webkit-backdrop-filter:blur(var(--bgt-blur,4px))}
+/* frosted glass lives on the STATIC container, never on the animated track — backdrop-filter on a moving element forces a re-render every frame */
+#thoughtBg[data-blur="frosted"]{backdrop-filter:blur(var(--bgt-blur,4px));-webkit-backdrop-filter:blur(var(--bgt-blur,4px))}
 #thoughtBg::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,var(--bgt-dim,0));pointer-events:none}
 #messages .msg .bubble{background:rgba(23,25,31,var(--bgt-bubble,0));border-radius:12px;padding-left:10px;padding-right:10px}
 #messages{position:relative;z-index:1}
@@ -1539,13 +1540,6 @@ details.wgCard>div{padding:0 16px 16px}
           </div>
         </div>
         <div class="field" style="margin-bottom:16px">
-          <label style="font-weight:700;margin-bottom:6px;display:block">Blur method</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <label style="display:flex;align-items:center;gap:8px;background:var(--panel);padding:10px 12px;border-radius:11px;cursor:pointer"><input type="radio" name="bgBlurMethod" value="layer" checked> 🎨 Layer blur <span style="color:var(--muted);font-size:11px">each thought out of focus on its own</span></label>
-            <label style="display:flex;align-items:center;gap:8px;background:var(--panel);padding:10px 12px;border-radius:11px;cursor:pointer"><input type="radio" name="bgBlurMethod" value="frosted"> 🪟 Frosted glass <span style="color:var(--muted);font-size:11px">one depth-of-field plane over the whole layer</span></label>
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:16px">
           <label style="font-weight:700;margin-bottom:6px;display:block">Blur gradient — which end falls out of focus</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <label style="display:flex;align-items:center;gap:8px;background:var(--panel);padding:10px 12px;border-radius:11px;cursor:pointer"><input type="radio" name="bgGradient" value="bottom" checked> ⬇️ Blur at bottom <span style="color:var(--muted);font-size:11px">new thoughts land at the top, sharp — older ones sink and blur</span></label>
@@ -1559,7 +1553,7 @@ details.wgCard>div{padding:0 16px 16px}
             <button class="chipbtn" data-preset="step">🪜 Step</button>
             <button class="chipbtn" data-preset="drift">🌊 Drift</button>
             <button class="chipbtn" data-preset="vivid">✨ Vivid</button>
-            <button class="chipbtn" data-preset="ghost">👻 Ghost</button>
+            <button class="chipbtn" data-preset="ghost">👻 Ghost <small style="opacity:.6">frosted</small></button>
             <button class="chipbtn" data-preset="still">🧊 Still</button>
             <button class="chipbtn" data-preset="lightning">⚡ Lightning bug</button>
           </div>
@@ -1781,7 +1775,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="156"; window._bootMark="script-start";
+window.WG_BUILD="157"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -5324,14 +5318,14 @@ function paintThoughtBg(){
 /* v151 — Appearance: motion styles, blur methods, presets, full slider set. Default = Step. */
 const BG_PRESETS={
   calm:{motion:"step",blurMethod:"layer",scroll:0,blur:5,opacity:20,text:16,space:16,dim:10,bubble:30,smooth:true,pause:true,battery:false},
-  step:{motion:"step",blurMethod:"layer",scroll:0,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
-  drift:{motion:"drift",blurMethod:"layer",gradient:"bottom",scroll:15,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
+  step:{motion:"step",blurMethod:"layer",scroll:0,blur:4,opacity:40,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
+  drift:{motion:"drift",blurMethod:"layer",gradient:"bottom",scroll:15,blur:4,opacity:40,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
   vivid:{motion:"drift",blurMethod:"layer",scroll:20,blur:2,opacity:45,text:19,space:12,dim:0,bubble:0,smooth:true,pause:false,battery:false},
   ghost:{motion:"breathe",blurMethod:"frosted",scroll:0,blur:6,opacity:15,text:17,space:18,dim:20,bubble:40,smooth:true,pause:true,battery:false},
-  still:{motion:"still",blurMethod:"layer",scroll:0,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:true},
+  still:{motion:"still",blurMethod:"layer",scroll:0,blur:4,opacity:40,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:true},
   lightning:{motion:"drift",blurMethod:"layer",scroll:120,blur:3,opacity:88,text:17,space:14,dim:0,bubble:0,smooth:false,pause:false,battery:false}
 };
-function bgDefaults(){ return {thoughts:true,news:true,motion:"drift",blurMethod:"layer",scroll:15,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false}; }
+function bgDefaults(){ return {thoughts:true,news:true,motion:"drift",blurMethod:"layer",scroll:15,blur:4,opacity:40,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false}; }
 function applyBgSettings(){
   try{
     const s=Object.assign(bgDefaults(), JSON.parse(localStorage.getItem("wg.bgSettings")||"{}"));
@@ -5364,7 +5358,6 @@ function applyBgSettings(){
     setR("bgDimRange",s.dim,"#bgDimVal",v=>v+"%");
     setR("bgBubbleRange",s.bubble,"#bgBubbleVal",v=>v+"%");
     document.querySelectorAll('input[name="bgMotion"]').forEach(r=>r.checked=r.value===s.motion);
-    document.querySelectorAll('input[name="bgBlurMethod"]').forEach(r=>r.checked=r.value===s.blurMethod);
     document.querySelectorAll('input[name="bgGradient"]').forEach(r=>r.checked=r.value===(s.gradient||"bottom"));
     window._bgGradient=s.gradient||"bottom";
   }catch(_){}
@@ -5372,7 +5365,7 @@ function applyBgSettings(){
 function saveBgSettings(){
   try{
     const motion=(document.querySelector('input[name="bgMotion"]:checked')||{}).value||"step";
-    const blurMethod=(document.querySelector('input[name="bgBlurMethod"]:checked')||{}).value||"layer";
+    const blurMethod=(JSON.parse(localStorage.getItem("wg.bgSettings")||"{}").blurMethod)||"layer"; /* presets control the blur method now — no standalone toggle */
     const gradient=(document.querySelector('input[name="bgGradient"]:checked')||{}).value||"bottom";
     const s={
       thoughts:$("#bgThoughtsToggle")?$("#bgThoughtsToggle").checked:true,
@@ -5398,7 +5391,7 @@ function saveBgSettings(){
 let _bgSaveT=null;
 ["bgScrollRange","bgOpacityRange","bgBlurRange","bgTextRange","bgSpaceRange","bgDimRange","bgBubbleRange"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("input", ()=>{ clearTimeout(_bgSaveT); _bgSaveT=setTimeout(saveBgSettings, 500); }); });
 /* motion/blur changes need no re-render (CSS handles them); only gradient changes the order */
-document.querySelectorAll('input[name="bgMotion"],input[name="bgBlurMethod"]').forEach(r=>r.addEventListener("change", ()=>{ saveBgSettings(); }));
+document.querySelectorAll('input[name="bgMotion"]').forEach(r=>r.addEventListener("change", ()=>{ saveBgSettings(); }));
 document.querySelectorAll('input[name="bgGradient"]').forEach(r=>r.addEventListener("change", ()=>{ saveBgSettings(); _bgSig=""; try{ paintThoughtBg(); }catch(_){} }));
 document.querySelectorAll('#bgPresets [data-preset]').forEach(b=>b.addEventListener("click", ()=>{
   const p=BG_PRESETS[b.dataset.preset]; if(!p) return;
