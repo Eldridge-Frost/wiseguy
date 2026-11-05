@@ -20,7 +20,9 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-html{font-size:13px;-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Base size reduced - UI fits without zoom slider */
+html{font-size:13px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+input.numinput{width:90px;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:7px 10px;color:white;font-size:14px;font-family:inherit;text-align:center;outline:0}
+input.numinput:focus{border-color:rgba(230,194,122,.55);box-shadow:0 0 0 3px rgba(230,194,122,.12)} /* Base size reduced - UI fits without zoom slider */
 @media (max-width:600px){
   html{font-size:12px}
   .viewport{padding:14px 8px 6px}
@@ -1432,8 +1434,8 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
 
         <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
-        <div class="rangehead">Temperature <span id="tempVal">0.7 — Balanced</span></div><input type="range" id="tempRange" min="0" max="2" step="0.1" value="0.7">
-        <div class="rangehead" style="margin-top:14px">Max output tokens <span id="tokVal">4096</span></div><input type="range" id="tokRange" min="256" max="16384" step="256" value="4096">
+        <div class="rangehead">Temperature <span id="tempVal">0.7 — Balanced</span></div><input type="number" inputmode="decimal" id="tempRange" min="0" max="2" step="0.1" value="0.7" class="numinput">
+        <div class="rangehead" style="margin-top:14px">Max output tokens <span id="tokVal">4096</span></div><input type="number" inputmode="decimal" id="tokRange" min="256" max="16384" step="256" value="4096" class="numinput">
         <div class="switchrow" style="margin-top:16px"><div><b>Streaming</b><p>Show replies token-by-token as they arrive.</p></div><button class="switch on" id="apiStream"></button></div>
         <div class="switchrow"><div><b>Auto-title chats</b><p>Generate a short title from the first message.</p></div><button class="switch on" id="apiTitle"></button></div>
       </div>
@@ -1457,19 +1459,19 @@ details.wgCard>div{padding:0 16px 16px}
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
         <div class="field" style="margin-bottom:18px"><label>Interface size <span id="uiScaleVal" style="color:var(--gold);font-weight:700">80%</span></label>
-          <input type="range" id="uiScaleRange" min="50" max="120" step="5" value="80" style="width:100%" aria-label="Interface size">
+          <input type="number" inputmode="decimal" id="uiScaleRange" min="50" max="120" step="5" value="80" style="width:100%" aria-label="Interface size" class="numinput">
           <p class="hint" style="margin-top:6px">Scales the whole interface — text, chat, buttons, everything. Smaller if it feels bloated, larger if you want it big.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>Text size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
-          <input type="range" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size">
+          <input type="number" inputmode="decimal" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size" class="numinput">
           <p class="hint" style="margin-top:6px">Text only — independent of interface size. Bump this up if the UI is small but you want readable text.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>💭 Spark thoughts every <span id="sparkIntVal" style="color:var(--gold);font-weight:700">20s</span></label>
-          <input type="range" id="sparkIntRange" min="1" max="300" step="1" value="20" style="width:100%" aria-label="Spark thought interval">
+          <input type="number" inputmode="decimal" id="sparkIntRange" min="1" max="300" step="1" value="20" style="width:100%" aria-label="Spark thought interval" class="numinput">
           <p class="hint" style="margin-top:6px">How often quick sparks fire. 1s for testing, 20s default, up to 300s.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>🧠 Deep thoughts every <span id="deepIntVal" style="color:var(--gold);font-weight:700">60s</span></label>
-          <input type="range" id="deepIntRange" min="1" max="300" step="1" value="60" style="width:100%" aria-label="Deep thought interval">
+          <input type="number" inputmode="decimal" id="deepIntRange" min="1" max="300" step="1" value="60" style="width:100%" aria-label="Deep thought interval" class="numinput">
           <p class="hint" style="margin-top:6px">How often deep thoughts fire. 1s for testing, 60s default, up to 300s.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>🔥 Hotline — voice assistant</label>
@@ -1489,7 +1491,7 @@ details.wgCard>div{padding:0 16px 16px}
             <span class="hint" style="align-self:center" id="hotlineTtsStatus">Voice not downloaded yet</span>
           </div>
           <div class="switchrow" style="margin-top:10px"><div><b>Speak replies aloud</b><p>Hotline talks back using the on-device voice.</p></div><button class="switch on" id="swHotlineTts"></button></div>
-          <div style="margin-top:10px"><div class="rangehead">Silence timeout <span id="hotlineSilenceVal">0.5s</span></div><input type="range" id="hotlineSilenceRange" min="0.5" max="10" step="0.5" value="0.5" style="width:100%"><p class="hint">How long to wait for silence before Hotline stops recording.</p></div>
+          <div style="margin-top:10px"><div class="rangehead">Silence timeout <span id="hotlineSilenceVal">0.5s</span></div><input type="number" inputmode="decimal" id="hotlineSilenceRange" min="0.5" max="10" step="0.5" value="0.5" style="width:100%" class="numinput"><p class="hint">How long to wait for silence before Hotline stops recording.</p></div>
           <div style="margin-top:12px"><label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block">🎤 STT model (keyboard + Hotline)</label>
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="sttTierBtns">
               <button class="btn" data-tier="tiny" style="flex:1;padding:10px;font-size:13px">⚡ Fast<br><small style="font-weight:400;opacity:.7">tiny q5_1 · 31MB</small></button>
@@ -1556,35 +1558,35 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Scroll speed — <span id="bgScrollVal" style="color:var(--gold);font-weight:700">15 px/s</span> <span style="color:var(--muted);font-size:12px">(drift mode only)</span></label>
-          <input type="range" id="bgScrollRange" min="0" max="120" step="5" value="15" style="width:100%" aria-label="Background scroll speed">
+          <input type="number" inputmode="decimal" id="bgScrollRange" min="0" max="120" step="5" value="15" style="width:100%" aria-label="Background scroll speed" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Slide speed — <span id="bgSpeedVal" style="color:var(--gold);font-weight:700">5s</span> <span style="color:var(--muted);font-size:12px">(how slowly the background slides on a new thought)</span></label>
-          <input type="range" id="bgSpeedRange" min="2" max="10" step="0.5" value="5" style="width:100%" aria-label="Background thought slide speed">
+          <input type="number" inputmode="decimal" id="bgSpeedRange" min="2" max="10" step="0.5" value="5" style="width:100%" aria-label="Background thought slide speed" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Depth of field — <span id="bgBlurVal" style="color:var(--gold);font-weight:700">4px</span> <span style="color:var(--muted);font-size:12px">(how far the background thoughts fall out of focus — like a camera aperture)</span></label>
-          <input type="range" id="bgBlurRange" min="0" max="8" step="0.5" value="4" style="width:100%" aria-label="Background thought blur">
+          <input type="number" inputmode="decimal" id="bgBlurRange" min="0" max="8" step="0.5" value="4" style="width:100%" aria-label="Background thought blur" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Opacity — <span id="bgOpacityVal" style="color:var(--gold);font-weight:700">28%</span></label>
-          <input type="range" id="bgOpacityRange" min="5" max="60" step="1" value="28" style="width:100%" aria-label="Background thought opacity">
+          <input type="number" inputmode="decimal" id="bgOpacityRange" min="5" max="60" step="1" value="28" style="width:100%" aria-label="Background thought opacity" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Text size — <span id="bgTextVal" style="color:var(--gold);font-weight:700">17px</span></label>
-          <input type="range" id="bgTextRange" min="13" max="24" step="1" value="17" style="width:100%" aria-label="Background thought text size">
+          <input type="number" inputmode="decimal" id="bgTextRange" min="13" max="24" step="1" value="17" style="width:100%" aria-label="Background thought text size" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Spacing — <span id="bgSpaceVal" style="color:var(--gold);font-weight:700">14px</span> <span style="color:var(--muted);font-size:12px">(gap between background thoughts)</span></label>
-          <input type="range" id="bgSpaceRange" min="4" max="32" step="2" value="14" style="width:100%" aria-label="Background thought spacing">
+          <input type="number" inputmode="decimal" id="bgSpaceRange" min="4" max="32" step="2" value="14" style="width:100%" aria-label="Background thought spacing" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Dim — <span id="bgDimVal" style="color:var(--gold);font-weight:700">0%</span> <span style="color:var(--muted);font-size:12px">(darken the background layer)</span></label>
-          <input type="range" id="bgDimRange" min="0" max="70" step="5" value="0" style="width:100%" aria-label="Background dim overlay">
+          <input type="number" inputmode="decimal" id="bgDimRange" min="0" max="70" step="5" value="0" style="width:100%" aria-label="Background dim overlay" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Bubble backing — <span id="bgBubbleVal" style="color:var(--gold);font-weight:700">0%</span> <span style="color:var(--muted);font-size:12px">(solid backing behind chat bubbles so text stays readable)</span></label>
-          <input type="range" id="bgBubbleRange" min="0" max="100" step="5" value="0" style="width:100%" aria-label="Chat bubble backing opacity">
+          <input type="number" inputmode="decimal" id="bgBubbleRange" min="0" max="100" step="5" value="0" style="width:100%" aria-label="Chat bubble backing opacity" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
@@ -1775,7 +1777,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="152"; window._bootMark="script-start";
+window.WG_BUILD="153"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
