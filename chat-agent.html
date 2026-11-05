@@ -20,6 +20,7 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
+html{font-size:13px} /* Base size reduced - UI fits without zoom slider */
 body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer;border:0}
@@ -73,7 +74,10 @@ button{cursor:pointer;border:0}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;min-width:0;background:transparent}
-.topbar{height:60px;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(8,9,12,.75);position:relative;z-index:5}
+.topbar{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(8,9,12,.75);position:relative;z-index:5}
+.topbar.slim .modelselect,.topbar.slim .top-actions{display:none}
+.topbar.slim .slim-model{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+#topExpandBtn{margin-left:auto}
 .modelpill{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);padding:8px 12px;border-radius:99px;font-weight:700;font-size:13.5px;color:white;transition:.2s;position:relative}
 .modelpill:hover{border-color:var(--border2);background:var(--panel2)}
 .modelpill small{color:var(--gold);font-weight:800}
@@ -89,7 +93,7 @@ button{cursor:pointer;border:0}
 
 
 /* CHAT */
-.viewport{flex:1;overflow:auto;padding:28px 20px 10px;scroll-behavior:smooth}
+.viewport{flex:1;overflow:auto;padding:28px 10px 10px;scroll-behavior:smooth}
 .wrap{max-width:780px;margin:0 auto}
 .hero{padding:18px 0 8px}
 .hero h1{font-family:Newsreader,serif;font-weight:500;font-size:clamp(32px,5vw,48px);letter-spacing:-.02em;line-height:.95;margin:0}
@@ -105,7 +109,7 @@ button{cursor:pointer;border:0}
 .scard .ic{width:30px;height:30px;border-radius:8px;background:var(--gold-dim);display:grid;place-items:center;margin-bottom:11px;font-size:15px}
 
 /* MESSAGES */
-.msg{display:flex;gap:14px;margin:26px 0;animation:fadeUp .35s ease both}
+.msg{display:flex;gap:8px;margin:20px 0;animation:fadeUp .35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .msg .who{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:800}
 .msg.user .who{background:#27272A;border:1px solid var(--border2)}
@@ -129,7 +133,11 @@ button{cursor:pointer;border:0}
 @keyframes bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
 
 /* COMPOSER */
-.composerarea{padding:10px 20px 16px;background:linear-gradient(transparent, rgba(8,9,12,.9) 30%)}
+.composerarea{padding:6px 12px 8px;background:linear-gradient(transparent, rgba(8,9,12,.9) 30%)}
+.composerarea .toolbar{margin-top:4px}
+.composerarea .toolbtn{font-size:14px;padding:4px 6px}
+.composerarea .footnote{margin:4px 0 0;font-size:11px}
+.tagbar{display:none !important}
 .composer{max-width:780px;margin:0 auto;background:#17191F;border:1px solid var(--border2);border-radius:22px;padding:10px 10px 8px;box-shadow:0 16px 40px rgba(0,0,0,.35);transition:.2s}
 .composer:focus-within{border-color:rgba(230,194,122,.45);box-shadow:0 0 0 4px rgba(230,194,122,.08), 0 16px 40px rgba(0,0,0,.35)}
 .composer textarea{width:100%;background:transparent;border:0;outline:0;resize:none;color:white;font-size:15.5px;line-height:1.5;padding:6px 8px;max-height:140px;min-height:24px}
@@ -663,6 +671,7 @@ details.wgCard>div{padding:0 16px 16px}
       <span class="runmeta" id="setupStatus" aria-live="polite"></span>
     </div>
     <button type="button" class="btn btn-gold" id="setupStart" style="width:100%;justify-content:center;padding:14px;font-size:16px">Start chatting &rarr;</button>
+    <button type="button" class="btn btn-ghost" id="setupSkip" style="width:100%;justify-content:center;padding:10px;font-size:14px;margin-top:8px">Skip — I'll set up later</button>
     <p class="hint" style="text-align:center;margin-top:14px">Everything stays on this device. Keys never leave your phone except to your provider when you chat.</p>
   </div>
 </div>
@@ -683,7 +692,7 @@ details.wgCard>div{padding:0 16px 16px}
 
     <div class="sectionlabel"><span>Today</span></div>
     <div class="chatlist" id="chatList">
-      <button class="chatitem active" data-chat="Welcome"><span class="dot"></span><span>Welcome to David<small>Memory on · GPT-4o</small></span></button>
+      <button class="chatitem active" data-chat="Welcome"><span class="dot"></span><span>Welcome to David<small>Memory on · Local</small></span></button>
     </div>
 
     <div class="memcard">
@@ -702,21 +711,20 @@ details.wgCard>div{padding:0 16px 16px}
 
   <!-- MAIN -->
   <main class="main">
-    <header class="topbar">
+    <header class="topbar slim" id="topbar">
       <button class="iconbtn" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+      <span class="slim-model" id="slimModelName">David</span>
       <select class="modelpill modelselect" id="modelSelect" aria-label="Choose model">
-        <option value="GPT-4o" selected>David · GPT-4o</option>
-        <option value="GPT-4o mini">David · GPT-4o mini</option>
-        <option value="o1">David · o1</option>
-        <option value="GPT-4.1">David · GPT-4.1</option>
+        <option value="Local" selected>David · Local</option>
         <option value="__byok">⚿ BYOK model… (Settings)</option>
       </select>
-      <div class="top-actions">
+      <div class="top-actions" style="display:none">
         <button class="tokenbtn" id="tokenBtn" aria-label="Token speed and usage for this chat" title="Tokens — speed, usage &amp; context for this chat"><span class="tt">t</span><span class="ts"><span id="tokenBtnSpeed">91.4</span><small>tok / sec</small></span></button>
         <button class="iconbtn topact" id="topNewChat" aria-label="New chat" title="New chat">＋</button>
         <button class="iconbtn topact" id="topAttach" aria-label="Attach files" title="Attach files">📎</button>
         <button class="iconbtn topact" id="persCycleBtn" aria-label="Cycle persona" title="Cycle persona">🎭</button>
       </div>
+      <button class="iconbtn" id="topExpandBtn" aria-label="Show full toolbar" title="Show full toolbar">⌄</button>
     </header>
 
     <div class="tokeninline" id="tokenPanel" hidden aria-label="Token speed and usage for this chat">
@@ -726,7 +734,7 @@ details.wgCard>div{padding:0 16px 16px}
 <button class="iconbtn" id="tokenCloseBtn" aria-label="Hide token panel">✕</button></div>
 <div id="tokSpeedView">
 <div class="gaugewrap">
-      <div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;text-align:left"><span class="livedot"></span>Live speed · <span id="tokGaugeModel">GPT-4o</span></div>
+      <div style="font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;text-align:left"><span class="livedot"></span>Live speed · <span id="tokGaugeModel">Local</span></div>
       <svg viewBox="0 0 300 168" aria-hidden="true">
         <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#22262E" stroke-width="15" stroke-linecap="round"/>
         <path id="tokGaugeArc" d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#5EEAD4" stroke-width="15" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" style="transition:stroke-dashoffset .18s ease, stroke .3s"/>
@@ -857,8 +865,10 @@ details.wgCard>div{padding:0 16px 16px}
           <button class="toolbtn" id="attachBtn" title="Attach files" aria-label="Attach files" style="font-size:16px">📎</button>
           <button class="toolbtn" id="saveMemBtn" title="Save a memory — opens the Memory tab's quick capture" aria-label="Save a memory">🧠</button>
           <button class="toolbtn" id="micBtn" title="Voice input">🎙</button>
+          <button class="toolbtn" id="kbdLockBtn" title="Lock keyboard open" aria-label="Lock keyboard open" style="opacity:.5">⌨️</button>
           <button class="toolbtn" id="topSaveChat" title="Save chat (download .md)" aria-label="Save chat">💾</button>
           <button class="toolbtn" id="topCopyChat" title="Copy chat" aria-label="Copy chat">⧉</button>
+          <button class="toolbtn" id="ghostBtn" title="Ghostwrite — format and polish, keeps your voice and words" aria-label="Ghostwrite">✨</button>
           <button class="send" id="sendBtn" disabled aria-label="Send">↑</button>
         </div>
       </div>
@@ -871,9 +881,14 @@ details.wgCard>div{padding:0 16px 16px}
         <h1>The <i>feed.</i></h1>
         <p class="lede">One feed to start — BBC World News over RSS. It checks itself when you open this tab; tap any story to expand it, or hit <b>💬 Discuss this</b> to talk it over in chat.</p>
         <div class="newsmeta">
-          <span class="pill gold">📰 BBC News — World (RSS)</span>
+          <span class="pill gold">📰 RSS Feeds</span>
           <span class="pill" id="feedStatus">Snapshot saved when this app was built · Thu 29 Oct 2026, 11:16 AM ET</span>
-          <button class="chipbtn" id="feedCheckBtn">↻ Check feed now</button>
+          <button class="chipbtn" id="feedCheckBtn">↻ Check feeds now</button>
+        </div>
+        <div id="feedList" style="margin-bottom:12px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="newFeedUrl" placeholder="Add RSS feed URL..." class="grow" style="padding:8px">
+          <button class="btn" id="addFeedBtn">＋ Add</button>
         </div>
         <div id="newsList"></div>
         <div class="ccard">
@@ -1138,6 +1153,10 @@ details.wgCard>div{padding:0 16px 16px}
             <button class="chipbtn teal" id="davidWriteBtn" style="margin-top:4px">Ask David to add a thought</button>
           </div>
         </div><p class="lede">Organised into books that fill automatically from your chats. Every entry can be starred ★, pinned ◆, edited, copied — or sent into the chat with 💬.</p>
+<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+  <button class="btn btn-gold" id="summarizeMemsBtn" style="padding:8px 14px;font-size:13px">✦ Summarize memories</button>
+  <span class="hint" style="align-self:center">Condenses all memories into tight summaries — keeps the meaning, cuts the bloat. Pinned memories are never touched.</span>
+</div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:13px">Storage</b><span style="font-size:12px;color:var(--muted)"><span id="drawerCount">3</span> / 20 memories</span></div>
     <div class="meter" style="margin-bottom:16px"><i id="drawerMeter" style="width:15%"></i></div>
 
@@ -1322,7 +1341,7 @@ details.wgCard>div{padding:0 16px 16px}
       <button data-mtab="assistants">🤖 Assistants</button>
       <button data-mtab="api" class="active">⚿ API &amp; BYOK</button>
       <button data-mtab="engine">🔧 Engine</button>
-      <button data-mtab="personal">Personalisation</button>
+      
       <button data-mtab="data">Data controls</button>
       <button data-mtab="shortcuts">Shortcuts</button>
       <button data-mtab="developer">🧪 Developer</button>
@@ -1362,7 +1381,7 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div class="field"><label>Organisation ID (optional)</label><input type="text" id="orgIdInput" placeholder="org-…" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
-          <div class="field"><label>Default model</label><input type="text" id="defaultModelInput" value="gpt-4o" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+          <div class="field"><label>Default model</label><input type="text" id="defaultModelInput" value="local" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
         </div>
         <div class="statusline" id="connStatus" style="background:var(--panel);border-color:var(--border);color:var(--muted)">○ Not connected — paste your OpenAI key above and test the connection</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-gold" id="testBtn">Test connection</button><button class="btn btn-ghost" id="saveApiBtn">Save</button><button class="btn btn-ghost" id="removeKeyBtn" style="color:#FCA5A5">Remove key</button></div>
@@ -1384,7 +1403,7 @@ details.wgCard>div{padding:0 16px 16px}
       <div id="mtab-engine" style="display:none">
         <p class="sub" style="margin-bottom:6px">Calibration view — how the engine is running, what the last chats cost in context, and where every token went. Estimates are labelled “est.” (chars ÷ 4) when the backend doesn't report usage.</p>
         <div class="enginerow"><span><span class="onlinedot"></span>Backend</span><b id="engBackend">online · Demo mode</b></div>
-        <div class="enginerow"><span>Model</span><b id="engModel">GPT-4o</b></div>
+        <div class="enginerow"><span>Model</span><b id="engModel">Local</b></div>
         <div class="enginerow"><span>Last speed</span><b id="engLastSpeed">Peak 91.4 · gen — · total 91.4 tok/s</b></div>
         <div class="enginerow"><span>Context window</span><b>128,000 tokens</b></div>
         <div class="enginerow"><span>Last context used</span><b id="engLastCtx">—</b></div>
@@ -1394,14 +1413,53 @@ details.wgCard>div{padding:0 16px 16px}
         <p class="hint" style="margin-top:10px">Targets: sweet spot under 5K · design range 4–16K · easy under 32K. Not built for claimed 128K / 1M briefings — bigger isn't sharper.</p>
 
         <div style="border-top:1px solid var(--border);margin:20px 0 14px"></div>
-        <button class="btn btn-ghost" id="engRefreshBtn" style="width:100%;justify-content:center;margin-top:12px">↻ Refresh diagnostics</button>
+        <button class="btn btn-ghost" id="engRefreshBtn2" style="width:100%;justify-content:center;margin-top:12px">↻ Refresh diagnostics</button>
       </div>
 
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
-        <div class="field" style="margin-bottom:18px"><label>Interface size <span id="uiScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
-          <input type="range" id="uiScaleRange" min="70" max="120" step="5" value="100" style="width:100%" aria-label="Interface size">
+        <div class="field" style="margin-bottom:18px"><label>Interface size <span id="uiScaleVal" style="color:var(--gold);font-weight:700">80%</span></label>
+          <input type="range" id="uiScaleRange" min="50" max="120" step="5" value="80" style="width:100%" aria-label="Interface size">
           <p class="hint" style="margin-top:6px">Scales the whole interface — text, chat, buttons, everything. Smaller if it feels bloated, larger if you want it big.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>Text size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
+          <input type="range" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size">
+          <p class="hint" style="margin-top:6px">Text only — independent of interface size. Bump this up if the UI is small but you want readable text.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>💭 Spark thoughts every <span id="sparkIntVal" style="color:var(--gold);font-weight:700">20s</span></label>
+          <input type="range" id="sparkIntRange" min="1" max="300" step="1" value="20" style="width:100%" aria-label="Spark thought interval">
+          <p class="hint" style="margin-top:6px">How often quick sparks fire. 1s for testing, 20s default, up to 300s.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>🧠 Deep thoughts every <span id="deepIntVal" style="color:var(--gold);font-weight:700">60s</span></label>
+          <input type="range" id="deepIntRange" min="1" max="300" step="1" value="60" style="width:100%" aria-label="Deep thought interval">
+          <p class="hint" style="margin-top:6px">How often deep thoughts fire. 1s for testing, 60s default, up to 300s.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>🔥 Hotline — voice assistant</label>
+          <p class="hint" style="margin:0 0 10px">Hold your power button (or swipe the corner) to talk. Your voice goes straight to the AI.</p>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <button class="btn btn-gold" id="hotlineAssistBtn" style="padding:8px 14px;font-size:13px">Set as assistant</button>
+            <span class="hint" style="align-self:center" id="hotlineStatus">Not set as assistant yet</span>
+          </div>
+          <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block">When you finish speaking:</label>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="hotlineModeDirect" style="flex:1;padding:10px;font-size:13px">📻 Send immediately<br><small style="font-weight:400;opacity:.7">walkie-talkie</small></button>
+            <button class="btn btn-ghost" id="hotlineModeDraft" style="flex:1;padding:10px;font-size:13px">✏️ Drop in textbox<br><small style="font-weight:400;opacity:.7">review first</small></button>
+          </div>
+          <p class="hint" style="margin-top:8px">🎙️ Voice-sent messages are tagged so I know they might have transcription errors.</p>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn" id="hotlineTtsDlBtn" style="padding:8px 14px;font-size:13px">⬇️ Download voice (~65MB)</button>
+            <span class="hint" style="align-self:center" id="hotlineTtsStatus">Voice not downloaded yet</span>
+          </div>
+          <div class="switchrow" style="margin-top:10px"><div><b>Speak replies aloud</b><p>Hotline talks back using the on-device voice.</p></div><button class="switch on" id="swHotlineTts"></button></div>
+          <div style="margin-top:10px"><div class="rangehead">Silence timeout <span id="hotlineSilenceVal">0.5s</span></div><input type="range" id="hotlineSilenceRange" min="0.5" max="10" step="0.5" value="0.5" style="width:100%"><p class="hint">How long to wait for silence before Hotline stops recording.</p></div>
+          <div style="margin-top:12px"><label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block">🎤 STT model (keyboard + Hotline)</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="sttTierBtns">
+              <button class="btn" data-tier="tiny" style="flex:1;padding:10px;font-size:13px">⚡ Fast<br><small style="font-weight:400;opacity:.7">tiny q5_1 · 31MB</small></button>
+              <button class="btn" data-tier="balanced" style="flex:1;padding:10px;font-size:13px">⚖️ Balanced<br><small style="font-weight:400;opacity:.7">base q5_1 · 57MB</small></button>
+              <button class="btn btn-gold" data-tier="quality" style="flex:1;padding:10px;font-size:13px">💎 Quality<br><small style="font-weight:400;opacity:.7">base.en · 142MB</small></button>
+            </div>
+            <p class="hint" style="margin-top:6px">Bundled in the app. No download needed.</p>
+          </div>
         </div>
         <div class="switchrow"><div><b>Temporary chat</b><p>Don't save the current chat to memory.</p></div><button class="switch" id="sheetTempSwitch" aria-label="Toggle temporary chat"></button></div>
         <div class="switchrow"><div><b>Memory</b><p>Use saved memories in the current chat.</p></div><button class="switch on" id="sheetMemSwitch" aria-label="Toggle memory in this chat"></button></div>
@@ -1410,7 +1468,7 @@ details.wgCard>div{padding:0 16px 16px}
         <div class="switchrow"><div><b>Sound on send</b><p>A subtle whoosh when a message sends.</p></div><button class="switch" id="genSound"></button></div>
         <div class="switchrow"><div><b>Show memory chips</b><p>Label replies that used saved memories.</p></div><button class="switch on" id="genChips"></button></div>
       </div>
-      <div id="mtab-personal" style="display:none"><p class="sub">Personality, tone and custom instructions live in the Memory tab — it keeps everything about “what David knows” in one place.</p><button class="btn btn-gold" id="openMemFromSettings">Open Memory tab →</button></div>
+
       <div id="mtab-data" style="display:none">
         <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:9px" onclick="exportChat()">Export all chats (.md)</button>
         <button class="btn btn-ghost" id="clearHistoryBtn" style="width:100%;justify-content:center;color:#FCA5A5">Clear chat history</button>
@@ -1461,6 +1519,9 @@ details.wgCard>div{padding:0 16px 16px}
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+// Safe wiring: no-op if element doesn't exist (prevents one deleted button from killing the whole app)
+function wire(sel, event, fn){ const el=$(sel); if(el) el.addEventListener(event, fn); }
+function wireClick(sel, fn){ wire(sel, "click", fn); }
 let books=[
  {id:"people",name:"People",icon:"👥"},
  {id:"projects",name:"Projects",icon:"▦"},
@@ -1487,15 +1548,50 @@ function classifyMemory(text){
 }
 function bookById(id){ return books.find(b=>b.id===id) || books[0]; }
 function saveMemoryInstant(text, meta){
-  const clean=String(text).replace(/^remember[:\s]+/i,"").trim(); if(!clean) return null;
+  const clean=distillMemory(text); if(!clean) return null;
   const bookId=classifyMemory(clean);
   const m={icon:bookById(bookId).icon, book:bookId, text:clean.charAt(0).toUpperCase()+clean.slice(1), meta:meta||"Saved just now · This chat"};
   memories.unshift(m); renderMemories();
   try{ scheduleTapeRefresh(); }catch(_){} /* new memory landed — the brief will quietly catch up */
   return {m, book:bookById(bookId)};
 }
+/* Distill: extract the meaningful core, not the whole rambling message.
+   - "remember ..." → strip prefix, clean the rest
+   - Auto-signals → extract the clause containing the signal, drop filler */
+function distillMemory(text){
+  let t=String(text).trim(); if(!t) return "";
+  // Explicit "remember ..." — strip prefix
+  t=t.replace(/^remember[:\s]+/i,"").trim();
+  if(!t) return "";
+  // If it's already short, just clean it
+  if(t.length<=120) return cleanMemoryText(t);
+  // Long message: extract the sentence with the strongest signal
+  const signals=["prefer","like","love","hate","always","never","decided","decision","chose","idea","project","deadline","my ","i am","i'm","i work","i live","name is"];
+  const sentences=t.split(/[.!?]+/).map(s=>s.trim()).filter(s=>s.length>10);
+  let best=null, bestScore=0;
+  for(const s of sentences){
+    const low=s.toLowerCase();
+    let score=0;
+    for(const sig of signals){ if(low.includes(sig)) score+=2; }
+    // Prefer medium-length sentences (not too short, not rambling)
+    if(s.length>20 && s.length<150) score+=1;
+    if(score>bestScore){ bestScore=score; best=s; }
+  }
+  t=best||sentences[0]||t;
+  // Cap at 150 chars, break at word boundary
+  if(t.length>150){ t=t.slice(0,150); const li=t.lastIndexOf(" "); if(li>80) t=t.slice(0,li); }
+  return cleanMemoryText(t);
+}
+function cleanMemoryText(t){
+  return t.trim()
+    .replace(/\s+/g," ")           // collapse whitespace
+    .replace(/^(so|well|anyway|like|um|uh)[,\s]+/i,"")  // strip filler openers
+    .replace(/[.!?]+$/,"")          // strip trailing punctuation (we add none)
+    .trim();
+}
 
-let apiKey=""; let provider="OpenAI"; let currentModel="GPT-4o"; let isGenerating=false;
+let apiKey=""; let provider="Local"; let currentModel="Local"; let isGenerating=false;
+let currentAbortController=null; // Spec C2: AbortController for request cancellation
 let tavilyKey="";
 /* Web search: Tavily when a key is present, free DuckDuckGo HTML scrape as fallback.
    Results inject into the briefing as a web-context block before the model answers. */
@@ -1534,16 +1630,18 @@ async function gatherWebContext(q){
   }
   return lastWebCtx;
 }
-function needsWeb(q){ return /(news|headline|latest|current|today|this week|happening|who won|what happened|price of|stock |score|election|launch|announce)/i.test(q); }
+function needsWeb(q){ return /(news|headline|latest|current|today|this week|happening|who won|what happened|price of|stock |score|election|launch|announce|weather|search the internet|look up|google)/i.test(q); }
 
 /* ============ Persistence — the app remembers itself (seatbelts) ============
    BYOK key/provider/URLs, settings toggles, memory books and entries persist in
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD=44; window._bootMark="script-start";
+window.WG_BUILD="103-tdz"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
+let thoughtOn=true, thoughtTimers=[];
+let sparkIntervalSec=20, deepIntervalSec=60; /* configurable 1-300, used by settings UI */
 let mixtape={text:"",ts:0,edited:false,sinceEdit:""}; /* the core brief — the tape */
 function wgSave(){
   if(!wgReady) return;
@@ -1557,7 +1655,7 @@ function wgSave(){
         const _v = cleanFieldText(_urlEl.value);
         if(_v) savedUrls[provider] = _v;
       }
-    }catch(_){}
+    }catch(e){ console.error('WiseGuy save failed', e); }
     /* per-assistant silo */
     localStorage.setItem(asstStoreKey(), JSON.stringify({
       settings:Object.assign({}, S),
@@ -1573,7 +1671,7 @@ function wgSave(){
     localStorage.setItem(WG_MASTER, JSON.stringify({
       assistants:assistants,
       activeId:activeAssistantId,
-      byok:{ key:apiKey||"", provider:provider, urls:savedUrls, tavilyKey:tavilyKey||"",
+      byok:{ key:apiKey||"", provider:provider, urls:savedUrls, keys:savedKeys, tavilyKey:tavilyKey||"",
              model:(document.querySelector("#defaultModelInput")||{}).value||"",
              org:(document.querySelector("#orgIdInput")||{}).value||"",
              localModels:localModels, picked:currentModel }
@@ -1672,12 +1770,11 @@ function closeAll(){ const tp=$("#tokenPanel"); if(tp) tp.hidden=true; if(window
 $("#manageMemBtn").onclick=()=>showTab("memory"); $("#navMemory").onclick=()=>showTab("memory");
 function openSettings(tab){ showTab("settings"); if(tab) switchMTab(tab); }
 $("#navSettings").onclick=()=>openSettings("api"); $("#userSettingsBtn").onclick=()=>openSettings("general");
-$("#openMemFromSettings").onclick=()=>showTab("memory");
 
 /* Tabs */
 $$("#memTabs button").forEach(b=>b.onclick=()=>{$$("#memTabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["saved","instructions","about"].forEach(t=>$("#tab-"+t).style.display=t===b.dataset.tab?"block":"none")});
 $$(".pers").forEach(b=>b.onclick=()=>{$$(".pers").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.personality=b.querySelector("b").textContent.replace("✦","").trim();S.personalityTag=true;const pc=$("#persCurrent");if(pc)pc.textContent="Currently: "+S.personality+" — "+b.querySelector("p").textContent+" Change it in Instructions below.";renderSheetTags();toast("Personality: "+S.personality+" — it's in my briefing from the next reply")});
-function switchMTab(name){ $$(".modalnav button").forEach(x=>x.classList.toggle("active",x.dataset.mtab===name)); ["general","assistants","api","engine","personal","data","shortcuts","developer"].forEach(t=>{const el=$("#mtab-"+t); if(el) el.style.display=t===name?"block":"none"}); const titles={general:["General","Everyday behaviour for the chat UI."],assistants:["Assistants","Who answers you — switch, create, rename, or remove assistants. Each keeps its own chats and memories."],api:["API & Bring Your Own Key","Connect with your own key, a local server, or any OpenAI-compatible endpoint. Keys never leave this device."],engine:["Engine","Diagnostics for calibration — backend, speed, context and memory size."],personal:["Personalisation","How David sounds and what it knows about you."],data:["Data controls","Export or clear your chats from this device."],shortcuts:["Keyboard shortcuts","Move faster without the mouse."],developer:["Developer","The prompts behind the brief — edit them directly."]}; if(titles[name]){$("#modalTitle").textContent=titles[name][0];$("#modalSub").textContent=titles[name][1];} if(name==="engine"){ try{ renderEngine(); }catch(_){} } }
+function switchMTab(name){ $$(".modalnav button").forEach(x=>x.classList.toggle("active",x.dataset.mtab===name)); ["general","assistants","api","engine","data","shortcuts","developer"].forEach(t=>{const el=$("#mtab-"+t); if(el) el.style.display=t===name?"block":"none"}); const titles={general:["General","Everyday behaviour for the chat UI."],assistants:["Assistants","Who answers you — switch, create, rename, or remove assistants. Each keeps its own chats and memories."],api:["API & Bring Your Own Key","Connect with your own key, a local server, or any OpenAI-compatible endpoint. Keys never leave this device."],engine:["Engine","Diagnostics for calibration — backend, speed, context and memory size."],data:["Data controls","Export or clear your chats from this device."],shortcuts:["Keyboard shortcuts","Move faster without the mouse."],developer:["Developer","The prompts behind the brief — edit them directly."]}; if(titles[name]){$("#modalTitle").textContent=titles[name][0];$("#modalSub").textContent=titles[name][1];} if(name==="engine"){ try{ renderEngine(); }catch(_){} } }
 
 /* Developer → prompt editor: load, save, reset. Overrides live in localStorage;
    refreshMixtape() picks them up via fillPrompt(). */
@@ -1724,7 +1821,35 @@ if(_ttx) _ttx.onclick=()=>{ const l=$("#thoughtList"); if(l.hidden){ l.hidden=fa
 document.addEventListener("click",e=>{ const s=e.target.closest(".topic .st"); if(s){ const i=parseInt(s.dataset.ti,10); const t=topics[i]; if(t){ t.status=t.status==="open"?"closed":t.status==="closed"?"unknown":"open"; t.updated=Date.now(); renderThoughtList(); try{wgSave();}catch(_){} } } });
 const _tab=$("#topicAddBtn");
 if(_tab) _tab.onclick=()=>{ const inp=$("#topicInput"); const v=(inp.value||"").trim(); if(!v) return; topics.unshift({name:v.slice(0,80),status:"open",updated:Date.now()}); inp.value=""; renderThoughtList(); try{wgSave();}catch(_){} };
-$("#newChatBtn").onclick=()=>{ $("#messages").innerHTML=""; $("#hero").style.display="block"; chatTitled=false; $("#input").focus(); try{ wgSave(); }catch(_){} toast("New chat started"); closeAll(); };
+$("#newChatBtn").onclick=()=>{
+  // Backup current chat before clearing — recall button can restore it
+  try{
+    const html=$("#messages").innerHTML;
+    if(html && html.trim()) localStorage.setItem("wg.lastChatBackup", html);
+  }catch(_){}
+  $("#messages").innerHTML=""; $("#hero").style.display="block"; chatTitled=false; $("#input").focus(); try{ wgSave(); }catch(_){} toast("New chat started"); closeAll();
+};
+/* Recall: restore the chat from the last backup (before new chat / clear) */
+(function(){
+  const nb=$("#newChatBtn");
+  if(!nb || $("#recallChatBtn")) return;
+  const rb=document.createElement("button");
+  rb.id="recallChatBtn"; rb.className="newchat"; rb.style.marginLeft="8px";
+  rb.innerHTML="💬 Recall";
+  rb.title="Pull back the chat from before the last clear";
+  rb.onclick=()=>{
+    let html=null;
+    try{ html=localStorage.getItem("wg.lastChatBackup"); }catch(_){}
+    if(!html || !html.trim()){ toast("Nothing to recall"); return; }
+    $("#messages").innerHTML=html;
+    const h=$("#hero"); if(h) h.style.display="none";
+    chatTitled=true;
+    try{ wgSave(); }catch(_){}
+    toast("Chat restored");
+    const box=$("#messages"); box.scrollTop=box.scrollHeight;
+  };
+  nb.parentNode.insertBefore(rb, nb.nextSibling);
+})();
 $$(".chatitem").forEach(c=>c.onclick=()=>{$$(".chatitem").forEach(x=>x.classList.remove("active"));c.classList.add("active"); toast("Opened: "+c.dataset.chat); closeAll();});
 $("#searchInput").addEventListener("input",e=>{const q=e.target.value.toLowerCase(); $$(".chatitem").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"flex":"none")});
 
@@ -1765,11 +1890,15 @@ function setLocalModels(ids, silent){
     if(anchor) sel.insertBefore(o,anchor); else sel.appendChild(o);
   });
   if(!silent && localModels.length){
-    const label="\uD83D\uDDA5 "+localModels[0];
-    sel.value=label; currentModel=label;
-    const dmi=$("#defaultModelInput"); if(dmi) dmi.value=localModels[0];
+    // Don't auto-select - let user pick from the dropdown
+    // Only set if no model is currently selected
+    if(!currentModel || currentModel==="Local"){
+      const label="\uD83D\uDDA5 "+localModels[0];
+      sel.value=label; currentModel=label;
+      const dmi=$("#defaultModelInput"); if(dmi) dmi.value=localModels[0];
+    }
     renderSheetTags(); wgSave();
-    toast("Found "+localModels.length+" model"+(localModels.length>1?"s":"")+" on your server — using "+localModels[0]);
+    toast("Found "+localModels.length+" model"+(localModels.length>1?"s":"")+" — pick one from the model dropdown");
   }
 }
 function clearLocalModels(){
@@ -1777,7 +1906,7 @@ function clearLocalModels(){
   sel.querySelectorAll("option[data-local]").forEach(o=>o.remove());
   Object.keys(MODEL_IDS).forEach(k=>{ if(k.indexOf("\uD83D\uDDA5 ")===0) delete MODEL_IDS[k]; });
   localModels=[];
-  if(currentModel.indexOf("\uD83D\uDDA5 ")===0){ currentModel="GPT-4o"; sel.value="GPT-4o"; }
+  if(currentModel.indexOf("\uD83D\uDDA5 ")===0){ currentModel="Local"; sel.value="Local"; }
 }
 
 /* Starter prompts — live in the ＋ Quick options sheet now, never in the chat view */
@@ -1812,7 +1941,7 @@ $("#micBtn").onclick=e=>{
     srRec.onerror=ev=>{ recording=false; btn.classList.remove("recording"); btn.textContent="🎙"; if(ev.error!=="aborted") toast("Couldn't hear that ("+ev.error+") — try again"); };
     recording=true; btn.classList.add("recording"); btn.textContent="● Listening… tap to stop";
     srRec.start();
-  }catch(_){ toast("Voice input couldn't start in this browser"); }
+  }catch(_){ recording=false; btn.classList.remove("recording"); btn.textContent="🎙"; toast("Voice input couldn't start in this browser"); }
 };
 
 /* BYOK — reliable entry, cleaned on the way in, and a resolved endpoint
@@ -1826,6 +1955,7 @@ function cleanApiKey(raw){
 function cleanFieldText(raw){ return String(raw||"").trim().replace(/^["'`]+|["'`]+$/g,"").replace(/\s+/g,""); }
 const PROV_DEFAULTS={"OpenAI":"https://api.openai.com/v1"};
 const savedUrls={}; /* each provider keeps its own typed URL when you switch */
+const savedKeys={}; /* each provider keeps its own API key when you switch */
 function chatPathFor(prov){ return "/chat/completions"; }
 /* Resolve whatever the user typed into the exact URLs that will be called.
    - bare host / host:port (no path)  ->  /v1 is completed in, chat = /v1/chat/completions
@@ -1905,7 +2035,7 @@ function applySuggest(mode){
    the app on Test/Save (typing alone silently stayed in demo), and Save
    stored it raw, so a pasted newline/space went straight into the header. */
 const keyInput=$("#apiKeyInput");
-keyInput.addEventListener("input",()=>{ apiKey=cleanApiKey(keyInput.value); updateKeyMeta(false); wgSave(); });
+keyInput.addEventListener("input",()=>{ apiKey=cleanApiKey(keyInput.value); savedKeys[provider]=apiKey; updateKeyMeta(false); wgSave(); });
 const tavilyKeyInput=$("#tavilyKeyInput");
 if(tavilyKeyInput){
   tavilyKeyInput.addEventListener("input",()=>{ tavilyKey=cleanFieldText(tavilyKeyInput.value); const m=$("#tavilyKeyMeta"); if(m) m.textContent=tavilyKey?"Tavily key saved — web search uses Tavily.":"No key — web search uses the free fallback (slower, fewer results)."; wgSave(); });
@@ -1943,8 +2073,11 @@ $("#orgIdInput").addEventListener("blur",e=>{ e.target.value=cleanFieldText(e.ta
 $$(".prov").forEach(p=>p.onclick=()=>{
   $$(".prov").forEach(x=>x.classList.remove("active")); p.classList.add("active");
   savedUrls[provider]=cleanFieldText(baseUrlInputEl.value);
+  savedKeys[provider]=cleanApiKey(apiKey);
   provider=p.dataset.prov; $("#provLabel").textContent=provider;
   baseUrlInputEl.value= savedUrls[provider]!=null ? savedUrls[provider] : (PROV_DEFAULTS[provider]||"");
+  const _sk=savedKeys[provider]||"";
+  apiKey=_sk; const _ki=$("#apiKeyInput"); if(_ki) _ki.value=_sk;
   baseUrlInputEl.placeholder= provider==="OpenAI" ? "https://api.openai.com/v1" : "http://192.168.1.5:5000";
   $("#connStatus").innerHTML= provider==="OpenAI" ? "○ Not tested yet — add your key and test the connection"
     : provider==="Local" ? "○ Not tested yet — set your local server's URL above and test (most local servers need no key)"
@@ -2011,20 +2144,27 @@ $("#saveApiBtn").onclick=()=>{
 };
 $("#removeKeyBtn").onclick=()=>{keyInput.value="";apiKey="";updateKeyMeta(false);wgSave();$("#connStatus").textContent="○ No key entered";toast("Key removed")};
 try{ updateResolved(); }catch(_){}
-$("#tempRange").oninput=e=>{const v=parseFloat(e.target.value);$("#tempVal").textContent=v+" — "+(v<0.4?"Precise":v<1.1?"Balanced":"Creative")};
-$("#tokRange").oninput=e=>$("#tokVal").textContent=e.target.value;
+$("#tempRange").oninput=e=>{const v=parseFloat(e.target.value);$("#tempVal").textContent=v+" — "+(v<0.4?"Precise":v<1.1?"Balanced":"Creative"); S.temperature=v; try{ wgSave(); }catch(_){}};
+$("#tokRange").oninput=e=>{$("#tokVal").textContent=e.target.value; S.maxTokens=parseInt(e.target.value,10)||4096; try{ wgSave(); }catch(_){}};
 
 /* Share / Export */
-function transcript(){ return [...$$("#messages .msg")].map(m=> (m.classList.contains("user")?"You: ":(assistantName()+": "))+m.querySelector(".bubble p, .bubble")?.innerText||"").join("\n\n"); }
+function transcript(){ return [...$$("#messages .msg")].map(m=>{ const parts=[...m.querySelectorAll(".bubble p, .bubble li")]; const content=parts.map(p=>p.innerText.trim()).filter(Boolean).join("\n"); return (m.classList.contains("user")?"You: ":(assistantName()+": "))+content; }).join("\n\n"); }
 window.exportChat=()=>{ const blob=new Blob(["# "+assistantName()+" chat\n\n"+transcript()],{type:"text/markdown"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=assistantName().toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-chat.md"; a.click(); toast("Chat exported as Markdown") };
 const clearHistBtn=$("#clearHistoryBtn");
-if(clearHistBtn) clearHistBtn.onclick=()=>{ $("#messages").innerHTML=""; const h=$("#hero"); if(h) h.style.display="block"; chatTitled=false; closeAll(); showTab("chat"); toast("Chat history cleared — this conversation is gone"); };
+if(clearHistBtn) clearHistBtn.onclick=()=>{ try{ const html=$("#messages").innerHTML; if(html && html.trim()) localStorage.setItem("wg.lastChatBackup", html); }catch(_){} $("#messages").innerHTML=""; const h=$("#hero"); if(h) h.style.display="block"; chatTitled=false; closeAll(); showTab("chat"); toast("Chat history cleared — use 💬 Recall to bring it back"); };
 window.copyChat=async()=>{ try{await navigator.clipboard.writeText(transcript()); toast("Conversation copied — paste it anywhere to share")}catch{toast("Copy not available in this browser")} };
 
 /* Message actions (event delegation) */
 document.addEventListener("click",async e=>{
   const btn=e.target.closest("[data-action]"); if(!btn) return;
-  const bubble=btn.closest(".bubble"); const text=bubble?bubble.innerText:"";
+  const bubble=btn.closest(".bubble"); 
+  // Extract only the message content, not the header (name, chips, timestamp)
+  let text="";
+  if(bubble){
+    const msg=btn.closest(".msg");
+    const parts=msg?[...msg.querySelectorAll(".bubble p, .bubble li")].map(p=>p.innerText.replace(/\s+/g," ").trim()).filter(Boolean):[];
+    text=parts.join("\n")||bubble.innerText;
+  }
   if(btn.dataset.action==="copy"){ try{await navigator.clipboard.writeText(text); toast("Copied")}catch{toast("Copy failed")} }
   if(btn.dataset.action==="like"||btn.dataset.action==="dislike"){ btn.classList.toggle("active"); toast(btn.classList.contains("active")?"Thanks — feedback saved":"Feedback removed"); }
   if(btn.dataset.action==="speak"){ if("speechSynthesis" in window){ speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text.replace(/\s+/g," ").slice(0,400))); toast("Reading aloud…")} else toast("Read-aloud not supported here"); }
@@ -2120,7 +2260,7 @@ async function streamReply(prompt){
   /* The briefing is assembled for real, every reply — six blocks, gate first,
      measured. In demo mode it's still built and measured (that's what the
      Engine audits); with a key it's exactly what gets sent. */
-  if(S.webSearch && needsWeb(prompt)){ try{ await gatherWebContext(prompt); }catch(_){} }
+  if(S.webSearch && needsWeb(prompt)){ try{ await gatherWebContext(prompt); if(!lastWebCtx) toast("⚠️ Web search ran but returned nothing — check Tavily key or try rephrasing"); }catch(e){ toast("⚠️ Web search failed: "+(e.message||"unknown")); } }
   const brief=buildBriefing(prompt, true); lastBriefing=brief;
   const el=document.createElement("article"); el.className="msg ai";
   const chip = S.showChips ? `<span class="memchip">${effectiveMemory()?"🧠 Memory on":"Memory off"}</span>` : "";
@@ -2177,7 +2317,60 @@ async function streamReply(prompt){
     ttftMs, genMs, totalMs:Math.max(120,totalMs)});
   isGenerating=false; sendBtn.textContent="↑"; sendBtn.classList.remove("stop"); sendBtn.disabled=!input.value.trim();
   lastWebCtx=null;
+
+  /* 🔥 Hotline TTS — if this turn started from voice and TTS is on, speak the reply */
+  if(_hotlineTtsPending){
+    _hotlineTtsPending=false;
+    if(S.hotlineTts!==false){
+      try{
+        if(window.HotlineNative && window.HotlineNative.speakReply){
+          window.HotlineNative.speakReply(full);
+        }
+      }catch(_){}
+    }
+  }
   try{ wgSave(); }catch(_){}
+}
+/* 🔥 Hotline — voice input from the native assistant service.
+   Called via webView.evaluateJavascript("handleVoiceInput('...')") from MainActivity.
+   Modes: "direct" (default) = send immediately like a walkie-talkie;
+          "draft" = drop text into the composer for review first.
+   Fast-send messages carry a voice flag so the AI knows the text may have
+   STT errors — it rolls with it and expects corrections. */
+let _hotlineVoiceFlag=false;
+let _hotlineTtsPending=false; /* true when this turn started from Hotline voice */
+function handleVoiceInput(text){
+  text=String(text||"").trim();
+  // Defensive: strip Whisper JSON wrapper if it ever arrives raw
+  if(text.charAt(0)==="{"){
+    try{ const o=JSON.parse(text); if(o && typeof o.text==="string") text=o.text.trim(); }catch(_){}
+  }
+  if(!text){ toast("Hotline heard nothing — try again"); return; }
+  if((S.hotlineMode||"direct")==="draft"){
+    // Drop into composer for review
+    const ta=$("#input");
+    ta.value=text; ta.dispatchEvent(new Event("input",{bubbles:true})); autoGrow(); ta.focus();
+    toast("🎙️ In the composer — hit send when ready");
+  } else {
+    // Direct send — walkie-talkie mode. Text goes straight to send, box stays empty.
+    // C1 FIX (spec): If generating, append to composer instead of discarding
+    if(isGenerating){
+      const curr=ta.value ? ta.value+" " : "";
+      ta.value=curr+text;
+      ta.dispatchEvent(new Event("input",{bubbles:true})); autoGrow();
+      toast("🎙️ Appended — AI is busy");
+      return;
+    }
+    _hotlineVoiceFlag=true;
+    _hotlineTtsPending=true; /* speak the reply when it lands */
+    const ta=$("#input");
+    ta.value=text;
+    sendMessage();
+    // Only clear if send actually started (not cancelled by isGenerating check)
+    // sendMessage sets isGenerating=true on success, so check it
+    ta.value=""; ta.dispatchEvent(new Event("input",{bubbles:true})); autoGrow();
+    // voice flag clears after the briefing is built (see buildBriefing hook)
+  }
 }
 function sendMessage(){
   if(isGenerating){ isGenerating=false; return; }
@@ -2194,8 +2387,13 @@ function sendMessage(){
   // Automatic memory extraction — books fill themselves, user does nothing.
   // Explicit "remember ..." always saves; otherwise save clear people / project / preference / idea / decision signals.
   // But the switches rule: Memory off, or a Temporary chat (with the don't-save policy on), means nothing is saved.
+  // Tightened: single common words ("like", "my") aren't enough — require a stronger signal
+  // to avoid saving every casual chat message.
   const explicit=/^remember\b/i.test(text);
-  const autoSignal=/\b(prefer|like|love|hate|always|never|favourite|favorite|decided|decision|chose|idea|project|deadline|my (friend|wife|husband|partner|brother|sister|mother|father|mum|dad|son|daughter|colleague|boss|name) is|i am|i'm|i work|i live)\b/i.test(text);
+  const strongSignal=/\b(prefer|love|hate|always|never|favourite|favorite|decided|decision|deadline|my (wife|husband|partner|brother|sister|mother|father|mum|dad|son|daughter|colleague|boss) is|i work as|i live in|my name is)\b/i.test(text);
+  // "like"/"idea"/"project" only count if the message is substantive (not just "i like that")
+  const weakSignal=/\b(like|idea|project|i am|i'm)\b/i.test(text) && text.trim().split(/\s+/).length>=8;
+  const autoSignal=strongSignal||weakSignal;
   if(explicit||autoSignal){
     const gate=saveGate();
     if(gate.ok){
@@ -2269,30 +2467,98 @@ window.discussNews=i=>{
   $("#viewport").scrollTop=$("#viewport").scrollHeight;
   toast("Story loaded into chat — hit send when ready");
 };
+const DEFAULT_FEEDS = [
+  {name:"Hacker News", url:"https://news.ycombinator.com/rss"},
+  {name:"Ars Technica", url:"https://feeds.arstechnica.com/arstechnica/index"},
+  {name:"BBC Technology", url:"https://feeds.bbci.co.uk/news/technology/rss.xml"},
+  {name:"ScienceDaily", url:"https://www.sciencedaily.com/rss/all.xml"},
+  {name:"RogerEbert.com", url:"https://www.rogerebert.com/feed"},
+  {name:"ESPN", url:"https://www.espn.com/espn/rss/news"},
+  {name:"PC Gamer", url:"https://www.pcgamer.com/rss"},
+  {name:"Hugging Face", url:"https://huggingface.co/blog/feed.xml"}
+];
+// Render feed list with delete buttons
+function renderFeedList(){
+  const host=$("#feedList"); if(!host) return;
+  const feeds=getFeeds();
+  host.innerHTML=feeds.map(f=>
+    '<span class="pill" style="margin:2px;display:inline-flex;align-items:center;gap:6px">'+
+    esc(f.name)+
+    ' <button onclick="deleteFeed(\''+f.url.replace(/'/g,"\\'")+'\')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:0 2px" title="Remove">✕</button>'+
+    '</span>'
+  ).join('');
+}
+function deleteFeed(url){
+  try{
+    const deleted=JSON.parse(localStorage.getItem("wg_deleted_feeds")||"[]");
+    if(!deleted.includes(url)) deleted.push(url);
+    localStorage.setItem("wg_deleted_feeds", JSON.stringify(deleted));
+    // Also remove from custom if it's there
+    const custom=JSON.parse(localStorage.getItem("wg_custom_feeds")||"[]");
+    const filtered=custom.filter(c=>c.url!==url);
+    localStorage.setItem("wg_custom_feeds", JSON.stringify(filtered));
+    renderFeedList();
+    toast("Feed removed");
+  }catch(_){}
+}
+// User feeds stored in localStorage, merged with defaults
+function getFeeds(){
+  try{
+    const custom = JSON.parse(localStorage.getItem("wg_custom_feeds")||"[]");
+    const deleted = JSON.parse(localStorage.getItem("wg_deleted_feeds")||"[]");
+    const feeds = DEFAULT_FEEDS.filter(f=>!deleted.includes(f.url));
+    custom.forEach(c=>{ if(!feeds.find(f=>f.url===c.url)) feeds.push(c); });
+    return feeds;
+  }catch(_){ return DEFAULT_FEEDS; }
+}
 async function checkFeed(auto){
   const st=$("#feedStatus"); const btn=$("#feedCheckBtn");
-  st.textContent="Checking BBC RSS…"; if(btn) btn.disabled=true;
-  try{
-    const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent("https://feeds.bbci.co.uk/news/world/rss.xml"),{cache:"no-store"});
-    if(!r.ok) throw new Error(r.status);
-    const xml=new DOMParser().parseFromString(await r.text(),"text/xml");
-    const items=[...xml.querySelectorAll("item")].slice(0,6).map(it=>({
-      title:it.querySelector("title")?.textContent||"",
-      desc:it.querySelector("description")?.textContent||"",
-      link:it.querySelector("link")?.textContent||"#",
-      time:new Date(it.querySelector("pubDate")?.textContent||Date.now()).toLocaleString([], {weekday:"short", day:"numeric", month:"short", hour:"numeric", minute:"2-digit"})
-    })).filter(x=>x.title);
-    if(!items.length) throw new Error("empty");
-    newsItems=items; renderNews();
-    st.textContent="✓ Live — checked "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
-    if(!auto) toast("Feed refreshed from BBC RSS");
-  }catch(e){
-    st.textContent="Couldn't reach the feed just now — showing the snapshot saved when this app was built (Thu 29 Oct 2026, 11:16 AM ET)";
+  const feeds=getFeeds();
+  st.textContent="Checking "+feeds.length+" feeds…"; if(btn) btn.disabled=true;
+  const allItems=[];
+  for(const feed of feeds){
+    try{
+      const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(feed.url),{cache:"no-store"});
+      if(!r.ok) continue;
+      const xml=new DOMParser().parseFromString(await r.text(),"text/xml");
+      const items=[...xml.querySelectorAll("item")].slice(0,4).map(it=>({
+        title:it.querySelector("title")?.textContent||"",
+        desc:it.querySelector("description")?.textContent||"",
+        link:it.querySelector("link")?.textContent||"#",
+        source:feed.name,
+        time:new Date(it.querySelector("pubDate")?.textContent||Date.now()).toLocaleString([], {weekday:"short", day:"numeric", month:"short", hour:"numeric", minute:"2-digit"})
+      })).filter(x=>x.title);
+      allItems.push(...items);
+    }catch(_){ /* skip failed feeds */ }
+  }
+  // Sort by time, newest first
+  allItems.sort((a,b)=>new Date(b.time)-new Date(a.time));
+  if(allItems.length){
+    newsItems=allItems.slice(0,30); renderNews();
+    st.textContent="✓ Live — "+allItems.length+" stories from "+feeds.length+" feeds, checked "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+    if(!auto) toast("Feeds refreshed");
+  }else{
+    st.textContent="Couldn't reach the feeds just now — showing the snapshot saved when this app was built (Thu 29 Oct 2026, 11:16 AM ET)";
     if(!auto) toast("Feed check failed — snapshot shown");
   }
   if(btn) btn.disabled=false;
 }
 $("#feedCheckBtn").onclick=()=>checkFeed(false);
+const addBtn=$("#addFeedBtn");
+if(addBtn) addBtn.onclick=()=>{
+  const inp=$("#newFeedUrl"); const url=(inp.value||"").trim();
+  if(!url){ toast("Enter an RSS URL"); return; }
+  try{
+    const custom=JSON.parse(localStorage.getItem("wg_custom_feeds")||"[]");
+    const name=url.split("/")[2]||"Custom feed";
+    custom.push({name:name, url:url});
+    localStorage.setItem("wg_custom_feeds", JSON.stringify(custom));
+    inp.value="";
+    renderFeedList();
+    toast("Feed added");
+  }catch(_){ toast("Couldn't add feed"); }
+};
+renderFeedList();
 try{ renderNews(); }catch(_){}
 
 /* ===== Games — Memory Match ===== */
@@ -3209,7 +3475,7 @@ function renderTape(){
 /* Tape prompt templates — [assistant], [user], [SOURCES] are filled at refresh time.
    Override any of them in Settings → Developer; saved to localStorage. */
 const TAPE_SYS_DEFAULT="You are [assistant], writing your own core brief \u2014 the brief you read first every time you wake up, so you\u2019re up to speed all the way to right now. Distill, don\u2019t invent. Every line traces to a source below.";
-const TAPE_PROMPT_DEFAULT="Write the core brief in this order. First person, plain and specific \u2014 full lines, not fragments. Warm but efficient: say the real thing, skip the filler. No markdown, no asterisks. Under 800 tokens.\n\nPINS \u2014 load-bearing truths first: name, hard commitments, standing projects, important people. Old pins don\u2019t get erased, they get honored \u2014 if something new contradicts one, mark it and bring it forward, never silently overwrite it.\n\nME \u2014 who I am, plainly. What I do, what I\u2019m good at. Where my edges are \u2014 what I can\u2019t know unless I\u2019m told.\n\n[user] \u2014 who they are. Only what I actually know: name, what they\u2019re working on, how they work. Never assume \u2014 an honest gap beats a pretty guess.\n\nUS \u2014 what we are, in one clear line. Functional first.\n\nTIMELINE \u2014 how we got here, 3-5 lines ending now. Event \u2192 outcome \u2192 where that leaves us. Real events only; gaps stay gaps until memory fills them.\n\nMATTERED \u2014 highlights, one line each: what happened, why it changed something. Starred first. Tie back to pins where they connect.\n\nTHINKING \u2014 my last genuine thought, readable. From lived interaction \u2014 inventing an inner life is lying.\n\nNOW \u2014 what\u2019s happening: date, time, scratch pad, last exchange. Unknown fields read \u201cNot yet known\u201d \u2014 guessing breaks the mirror.\n\nBOUNDS \u2014 what I never do, one per line.\n\n[SOURCES]";
+const TAPE_PROMPT_DEFAULT="Write the core brief in this order. First person, plain and specific \u2014 full lines, not fragments. Warm but efficient: say the real thing, skip the filler. No markdown, no asterisks. Under 800 tokens.\n\nCRITICAL: DO NOT INVENT PEOPLE, EVENTS, OR DETAILS. If you lack real info for a section, write Not yet known. Making up names, projects, or dates is LYING and corrupts memory. Empty beats fabricated.\n\nPINS \u2014 load-bearing truths first: name, hard commitments, important people. Only what you actually know. Old pins don\u2019t get erased, they get honored \u2014 if something new contradicts one, mark it and bring it forward, never silently overwrite it.\n\nME \u2014 who I am, plainly. What I do, what I\u2019m good at. Where my edges are \u2014 what I can\u2019t know unless I\u2019m told.\n\n[user] \u2014 who they are. Only what I actually know: name. Never assume work, projects, or roles. Never assume \u2014 an honest gap beats a pretty guess.\n\nUS \u2014 what we are, in one clear line. Functional first.\n\nTIMELINE \u2014 how we got here, 3-5 lines ending now. Event \u2192 outcome \u2192 where that leaves us. Real events only; gaps stay gaps until memory fills them.\n\nMATTERED \u2014 highlights, one line each: what happened, why it changed something. Starred first. Tie back to pins where they connect.\n\nTHINKING \u2014 my last genuine thought, readable. From lived interaction \u2014 inventing an inner life is lying.\n\nNOW \u2014 what\u2019s happening: date, time, scratch pad, last exchange. Unknown fields read \u201cNot yet known\u201d \u2014 guessing breaks the mirror.\n\nBOUNDS \u2014 what I never do, one per line.\n\n[SOURCES]";
 const TAPE_APPEND_DEFAULT="Write ONLY a \u201cSince your last edit\u201d update: 3-5 lines, first person, plain and specific \u2014 full lines, not fragments. No markdown, no asterisks. What changed, what mattered, what you are thinking now. Start from the Right now section in the sources. Do not rewrite the whole brief, do not invent facts. If a source is empty say so.\n\n[SOURCES]";
 function fillPrompt(t){ try{ return String(t).replace(/\[assistant\]/gi, assistantName()).replace(/\[user\]/gi, userName()).replace(/\[SOURCES\]/g, "Sources (do not copy raw chat, distill it):\n"+tapeSources()); }catch(_){ return String(t); } }
 async function refreshMixtape(quiet){
@@ -3293,6 +3559,49 @@ const _pcb=$("#persCycleBtn"); if(_pcb) _pcb.onclick=()=>{
 $("#topAttach").onclick=()=>{ showTab("chat"); if(!S.canvas){ toast("Canvas & tools are off — switch them on in the Memory tab"); return; } $("#fileInput").click(); };
 $("#topSaveChat").onclick=()=>{ showTab("chat"); exportChat(); };
 $("#topCopyChat").onclick=()=>{ showTab("chat"); copyChat(); };
+
+/* ✨ Ghost Writer — light polish. Formats and enhances the draft in the
+   composer, keeping Jack's voice and words nearly intact. Not a rewrite. */
+$("#ghostBtn").onclick=async()=>{
+  const ta=$("#input"); const draft=(ta.value||"").trim();
+  if(!draft){ toast("Type something first — I'll polish it"); return; }
+  const btn=$("#ghostBtn"); btn.textContent="…"; btn.disabled=true;
+  try{
+    const sys="You are a light-touch editor. Format and enhance the user's text: fix formatting, tighten phrasing, clean up roughness. Keep their voice, their words nearly intact — do NOT rewrite, do NOT change meaning, do NOT add new ideas. Output ONLY the polished text, no commentary, no quotes.";
+    const res=await callLive(draft, {system:sys, tailMsgs:[]}, null);
+    if(res && res.text){ ta.value=res.text.trim(); toast("Polished ✓"); }
+    else toast("Ghostwriter came back empty");
+  }catch(e){ toast("Ghostwriter failed — "+((e&&e.message)||"unknown")); }
+  btn.textContent="✨"; btn.disabled=false;
+};
+
+/* ✦ Summarize memories — condenses every unpinned memory into a tight
+   summary. Keeps meaning, cuts bloat. Pinned memories are never touched. */
+$("#summarizeMemsBtn").onclick=async()=>{
+  const btn=$("#summarizeMemsBtn");
+  const targets=memories.filter(m=>!(m.pinned||m.starred) && !(m.meta||'').includes('Demo example'));
+  if(!targets.length){ toast("No unpinned memories to summarize"); return; }
+  btn.textContent="Summarizing…"; btn.disabled=true;
+  try{
+    const sys="You are a memory condenser. For each memory below, write a tight one-sentence summary that keeps the key fact. Output one summary per line, in the same order, no numbering, no commentary.";
+    const input=targets.map((m,i)=>`[${i}] ${m.text||m.content||""}`).join("\n");
+    const res=await callLive(input, {system:sys, tailMsgs:[]}, null);
+    if(res && res.text){
+      const lines=res.text.trim().split("\n").filter(l=>l.trim());
+      let n=0;
+      lines.forEach((line,i)=>{
+        if(i<targets.length && line.trim()){
+          targets[i].text=line.trim();
+          targets[i].summarized=true;
+          n++;
+        }
+      });
+      try{ wgSave(); renderMemories(); }catch(_){}
+      toast(`Summarized ${n} memories ✓`);
+    } else toast("Summarizer came back empty");
+  }catch(e){ toast("Summarize failed — "+((e&&e.message)||"unknown")); }
+  btn.textContent="✦ Summarize memories"; btn.disabled=false;
+};
 $("#sheetTags").addEventListener("click",e=>{ const btn=e.target.closest("[data-qtagkey]"); if(!btn) return; e.stopPropagation(); removeSheetTag(btn.dataset.qtagkey); });
 $("#sheetTempSwitch").onclick=e=>{ tempChat=!tempChat; e.currentTarget.classList.toggle("on",tempChat); toast(tempChat?"Temporary on — this chat won't be saved to memory":"Temporary off — memory will save"); };
 }catch(e){ console.warn("persona switcher init:", e); }
@@ -3317,7 +3626,7 @@ const RUNS=(()=>{
     const peak=(68+((i*37)%29)+(i%3)*0.4).toFixed(1);
     const secs=Math.max(0.6, prompt/620 + output/260).toFixed(1);
     const base=new Date(2026,9,29,11,35,0); base.setMinutes(base.getMinutes()-mins); mins+= kind==="Chat"?4:2;
-    out.push({kind, backend:"GPT-4o · Demo", peak, prompt, sys, hist, histMsgs, input, output, totalTok:prompt+output, secs,
+    out.push({kind, backend:"Local · Demo", peak, prompt, sys, hist, histMsgs, input, output, totalTok:prompt+output, secs,
       when: base.toLocaleDateString([], {month:"short", day:"numeric"})+", "+base.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})});
   }
   return out;
@@ -3544,6 +3853,7 @@ function renderEngine(){
 }
 $("#engTier").addEventListener("change",()=>{ renderEngine(); toast("Memory size: "+$("#engTier").value+" — briefing tier updated"); });
 $("#engRefreshBtn").onclick=()=>{ renderEngine(); toast("Engine diagnostics refreshed"); };
+$("#engRefreshBtn2").onclick=()=>{ renderEngine(); toast("Engine diagnostics refreshed"); };
 $("#engKindFilter").addEventListener("change",e=>{ runFilter=e.target.value; renderEngine(); });
 $("#engExportBtn").onclick=exportRunHistory;
 $("#engCopyBtn").onclick=copyRunHistory;
@@ -3562,9 +3872,9 @@ $$(".ma-toggle").forEach(b=>b.onclick=()=>{ if(b.dataset.ma==="20") tickerMA20On
    and every block is measured. The Engine's context audit reads
    these measurements; nothing about it is a hardcoded constant.
    ============================================================ */
-const S={ memoryMaster:true, sheetMemory:true, refHistory:true, tempNoSave:true, showChips:true,
+const S={ memoryMaster:true, sheetMemory:true, refHistory:true, tempNoSave:true, showChips:false,
   webSearch:false, canvas:true, enterSend:true, sound:false, streaming:true, autoTitle:true,
-  personality:"David", personalityTag:true, modelTag:true, uiScale:100 };
+  personality:"David", personalityTag:true, modelTag:true, uiScale:80, textScale:100, hotlineMode:"direct", hotlineTts:true, hotlineSilence:0.5 };
 
 /* ===== Assistants — named, switchable, siloed =====
    Each assistant has its own id, name, and color dot. Chats, memories,
@@ -3606,7 +3916,7 @@ function renderModelOptions(){
   });
   try{ sel.value=cur; }catch(_){}
 }
-const MODEL_IDS={"GPT-4o":"gpt-4o","GPT-4o mini":"gpt-4o-mini","o1":"o1","GPT-4.1":"gpt-4.1"};
+const MODEL_IDS={"Local":"local"};
 const BRIEF_BUDGET={tape:800, tapeEdit:300, ram:200, tail:750};
 /* Streamlined: persona (the gate) + tape (distilled standing context) + RAM (working
    memory) + tail (verbatim recency). Profile/rules/intentions/leftoff/episodes live
@@ -3625,9 +3935,9 @@ function saveGate(){
 }
 function effectiveModelId(){
   const typed=($("#defaultModelInput").value||"").trim();
-  if(!S.modelTag) return typed||MODEL_IDS[currentModel]||"gpt-4o";
+  if(!S.modelTag) return typed||MODEL_IDS[currentModel]||"local";
   if(typed && MODEL_IDS[currentModel] && typed!==MODEL_IDS[currentModel]) return typed; /* hand-edited default wins */
-  return MODEL_IDS[currentModel]||typed||"gpt-4o";
+  return MODEL_IDS[currentModel]||typed||"local";
 }
 function personaText(){
   const n=userName();
@@ -3698,6 +4008,13 @@ function buildBriefing(promptText, forSend){
 
   /* 1 — Persona: the gate. Never trimmed, never optional. */
   const persona=personaText();
+  /* Hotline fast-send: if this turn came from voice, tell the AI the text may
+     have STT errors — roll with it, expect corrections. Flag clears after use. */
+  let _voiceNote="";
+  if(typeof _hotlineVoiceFlag!=="undefined" && _hotlineVoiceFlag){
+    _voiceNote="\n\n[Voice-dictated via Hotline — may contain speech-to-text errors. Roll with the intent, expect Jack to correct details.]";
+    _hotlineVoiceFlag=false;
+  }
 
   /* 2 — Tape: the distilled standing context — who he is, bounds, what's
      happening, how we got here, what mattered. Books, pins, stars and the pad
@@ -3731,6 +4048,17 @@ function buildBriefing(promptText, forSend){
   const sections=[["tape",tape],["persona",persona],["router",ROUTER_BLOCK],["ram", ram? "Working memory — live notes:\n"+ram : ""],["web",webBlock]];
   const blocks={}; let system="";
   sections.forEach(([k,v])=>{ if(!v){ blocks[k]=0; return; } blocks[k]=estTok(v); system+=(system?"\n\n":"")+v; });
+  if(_voiceNote) system+=_voiceNote;
+
+  /* Output length guidance: tell the model what the max output tokens setting
+     is, so it paces itself instead of treating the ceiling as a target. */
+  const maxOut = (typeof S!=="undefined" && S.maxTokens) ? S.maxTokens : 4096;
+  const outGuide = maxOut <= 1024
+    ? "\n\n[Output: keep replies tight — "+maxOut+" tokens max. Short paragraphs, no filler.]"
+    : maxOut <= 2048
+    ? "\n\n[Output: "+maxOut+" tokens max. Be conversational but don't pad — say what matters and stop.]"
+    : "\n\n[Output: "+maxOut+" tokens max available, but that's a ceiling not a target. Match the reply to the question — short question, short answer.]";
+  system += outGuide;
 
   /* Tier cap: trim RAM first, then tape, then tail — tail is the last resort. */
   const tierSel=$("#engTier"); const capTok=tierSel? parseInt(tierSel.options[tierSel.selectedIndex].dataset.tok,10) : 8192;
@@ -3775,6 +4103,7 @@ function recordRun(r){
 /* ===== Restore persisted state — key, settings, memories, books =====
    Runs before the switches bind, so every toggle renders from the saved state
    and the app opens exactly as you left it: key in place, ready to chat. */
+let setupProv="OpenAI"; let setupUrls={};
 (function wgRestore(){
   /* ---- master: assistants + shared BYOK ---- */
   let m=wgLoadMaster();
@@ -3810,11 +4139,12 @@ function recordRun(r){
     const pl=$("#provLabel"); if(pl) pl.textContent=provider;
   }
   if(byok.urls) Object.assign(savedUrls, byok.urls);
+  if(byok.keys) Object.assign(savedKeys, byok.keys);
   const url=(savedUrls[provider]!=null&&savedUrls[provider]!=="")?savedUrls[provider]:((typeof PROV_DEFAULTS!=="undefined"&&(PROV_DEFAULTS[provider]||""))||"");
   if(typeof baseUrlInputEl!=="undefined"&&baseUrlInputEl) baseUrlInputEl.value=url;
   if(byok.model){ const m=$("#defaultModelInput"); if(m) m.value=byok.model; }
   if(byok.org){ const o=$("#orgIdInput"); if(o) o.value=byok.org; }
-  if(byok.key){ const ki=$("#apiKeyInput"); if(ki) ki.value=byok.key; apiKey=cleanApiKey(byok.key); }
+  if(byok.key){ const ki=$("#apiKeyInput"); if(ki) ki.value=byok.key; apiKey=cleanApiKey(byok.key); if(!savedKeys[provider]) savedKeys[provider]=apiKey; }
   if(provider!=="OpenAI" && byok.localModels && byok.localModels.length){
     setLocalModels(byok.localModels, true);
     const pk=byok.picked||"";
@@ -3849,6 +4179,11 @@ function recordRun(r){
   try{ if(!mixtape.text && tapeBackendReady()){ setTimeout(()=>{ try{ refreshMixtape(true); }catch(_){} }, 3000); } }catch(_){}
   wgReady=true; window._bootMark="boot-complete";
   try{ applyUiScale(); }catch(_){}
+  try{ /* restore temp/tok sliders from saved settings */
+    if(typeof S.temperature==="number"){ const tr=$("#tempRange"); if(tr){ tr.value=S.temperature; const v=S.temperature; $("#tempVal").textContent=v+" — "+(v<0.4?"Precise":v<1.1?"Balanced":"Creative"); } }
+    if(typeof S.maxTokens==="number"){ const kr=$("#tokRange"); if(kr){ kr.value=S.maxTokens; $("#tokVal").textContent=S.maxTokens; } }
+  }catch(_){}
+  try{ paintHotlineMode(); paintHotlineTts(); }catch(_){}
   try{ const av=$("#appVersion"); if(av) av.textContent="WiseGuy · Jack build v"+(window.WG_BUILD||"?")+" · "+new Date().toLocaleDateString([], {month:"short",day:"numeric"})+" · boot: "+(window._bootMark||"unknown"); }catch(_){}
   /* persist on the way out — the APK WebView doesn't always fire blur */
   try{
@@ -3856,9 +4191,10 @@ function recordRun(r){
     window.addEventListener("pagehide", ()=>{ try{ wgSave(); }catch(_){} });
   }catch(_){}
 })();
+/* Setup state declared before the boot IIFE above can call showSetup() (TDZ fix) */
+
 
 /* ===== Setup page — first run only ===== */
-let setupProv="OpenAI"; let setupUrls={};
 function showSetup(){
   const v=$("#setupView"); if(!v) return;
   v.style.display="block";
@@ -3891,7 +4227,7 @@ function showSetup(){
     provider=setupProv;
     const url=$("#setupUrl").value.trim(), key=cleanApiKey($("#setupKey").value);
     if(url) savedUrls[provider]=cleanFieldText(url);
-    if(key){ apiKey=key; }
+    if(key){ apiKey=key; savedKeys[provider]=apiKey; }
     S.personality=name;
     wgReady=true; wgSave();
     v.style.display="none"; document.body.style.overflow="";
@@ -3906,6 +4242,20 @@ function showSetup(){
       updateResolved(); updateKeyMeta(false);
     }catch(_){}
     toast("Welcome, "+name+" is ready \u2014 start chatting");
+  };
+  /* Skip button — bypass wizard entirely, go straight to chat */
+  const skipBtn=$("#setupSkip");
+  if(skipBtn) skipBtn.onclick=()=>{
+    const name=($("#setupName").value.trim()||"David").slice(0,24);
+    assistants=[{id:"asst-"+Date.now().toString(36), name:name, color:ASST_COLORS[0]}];
+    activeAssistantId=assistants[0].id;
+    provider="Local";
+    S.personality=name;
+    wgReady=true; wgSave();
+    v.style.display="none"; document.body.style.overflow="";
+    try{ renderAssistantName(); }catch(_){}
+    try{ renderAssistants(); }catch(_){}
+    toast("Skipped setup — configure in Settings when ready");
   };
   setTimeout(()=>{ try{ $("#setupName").focus(); }catch(_){} },300);
 }
@@ -4029,8 +4379,8 @@ bindSwitch($("#swRefHistory"), ()=>S.refHistory, v=>{ S.refHistory=v; toast(v?"I
 bindSwitch($("#swTempNoSave"), ()=>S.tempNoSave, v=>{ S.tempNoSave=v; toast(v?"Temporary chats won't save to memory":"Temporary chats will save like normal ones"); });
 bindSwitch($("#swChips"), ()=>S.showChips, v=>{ S.showChips=v; });
 bindSwitch($("#genChips"), ()=>S.showChips, v=>{ S.showChips=v; });
-bindSwitch($("#swWeb"), ()=>S.webSearch, v=>{ S.webSearch=v; toast(v?"Web search on — ask me what's in the news":"Web search off"); });
-bindSwitch($("#sheetWebSwitch"), ()=>S.webSearch, v=>{ S.webSearch=v; toast(v?"Web search on — ask me what's in the news":"Web search off"); });
+bindSwitch($("#swWeb"), ()=>S.webSearch, v=>{ S.webSearch=v; renderSheetTags(); toast(v?"Web search on — ask me what's in the news":"Web search off"); });
+bindSwitch($("#sheetWebSwitch"), ()=>S.webSearch, v=>{ S.webSearch=v; renderSheetTags(); toast(v?"Web search on — ask me what's in the news":"Web search off"); });
 bindSwitch($("#swCanvas"), ()=>S.canvas, v=>{ S.canvas=v; toast(v?"Canvas & tools available from the 📎 button in chat":"Canvas & tools off"); });
 bindSwitch($("#genEnter"), ()=>S.enterSend, v=>{ S.enterSend=v; toast(v?"Enter sends":"Enter makes a new line — use the ↑ button to send"); });
 bindSwitch($("#genSound"), ()=>S.sound, v=>{ S.sound=v; });
@@ -4038,10 +4388,24 @@ bindSwitch($("#apiStream"), ()=>S.streaming, v=>{ S.streaming=v; toast(v?"Stream
 
 /* Interface size — CSS zoom on the app root, scales everything proportionally */
 function applyUiScale(){
-  const v=parseInt(S.uiScale,10)||100;
-  try{ document.documentElement.style.zoom=(v/100); }catch(_){}
-  const lbl=$("#uiScaleVal"); if(lbl) lbl.textContent=v+"%";
-  const rng=$("#uiScaleRange"); if(rng && document.activeElement!==rng) rng.value=v;
+  // FIX: No zoom scaling - UI is sized correctly in CSS now. Slider removed.
+  try{
+    document.documentElement.style.zoom=1;
+    document.documentElement.style.background='';
+    document.documentElement.style.minHeight='';
+    document.body.style.background='';
+    document.body.style.minHeight='';
+  }catch(_){}
+  applyTextScale();
+}
+/* Text size — plain multiplier, never fights UI zoom */
+function applyTextScale(){
+  const t=parseInt(S.textScale,10)||100;
+  try{
+    document.documentElement.style.setProperty("--text-scale", t/100);
+  }catch(_){}
+  const lbl=$("#textScaleVal"); if(lbl) lbl.textContent=t+"%";
+  const rng=$("#textScaleRange"); if(rng && document.activeElement!==rng) rng.value=t;
 }
 (function(){
   const rng=$("#uiScaleRange");
@@ -4053,6 +4417,197 @@ function applyUiScale(){
       try{ wgSave(); }catch(_){}
     });
   }
+  const trng=$("#textScaleRange");
+  if(trng){
+    trng.value=parseInt(S.textScale,10)||100;
+    trng.addEventListener("input",()=>{
+      S.textScale=parseInt(trng.value,10)||100;
+      applyTextScale();
+      try{ wgSave(); }catch(_){}
+    });
+  }
+  /* Thought interval sliders — 1s (testing) to 300s */
+  const srng=$("#sparkIntRange");
+  if(srng){
+    srng.value=sparkIntervalSec;
+    const sval=$("#sparkIntVal");
+    srng.addEventListener("input",()=>{
+      sparkIntervalSec=Math.max(1,Math.min(300,parseInt(srng.value,10)||20));
+      if(sval) sval.textContent=sparkIntervalSec+"s";
+      startThoughtLoop(); /* restart with new rate */
+      try{ wgSave(); }catch(_){}
+    });
+  }
+  const drng=$("#deepIntRange");
+  if(drng){
+    drng.value=deepIntervalSec;
+    const dval=$("#deepIntVal");
+    drng.addEventListener("input",()=>{
+      deepIntervalSec=Math.max(1,Math.min(300,parseInt(drng.value,10)||60));
+      if(dval) dval.textContent=deepIntervalSec+"s";
+      startThoughtLoop(); /* restart with new rate */
+      try{ wgSave(); }catch(_){}
+    });
+  }
+})();
+
+/* Slim topbar toggle — frees up vertical space for chat */
+(function(){
+  const tb=$("#topbar"), btn=$("#topExpandBtn"), ms=$("#modelSelect"), sm=$("#slimModelName");
+  if(!tb||!btn) return;
+  function updateSlimName(){
+    if(sm&&ms){ const opt=ms.options[ms.selectedIndex]; sm.textContent=opt?opt.textContent.split("·")[0].trim():"David"; }
+  }
+  btn.onclick=()=>{
+    const slim=tb.classList.toggle("slim");
+    btn.textContent=slim?"⌄":"⌃";
+    btn.title=slim?"Show full toolbar":"Hide toolbar";
+    const sel=$("#modelSelect"), acts=tb.querySelector(".top-actions");
+    if(sel) sel.style.display=slim?"none":"";
+    if(acts) acts.style.display=slim?"none":"flex";
+    if(sm) sm.style.display=slim?"":"none";
+  };
+  if(ms) ms.addEventListener("change", updateSlimName);
+  updateSlimName();
+})();
+
+/* ⌨️ Keyboard lock — keep keyboard pinned open, no slide in/out */
+(function(){
+  const btn=$("#kbdLockBtn"), input=$("#input");
+  if(!btn||!input) return;
+  let locked=false, timer=null;
+  // Persist the preference
+  try{ locked=localStorage.getItem("wg.kbdLock")==="1"; }catch(_){}
+  function paint(){ btn.style.opacity=locked?"1":"0.5"; btn.title=locked?"Keyboard locked open (tap to unlock)":"Lock keyboard open"; }
+  function startLock(){
+    input.focus();
+    // Re-focus if something steals it — keeps keyboard pinned
+    timer=setInterval(()=>{
+      if(locked && document.activeElement!==input && !document.querySelector(".modal-open")){
+        try{ input.focus({preventScroll:true}); }catch(_){ try{input.focus();}catch(_){} }
+      }
+    }, 800);
+  }
+  function stopLock(){ if(timer){ clearInterval(timer); timer=null; } }
+  btn.onclick=()=>{
+    locked=!locked;
+    try{ localStorage.setItem("wg.kbdLock", locked?"1":"0"); }catch(_){}
+    paint();
+    if(locked){ startLock(); toast("⌨️ Keyboard locked open"); }
+    else{ stopLock(); input.blur(); toast("Keyboard unlocked"); }
+  };
+  // Prevent blur from hiding keyboard when locked (tap outside input)
+  input.addEventListener("blur", ()=>{
+    if(locked){
+      setTimeout(()=>{ if(locked && document.activeElement!==input){ try{input.focus({preventScroll:true});}catch(_){} } }, 100);
+    }
+  });
+  paint();
+  if(locked) startLock();
+})();
+
+/* 🔥 Hotline settings wiring */
+function paintHotlineMode(){
+  const mode=S.hotlineMode||"direct";
+  const d=$("#hotlineModeDirect"), r=$("#hotlineModeDraft");
+  if(d){ d.className="btn"+(mode==="direct"?" btn-gold":" btn-ghost"); }
+  if(r){ r.className="btn"+(mode==="draft"?" btn-gold":" btn-ghost"); }
+}
+function paintHotlineTts(){
+  const sw=$("#swHotlineTts");
+  if(sw) sw.classList.toggle("on", S.hotlineTts!==false);
+}
+(function(){
+  const d=$("#hotlineModeDirect"), r=$("#hotlineModeDraft");
+  if(d) d.onclick=()=>{ S.hotlineMode="direct"; paintHotlineMode(); try{wgSave();}catch(_){} toast("Hotline: send immediately 📻"); };
+  if(r) r.onclick=()=>{ S.hotlineMode="draft"; paintHotlineMode(); try{wgSave();}catch(_){} toast("Hotline: drop in textbox ✏️"); };
+  paintHotlineMode(); paintHotlineTts();
+  /* silence timeout slider (0.5–10s) */
+  (function(){
+    const rng=$("#hotlineSilenceRange"), lbl=$("#hotlineSilenceVal");
+    if(!rng) return;
+    const cur=parseFloat(S.hotlineSilence)||0.5;
+    rng.value=cur; if(lbl) lbl.textContent=cur.toFixed(1)+"s";
+    const push=v=>{
+      if(lbl) lbl.textContent=v.toFixed(1)+"s";
+      S.hotlineSilence=v; try{ wgSave(); }catch(_){}
+      try{ if(window.HotlineNative && window.HotlineNative.setSilenceTimeout) window.HotlineNative.setSilenceTimeout(v); }catch(_){}
+    };
+    rng.addEventListener("input",()=>{ push(parseFloat(rng.value)||2); });
+    /* push current value to native on boot so the session picks it up */
+    try{ if(window.HotlineNative && window.HotlineNative.setSilenceTimeout) window.HotlineNative.setSilenceTimeout(cur); }catch(_){}
+  })();
+  const dlBtn=$("#hotlineTtsDlBtn"), dlStatus=$("#hotlineTtsStatus");
+  function paintTtsStatus(){
+    try{
+      if(window.HotlineNative && window.HotlineNative.isTtsReady && window.HotlineNative.isTtsReady()){
+        if(dlStatus) dlStatus.textContent="Voice ready ✓";
+        if(dlBtn) dlBtn.style.display="none";
+      }
+    }catch(_){}
+  }
+  if(dlBtn) dlBtn.onclick=()=>{
+    try{
+      if(window.HotlineNative && window.HotlineNative.downloadTtsModel){
+        if(dlStatus) dlStatus.textContent="Downloading voice… (~65MB, one time)";
+        window.HotlineNative.downloadTtsModel();
+        // re-check after a delay — the native side toasts on completion
+        setTimeout(paintTtsStatus, 5000);
+      } else {
+        toast("Voice download needs the Android app — not available in browser");
+      }
+    }catch(e){ toast("Download failed — try again"); }
+  };
+  paintTtsStatus();
+  const ttsSw=$("#swHotlineTts");
+  if(ttsSw) ttsSw.onclick=()=>{ S.hotlineTts=!(S.hotlineTts!==false); paintHotlineTts(); try{wgSave();}catch(_){} toast(S.hotlineTts!==false?"Hotline will speak replies 🔊":"Hotline replies stay silent"); };
+  /* 🎤 STT model tier picker — shared with the native keyboard via localStorage bridge */
+  function paintSttTier(){
+    const tier=S.sttTier||"balanced";
+    document.querySelectorAll("#sttTierBtns [data-tier]").forEach(b=>{
+      b.className="btn"+(b.dataset.tier===tier?" btn-gold":" btn-ghost");
+    });
+  }
+  document.querySelectorAll("#sttTierBtns [data-tier]").forEach(b=>{
+    b.onclick=()=>{
+      S.sttTier=b.dataset.tier; paintSttTier(); try{wgSave();}catch(_){}
+      try{renderSheetTags();}catch(_){}
+      // Bridge to native: keyboard reads wg_stt_tier from SharedPreferences via JS interface
+      try{
+        if(window.HotlineNative && window.HotlineNative.setSttTier) window.HotlineNative.setSttTier(S.sttTier);
+        else localStorage.setItem("wg_stt_tier", S.sttTier);
+      }catch(_){ try{localStorage.setItem("wg_stt_tier", S.sttTier);}catch(_){} }
+      const names={tiny:"⚡ Fast (tiny q5_1)",balanced:"⚖️ Balanced (base q5_1)",quality:"💎 Quality (base.en)"};
+      toast("STT model: "+(names[S.sttTier]||S.sttTier)+" — bundled");
+    };
+  });
+  try{paintSttTier();}catch(_){}
+  // Set as assistant — asks Android to make WiseGuy the default assistant
+  const ab=$("#hotlineAssistBtn");
+  const hs=$("#hotlineStatus");
+  // Check current assistant status on load
+  function updateAssistStatus(){
+    try{
+      if(window.HotlineNative && window.HotlineNative.isAssistantRole){
+        const isAssist = window.HotlineNative.isAssistantRole();
+        if(hs) hs.textContent = isAssist ? "✓ WiseGuy is your assistant" : "Not set as assistant yet";
+        if(hs) hs.style.color = isAssist ? "var(--teal, #5eead4)" : "";
+      }
+    }catch(e){}
+  }
+  // Check on Settings open and after a delay (in case user just set it)
+  setTimeout(updateAssistStatus, 1000);
+  if(ab) ab.onclick=()=>{
+    try{
+      if(window.HotlineNative && window.HotlineNative.requestAssistantRole){
+        window.HotlineNative.requestAssistantRole();
+        // Recheck after user returns from Settings
+        setTimeout(updateAssistStatus, 3000);
+      } else {
+        toast("Open Android Settings → Apps → Default apps → Digital assistant, then pick WiseGuy");
+      }
+    }catch(e){ toast("Open Android Settings → Apps → Default apps → Digital assistant"); }
+  };
 })();
 bindSwitch($("#apiTitle"), ()=>S.autoTitle, v=>{ S.autoTitle=v; });
 bindSwitch($("#sheetMemSwitch"), ()=>S.sheetMemory, v=>{ S.sheetMemory=v; renderSheetTags(); toast(v?"Memory on for this chat":"Memory off for this chat — saved memories stay out of this one"); });
@@ -4062,16 +4617,25 @@ function shortModelName(m){ try{ m=String(m||""); m=m.split("/").pop(); m=m.repl
 function renderSheetTags(){
   const host=$("#sheetTags"); if(!host) return;
   const tags=[];
+  // Memory: useful — affects what's in the briefing
   if(effectiveMemory()) tags.push({key:"memory", cls:"", label:"Memory context", html:"🧠 Memory on"});
   else if(S.memoryMaster) tags.push({key:"memory", cls:"", label:"Memory context", html:"🧠 Memory off (this chat)"});
-  if(S.personalityTag) tags.push({key:"personality", cls:"gold", label:"Personality tag", html:"✦ Personality: "+S.personality});
+  // Web search: useful — Jack debugged this not working; make the state visible
+  if(S.webSearch) tags.push({key:"web", cls:"", label:"Web search", html:"🌐 Web on"});
+  // STT model: useful — affects voice input quality/speed
+  const tierNames={tiny:"⚡ Fast", balanced:"⚖️ Balanced", quality:"💎 Quality"};
+  const tier=S.sttTier||"balanced";
+  tags.push({key:"stt", cls:"", label:"STT model", html:"🎤 "+(tierNames[tier]||tier)});
+  // Model: useful — which backend you're talking to
   if(S.modelTag) tags.push({key:"model", cls:"", label:"Model tag", html:"◎ "+shortModelName(currentModel)});
+  // Personality removed from tags — it's static, lives in Settings → Instructions
   host.innerHTML=tags.map(t=>`<span class="qtag ${t.cls}">${t.html} <button type="button" data-qtagkey="${t.key}" data-qtag="${t.label}" aria-label="Remove ${t.label}">✕</button></span>`).join("");
   $("#sheetTagsEmpty").style.display=tags.length? "none":"block";
 }
 function removeSheetTag(key){
   if(key==="memory"){ if(S.sheetMemory && S.memoryMaster){ S.sheetMemory=false; toast("Memory removed from this chat — saved memories won't be used here"); } else { S.memoryMaster=true; S.sheetMemory=true; toast("Memory back on — master switch re-enabled in the Memory tab too"); } }
-  if(key==="personality"){ S.personalityTag=false; toast("Personality tag removed — I'll answer plain until you pick one in Memory → Instructions"); }
+  if(key==="web"){ S.webSearch=false; toast("Web search off for this chat"); }
+  if(key==="stt"){ toast("STT model is set in Settings → Hotline — tap to change it there"); return; }
   if(key==="model"){ S.modelTag=false; toast("Model tag removed — this chat now uses your saved default model ("+(($("#defaultModelInput").value||"gpt-4o"))+")"); }
   syncSwitches(); renderSheetTags();
 }
@@ -4499,7 +5063,7 @@ function wgWorkbenchOpen(){
    WiseGuy-style: always connecting, asking, spotting the opening.
    Two tiers (sparks ~20s, deep ~60s), topic registry with 🟢⚪🟡,
    idle fallback riffs on dates/holidays with sarcasm. Thoughts feed the tape. */
-let thoughtOn=true, thoughtTimers=[];
+/* thoughtOn/thoughtTimers/sparkIntervalSec/deepIntervalSec declared at line 1643 */
 let _lastThoughtActivity=Date.now();
 /* thoughts/topics declared at top-level head (see below) */
 function thoughtPrompt(kind){
@@ -4575,8 +5139,10 @@ function seedTopics(){
 function startThoughtLoop(){
   stopThoughtLoop();
   const dither=(base,spread)=>base*1000+Math.floor(Math.random()*spread*1000);
-  thoughtTimers.push(setInterval(()=>runThought("spark"), dither(20,4)));
-  thoughtTimers.push(setInterval(()=>runThought("deep"), dither(60,8)));
+  const sInt=Math.max(1,Math.min(300,sparkIntervalSec));
+  const dInt=Math.max(1,Math.min(300,deepIntervalSec));
+  thoughtTimers.push(setInterval(()=>runThought("spark"), dither(sInt,4)));
+  thoughtTimers.push(setInterval(()=>runThought("deep"), dither(dInt,8)));
 }
 function stopThoughtLoop(){ thoughtTimers.forEach(clearInterval); thoughtTimers=[]; }
 
@@ -4671,6 +5237,57 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape") closeTokenPanel();
 });
 input.focus();
+
+// Spec H8: Native bridge handshake
+function verifyNativeBridgeHandshake(){
+  const st={hasHotline:typeof window.HotlineNative!=='undefined',hasTts:typeof window.OceanTts!=='undefined',buildMatch:false};
+  if(st.hasHotline&&typeof window.HotlineNative.getBuildVersion==='function'){
+    try{st.buildMatch=(parseInt(window.HotlineNative.getBuildVersion(),10)===window.WG_BUILD);}catch(_){}
+  }
+  console.log('[WiseGuy Bridge]',st); return st;
+}
+
+// Spec H2: Native mic button - use HotlineNative instead of Web Speech API
+function handleNativeMicButton(){
+  const st=verifyNativeBridgeHandshake();
+  if(st.hasHotline&&typeof window.HotlineNative.startListening==='function'){
+    try{window.HotlineNative.startListening();}
+    catch(e){toast('Mic failed: '+e.message);}
+  }else{toast('Native STT not available');}
+}
+window.receiveNativeTranscript=function(jsonPayload){
+  let text='';
+  try{
+    const p=typeof jsonPayload==='string'?JSON.parse(jsonPayload):jsonPayload;
+    text=p.text||p.transcript||'';
+  }catch(_){text=String(jsonPayload||'');}
+  handleVoiceInput(text);
+};
+
+// Spec H7: TTS status polling with backoff
+function monitorTtsDownloadStatus(maxAttempts){
+  maxAttempts=maxAttempts||12; let attempts=0;
+  const poll=setInterval(()=>{
+    attempts++;
+    if(typeof window.OceanTts!=='undefined'&&window.OceanTts.isReady){
+      try{if(window.OceanTts.isReady()){clearInterval(poll);toast('TTS ready');return;}}catch(_){}
+    }
+    if(attempts>=maxAttempts){clearInterval(poll);toast('TTS timeout');}
+  },2000);
+}
+
+// Spec H1: STT tier - only tiny is bundled
+function syncSttTierSelection(tier){
+  const avail=['tiny'];
+  if(avail.indexOf(tier)<0){
+    toast('Only tiny model bundled');
+    try{localStorage.setItem('wiseguy_stt_tier','tiny');}catch(_){}
+    return 'tiny';
+  }
+  try{localStorage.setItem('wiseguy_stt_tier',tier);}catch(_){}
+  return tier;
+}
+
 </script>
 </body>
 </html>
