@@ -89,7 +89,7 @@ button{cursor:pointer;border:0}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;min-width:0;background:transparent}
-.topbar{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(8,9,12,.75);position:relative;z-index:5}
+.topbar{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:#08090C;position:relative;z-index:5}
 .topbar.slim .modelselect,.topbar.slim .top-actions{display:none}
 .topbar.slim .slim-model{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
 #topExpandBtn{margin-left:auto}
@@ -277,7 +277,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 /* ===== Bottom tab bar + tab views ===== */
 .app{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .sidebar{padding-bottom:14px}
-.bottomnav{position:fixed;left:0;right:0;bottom:0;min-height:64px;z-index:55;display:flex;background:rgba(10,11,14,.92);backdrop-filter:blur(14px);border-top:1px solid var(--border2);padding:6px max(8px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom))}
+.bottomnav{position:fixed;left:0;right:0;bottom:0;min-height:64px;z-index:55;display:flex;background:#0A0B0E;border-top:1px solid var(--border2);padding:6px max(8px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom))}
 .tabbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:transparent;color:var(--muted);font-size:10.5px;font-weight:800;letter-spacing:.02em;border-radius:12px;transition:.18s;position:relative}
 .tabbtn .ti{font-size:19px;line-height:1}
 .tabbtn:hover{color:white;background:var(--panel)}
@@ -644,11 +644,10 @@ details.wgCard>div{padding:0 16px 16px}
 #thoughtBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 /* Outer track: ONLY continuous motion — never touched by JS list updates */
 #thoughtBgTrack{position:absolute;left:0;right:0;top:0;will-change:transform,opacity}
-#thoughtBg[data-motion="drift"] #thoughtBgTrack{animation:bgdrift var(--bgt-scroll,60s) linear infinite}
-#thoughtBg[data-motion="breathe"] #thoughtBgTrack{animation:bgbreathe 8s ease-in-out infinite}
-#thoughtBg[data-motion="step"] #thoughtBgTrack,#thoughtBg[data-motion="still"] #thoughtBgTrack{animation:none;transform:none}
-@keyframes bgdrift{from{transform:translateY(0)}to{transform:translateY(-50%)}}
-@keyframes bgbreathe{0%,100%{opacity:1}50%{opacity:.55}}
+/* v163 — NO background motion. The drift/breathe animations + per-thought blur froze the phone's GPU.
+   The background layer is static now: thoughts sit still at low opacity. Motion and blur controls in
+   Appearance are inert until a cheap replacement is built (e.g. a pre-rendered image). */
+#thoughtBgTrack{animation:none;transform:none}
 /* Inner: ONLY list rendering + per-thought slide — never has a keyframe animation */
 #thoughtBgInner{position:relative;width:100%;display:flex;flex-direction:column;will-change:transform}
 /* Seamless drift loop: a mirror copy of the list, shown only in drift mode.
@@ -656,13 +655,13 @@ details.wgCard>div{padding:0 16px 16px}
    on identical content — no snap. Hidden in step/still/breathe (no loop there). */
 #thoughtBgInnerDup{position:relative;width:100%;display:none;flex-direction:column;pointer-events:none}
 #thoughtBg[data-motion="drift"] #thoughtBgInnerDup{display:flex}
-#thoughtBg .bgthought{font-size:var(--bgt-text,17px);line-height:1.4;font-weight:600;filter:blur(var(--bgt-plane,4px));opacity:var(--bgt-opacity,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:var(--bgt-space,14px) 4%;transition:opacity 0.4s ease}
+#thoughtBg .bgthought{font-size:var(--bgt-text,17px);line-height:1.4;font-weight:600;opacity:var(--bgt-opacity,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:var(--bgt-space,14px) 4%;transition:opacity 0.4s ease}
 #thoughtBg .bgthought.spark{color:#E6C27A}
 #thoughtBg .bgthought.deep{color:#5EEAD4}
 #thoughtBg[data-blur="frosted"] .bgthought{filter:none}
 /* frosted glass: filter on the TRACK only — it holds nothing but background thoughts,
    so the blur can never reach the composer, messages, or any UI element */
-#thoughtBg[data-blur="frosted"] #thoughtBgTrack{filter:blur(var(--bgt-blur,4px))}
+
 #thoughtBg::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,var(--bgt-dim,0));pointer-events:none}
 #messages .msg .bubble{background:rgba(23,25,31,var(--bgt-bubble,0));border-radius:12px;padding-left:10px;padding-right:10px}
 #messages{position:relative;z-index:1}
@@ -1487,7 +1486,7 @@ details.wgCard>div{padding:0 16px 16px}
 
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
-        <div class="field" style="margin-bottom:18px"><label>Text size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
+        <div class="field" style="margin-bottom:18px"><label>UI size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
           <input type="number" inputmode="decimal" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size" class="numinput">
           <p class="hint" style="margin-top:6px">Text only — independent of interface size. Bump this up if the UI is small but you want readable text.</p>
         </div>
@@ -1783,7 +1782,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="161"; window._bootMark="script-start";
+window.WG_BUILD="163"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -4597,11 +4596,14 @@ bindSwitch($("#genEnter"), ()=>S.enterSend, v=>{ S.enterSend=v; toast(v?"Enter s
 bindSwitch($("#genSound"), ()=>S.sound, v=>{ S.sound=v; });
 bindSwitch($("#apiStream"), ()=>S.streaming, v=>{ S.streaming=v; toast(v?"Streaming on — replies arrive token by token":"Streaming off — replies arrive whole"); });
 
-/* Text size — plain multiplier, never fights UI zoom */
+/* UI size — zoom scales the WHOLE interface (text, buttons, spacing, icons).
+   The old --text-scale only changed the root font-size, which nothing reads:
+   0 of 265 font-sizes use rem, so the slider was a placebo. Zoom is the real mechanism. */
 function applyTextScale(){
   const t=parseInt(S.textScale,10)||100;
   try{
     document.documentElement.style.setProperty("--text-scale", t/100);
+    document.documentElement.style.zoom = t/100;
   }catch(_){}
   const lbl=$("#textScaleVal"); if(lbl) lbl.textContent=t+"%";
   const rng=$("#textScaleRange"); if(rng && document.activeElement!==rng) rng.value=t;
