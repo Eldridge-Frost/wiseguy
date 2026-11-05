@@ -595,7 +595,7 @@ details.wgCard>div{padding:0 16px 16px}
 .tokeninline{border-bottom:1px solid var(--border);background:#0B0D10;padding:16px 20px 8px;max-height:52dvh;overflow:auto;overscroll-behavior:contain}
 .tokeninline[hidden]{display:none}
 .tokeninline-inner{max-width:780px;margin:0 auto}
-.tokeninline-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.tokeninline-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:12px}
 .tokeninline-head b{font-size:16px;white-space:nowrap}
 .tokeninline-head>span{color:var(--muted);font-size:12.5px;line-height:1.45}
 .tokeninline-head .iconbtn{margin-left:auto;align-self:center}
@@ -1637,7 +1637,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="103-tdz"; window._bootMark="script-start";
+window.WG_BUILD="141"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -3847,7 +3847,7 @@ function renderEngine(){
     : `No runs of this kind in the last 50.`;
   const win=$("#engRuns");
   win.innerHTML = list.length
-    ? list.map(r=>`<div class="runitem"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${esc(runSpeedLine(r))}</div></div>`).join("")
+    ? list.map(r=>`<div class="runitem"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${runSpeedLine(r)}</div></div>`).join("")
     : `<div class="runempty">Nothing here for this filter yet.<br>Pick “All kinds” above to see the full history.</div>`;
   win.scrollTop=0;
 }
@@ -5168,7 +5168,7 @@ function renderTokenPanel(){
   $("#tokCtxSub").textContent="The briefing I'd actually send with your next message, measured block by block — "+pct+"% of your "+opt.value+" tier ("+(tierTok/1024)+"K)";
   $("#tokCtxBar").style.width=Math.min(100,pct)+"%";
   $("#tokCtxWindow").textContent="Model context window: 128,000 tokens — this briefing uses ≈"+(ctxTotal/1280).toFixed(1)+"% of it. Room to spare.";
-  $("#tokRuns").innerHTML=RUNS.slice(0,5).map(r=>`<div class="tokrun"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${esc(runSpeedLine(r))}</div></div>`).join("");
+  $("#tokRuns").innerHTML=RUNS.slice(0,5).map(r=>`<div class="tokrun"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${runSpeedLine(r)}</div></div>`).join("");
   $("#tokenBtnSpeed").textContent=sp.total.toFixed(1);
 }
 function openTokenPanel(){
