@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-html{font-size:13px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{font-size:calc(13px * var(--text-scale,1));-webkit-text-size-adjust:100%;text-size-adjust:100%}
 input.numinput{width:90px;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:7px 10px;color:white;font-size:14px;font-family:inherit;text-align:center;outline:0}
 input.numinput:focus{border-color:rgba(230,194,122,.55);box-shadow:0 0 0 3px rgba(230,194,122,.12)} /* Base size reduced - UI fits without zoom slider */
 @media (max-width:600px){
@@ -1396,6 +1396,27 @@ details.wgCard>div{padding:0 16px 16px}
           <div style="display:flex;gap:8px;margin-bottom:8px" id="asstColors"></div>
           <div style="display:flex;gap:8px"><input type="text" id="asstNewName" placeholder="Name&hellip;" maxlength="24" autocomplete="off" style="flex:1"><button type="button" class="btn btn-gold" id="asstAddBtn">＋ Add</button></div>
         </div>
+        <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
+        <b style="font-size:14px">How the agent thinks</b>
+        <p class="hint" style="margin:4px 0 14px">Thought timers and reply behaviour — shared across all assistants on this device.</p>
+        <div class="field" style="margin-bottom:18px"><label>💭 Spark thoughts every <span id="sparkIntVal" style="color:var(--gold);font-weight:700">20s</span></label>
+          <input type="number" inputmode="decimal" id="sparkIntRange" min="1" max="300" step="1" value="20" style="width:100%" aria-label="Spark thought interval" class="numinput">
+          <p class="hint" style="margin-top:6px">How often quick sparks fire. 1s for testing, 20s default, up to 300s.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>🧠 Deep thoughts every <span id="deepIntVal" style="color:var(--gold);font-weight:700">60s</span></label>
+          <input type="number" inputmode="decimal" id="deepIntRange" min="1" max="300" step="1" value="60" style="width:100%" aria-label="Deep thought interval" class="numinput">
+          <p class="hint" style="margin-top:6px">How often deep thoughts fire. 1s for testing, 60s default, up to 300s.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>Temperature <span id="tempVal" style="color:var(--gold);font-weight:700">0.7 — Balanced</span></label>
+          <input type="number" inputmode="decimal" id="tempRange" min="0" max="2" step="0.1" value="0.7" style="width:100%" aria-label="Temperature" class="numinput">
+          <p class="hint" style="margin-top:6px">How wild the replies get. 0 is focused, 2 is unhinged.</p>
+        </div>
+        <div class="field" style="margin-bottom:18px"><label>Max output tokens <span id="tokVal" style="color:var(--gold);font-weight:700">4096</span></label>
+          <input type="number" inputmode="decimal" id="tokRange" min="256" max="16384" step="256" value="4096" style="width:100%" aria-label="Max output tokens" class="numinput">
+          <p class="hint" style="margin-top:6px">How long a single reply can run.</p>
+        </div>
+        <div class="switchrow" style="margin-top:16px"><div><b>Streaming</b><p>Show replies token-by-token as they arrive.</p></div><button class="switch on" id="apiStream"></button></div>
+        <div class="switchrow"><div><b>Auto-title chats</b><p>Generate a short title from the first message.</p></div><button class="switch on" id="apiTitle"></button></div>
       </div>
       <div id="mtab-api">
         <div class="provgrid">
@@ -1434,10 +1455,6 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
 
         <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
-        <div class="rangehead">Temperature <span id="tempVal">0.7 — Balanced</span></div><input type="number" inputmode="decimal" id="tempRange" min="0" max="2" step="0.1" value="0.7" class="numinput">
-        <div class="rangehead" style="margin-top:14px">Max output tokens <span id="tokVal">4096</span></div><input type="number" inputmode="decimal" id="tokRange" min="256" max="16384" step="256" value="4096" class="numinput">
-        <div class="switchrow" style="margin-top:16px"><div><b>Streaming</b><p>Show replies token-by-token as they arrive.</p></div><button class="switch on" id="apiStream"></button></div>
-        <div class="switchrow"><div><b>Auto-title chats</b><p>Generate a short title from the first message.</p></div><button class="switch on" id="apiTitle"></button></div>
       </div>
 
       <div id="mtab-engine" style="display:none">
@@ -1458,21 +1475,9 @@ details.wgCard>div{padding:0 16px 16px}
 
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
-        <div class="field" style="margin-bottom:18px"><label>Interface size <span id="uiScaleVal" style="color:var(--gold);font-weight:700">80%</span></label>
-          <input type="number" inputmode="decimal" id="uiScaleRange" min="50" max="120" step="5" value="80" style="width:100%" aria-label="Interface size" class="numinput">
-          <p class="hint" style="margin-top:6px">Scales the whole interface — text, chat, buttons, everything. Smaller if it feels bloated, larger if you want it big.</p>
-        </div>
         <div class="field" style="margin-bottom:18px"><label>Text size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
           <input type="number" inputmode="decimal" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size" class="numinput">
           <p class="hint" style="margin-top:6px">Text only — independent of interface size. Bump this up if the UI is small but you want readable text.</p>
-        </div>
-        <div class="field" style="margin-bottom:18px"><label>💭 Spark thoughts every <span id="sparkIntVal" style="color:var(--gold);font-weight:700">20s</span></label>
-          <input type="number" inputmode="decimal" id="sparkIntRange" min="1" max="300" step="1" value="20" style="width:100%" aria-label="Spark thought interval" class="numinput">
-          <p class="hint" style="margin-top:6px">How often quick sparks fire. 1s for testing, 20s default, up to 300s.</p>
-        </div>
-        <div class="field" style="margin-bottom:18px"><label>🧠 Deep thoughts every <span id="deepIntVal" style="color:var(--gold);font-weight:700">60s</span></label>
-          <input type="number" inputmode="decimal" id="deepIntRange" min="1" max="300" step="1" value="60" style="width:100%" aria-label="Deep thought interval" class="numinput">
-          <p class="hint" style="margin-top:6px">How often deep thoughts fire. 1s for testing, 60s default, up to 300s.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>🔥 Hotline — voice assistant</label>
           <p class="hint" style="margin:0 0 10px">Hold your power button (or swipe the corner) to talk. Your voice goes straight to the AI.</p>
@@ -1777,7 +1782,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="153"; window._bootMark="script-start";
+window.WG_BUILD="154"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -4321,7 +4326,7 @@ let setupProv="OpenAI"; let setupUrls={};
   /* First tape writes itself quietly shortly after boot, never blocking */
   try{ if(!mixtape.text && tapeBackendReady()){ setTimeout(()=>{ try{ refreshMixtape(true); }catch(_){} }, 3000); } }catch(_){}
   wgReady=true; window._bootMark="boot-complete";
-  try{ applyUiScale(); }catch(_){}
+  try{ applyTextScale(); }catch(_){}
   try{ /* restore temp/tok sliders from saved settings */
     if(typeof S.temperature==="number"){ const tr=$("#tempRange"); if(tr){ tr.value=S.temperature; const v=S.temperature; $("#tempVal").textContent=v+" — "+(v<0.4?"Precise":v<1.1?"Balanced":"Creative"); } }
     if(typeof S.maxTokens==="number"){ const kr=$("#tokRange"); if(kr){ kr.value=S.maxTokens; $("#tokVal").textContent=S.maxTokens; } }
@@ -4529,18 +4534,6 @@ bindSwitch($("#genEnter"), ()=>S.enterSend, v=>{ S.enterSend=v; toast(v?"Enter s
 bindSwitch($("#genSound"), ()=>S.sound, v=>{ S.sound=v; });
 bindSwitch($("#apiStream"), ()=>S.streaming, v=>{ S.streaming=v; toast(v?"Streaming on — replies arrive token by token":"Streaming off — replies arrive whole"); });
 
-/* Interface size — CSS zoom on the app root, scales everything proportionally */
-function applyUiScale(){
-  // FIX: No zoom scaling - UI is sized correctly in CSS now. Slider removed.
-  try{
-    document.documentElement.style.zoom=1;
-    document.documentElement.style.background='';
-    document.documentElement.style.minHeight='';
-    document.body.style.background='';
-    document.body.style.minHeight='';
-  }catch(_){}
-  applyTextScale();
-}
 /* Text size — plain multiplier, never fights UI zoom */
 function applyTextScale(){
   const t=parseInt(S.textScale,10)||100;
@@ -4551,15 +4544,6 @@ function applyTextScale(){
   const rng=$("#textScaleRange"); if(rng && document.activeElement!==rng) rng.value=t;
 }
 (function(){
-  const rng=$("#uiScaleRange");
-  if(rng){
-    rng.value=parseInt(S.uiScale,10)||100;
-    rng.addEventListener("input",()=>{
-      S.uiScale=parseInt(rng.value,10)||100;
-      applyUiScale();
-      try{ wgSave(); }catch(_){}
-    });
-  }
   const trng=$("#textScaleRange");
   if(trng){
     trng.value=parseInt(S.textScale,10)||100;
@@ -5317,12 +5301,19 @@ function paintThoughtBg(){
     d.style.opacity="0";
     frag.appendChild(d);
   });
-  inner.style.transition="none";
-  inner.style.transform="translateY(46px)";
-  inner.prepend(frag);
-  void inner.offsetHeight; /* force reflow so the transition applies */
-  inner.style.transition="";
-  inner.style.transform="translateY(0)";
+  /* guard: if a slide is already running (fast thought timers), just add the thoughts — no new slide */
+  if(!inner._sliding){
+    inner._sliding=true;
+    inner.style.transition="none";
+    inner.style.transform="translateY(46px)";
+    inner.prepend(frag);
+    void inner.offsetHeight; /* force reflow so the transition applies */
+    inner.style.transition="";
+    inner.style.transform="translateY(0)";
+    setTimeout(()=>{ inner._sliding=false; }, 600);
+  } else {
+    inner.prepend(frag);
+  }
   reblur();
   requestAnimationFrame(()=>{ [...inner.children].forEach(el=>{ if(fresh.some(t=>String(t.ts)===el.dataset.ts)) el.style.opacity=""; }); });
 }
