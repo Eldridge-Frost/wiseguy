@@ -642,6 +642,7 @@ details.wgCard>div{padding:0 16px 16px}
 #thoughtBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 #thoughtBgInner{position:absolute;left:0;right:0;top:0;transition:transform var(--bgt-speed,5s) cubic-bezier(.25,.1,.25,1)}
 #thoughtBg[data-motion="drift"] #thoughtBgInner{animation:bgdrift var(--bgt-scroll,60s) linear infinite}
+#thoughtBg[data-motion="step"] #thoughtBgInner{transition:none;animation:none}
 #thoughtBg[data-motion="breathe"] #thoughtBgInner{animation:bgbreathe 8s ease-in-out infinite}
 #thoughtBg[data-motion="still"] #thoughtBgInner{transition:none;animation:none}
 @keyframes bgdrift{from{transform:translateY(0)}to{transform:translateY(-50%)}}
@@ -1563,7 +1564,7 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Scroll speed — <span id="bgScrollVal" style="color:var(--gold);font-weight:700">15 px/s</span> <span style="color:var(--muted);font-size:12px">(drift mode only)</span></label>
-          <input type="number" inputmode="decimal" id="bgScrollRange" min="0" max="120" step="5" value="15" style="width:100%" aria-label="Background scroll speed" class="numinput">
+          <input type="number" inputmode="decimal" id="bgScrollRange" min="0" max="60" step="5" value="15" style="width:100%" aria-label="Background scroll speed" class="numinput">
         </div>
         <div class="field" style="margin-bottom:16px">
           <label>Slide speed — <span id="bgSpeedVal" style="color:var(--gold);font-weight:700">5s</span> <span style="color:var(--muted);font-size:12px">(how slowly the background slides on a new thought)</span></label>
@@ -1782,7 +1783,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="154"; window._bootMark="script-start";
+window.WG_BUILD="155"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -5341,7 +5342,8 @@ function applyBgSettings(){
     root.style.setProperty("--bgt-space", s.space+"px");
     root.style.setProperty("--bgt-dim", (s.dim/100).toFixed(2));
     root.style.setProperty("--bgt-bubble", (s.bubble/100).toFixed(2));
-    root.style.setProperty("--bgt-scroll", Math.max(10, 1200/Math.max(1,s.scroll))+"s");
+    /* HARD CAP: drift cycle never faster than 30s — no setting can make it lightning-fast */
+    root.style.setProperty("--bgt-scroll", Math.max(30, 1200/Math.max(1,s.scroll))+"s");
     const bg=$("#thoughtBg");
     if(bg){
       bg.style.display=s.thoughts?"":"none";
@@ -5377,7 +5379,7 @@ function saveBgSettings(){
       thoughts:$("#bgThoughtsToggle")?$("#bgThoughtsToggle").checked:true,
       news:$("#bgNewsToggle")?$("#bgNewsToggle").checked:true,
       motion, blurMethod, gradient,
-      scroll:+($("#bgScrollRange")?$("#bgScrollRange").value:0),
+      scroll:Math.max(0,Math.min(60,+($("#bgScrollRange")?$("#bgScrollRange").value:0))),
       speed:+($("#bgSpeedRange")?$("#bgSpeedRange").value:5),
       blur:+($("#bgBlurRange")?$("#bgBlurRange").value:4),
       opacity:+($("#bgOpacityRange")?$("#bgOpacityRange").value:28),
@@ -5394,7 +5396,9 @@ function saveBgSettings(){
   }catch(_){}
 }
 ["bgThoughtsToggle","bgNewsToggle","bgSmoothToggle","bgPauseToggle","bgBatteryToggle"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", saveBgSettings); });
-["bgScrollRange","bgSpeedRange","bgOpacityRange","bgBlurRange","bgTextRange","bgSpaceRange","bgDimRange","bgBubbleRange"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("input", saveBgSettings); });
+/* debounced: typing a number applies once you pause, so the animation doesn't restart per keystroke */
+let _bgSaveT=null;
+["bgScrollRange","bgSpeedRange","bgOpacityRange","bgBlurRange","bgTextRange","bgSpaceRange","bgDimRange","bgBubbleRange"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("input", ()=>{ clearTimeout(_bgSaveT); _bgSaveT=setTimeout(saveBgSettings, 500); }); });
 document.querySelectorAll('input[name="bgMotion"],input[name="bgBlurMethod"],input[name="bgGradient"]').forEach(r=>r.addEventListener("change", ()=>{ saveBgSettings(); _bgSig=""; try{ paintThoughtBg(); }catch(_){} }));
 document.querySelectorAll('#bgPresets [data-preset]').forEach(b=>b.addEventListener("click", ()=>{
   const p=BG_PRESETS[b.dataset.preset]; if(!p) return;
