@@ -651,6 +651,11 @@ details.wgCard>div{padding:0 16px 16px}
 @keyframes bgbreathe{0%,100%{opacity:1}50%{opacity:.55}}
 /* Inner: ONLY list rendering + per-thought slide — never has a keyframe animation */
 #thoughtBgInner{position:relative;width:100%;display:flex;flex-direction:column;will-change:transform}
+/* Seamless drift loop: a mirror copy of the list, shown only in drift mode.
+   The track is then exactly 2x one list tall, so the -50% loop point lands
+   on identical content — no snap. Hidden in step/still/breathe (no loop there). */
+#thoughtBgInnerDup{position:relative;width:100%;display:none;flex-direction:column;pointer-events:none}
+#thoughtBg[data-motion="drift"] #thoughtBgInnerDup{display:flex}
 #thoughtBg .bgthought{font-size:var(--bgt-text,17px);line-height:1.4;font-weight:600;filter:blur(var(--bgt-plane,4px));opacity:var(--bgt-opacity,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:var(--bgt-space,14px) 4%;transition:opacity 0.4s ease}
 #thoughtBg .bgthought.spark{color:#E6C27A}
 #thoughtBg .bgthought.deep{color:#5EEAD4}
@@ -1778,7 +1783,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="160"; window._bootMark="script-start";
+window.WG_BUILD="161"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -5333,6 +5338,10 @@ function paintThoughtBg(){
   if(!track){ track=document.createElement("div"); track.id="thoughtBgTrack"; bg.appendChild(track); }
   let inner=track.querySelector("#thoughtBgInner");
   if(!inner){ inner=document.createElement("div"); inner.id="thoughtBgInner"; track.appendChild(inner); }
+  /* SEAMLESS DRIFT: mirror copy of the list, so the -50% loop lands on identical content */
+  let dup=track.querySelector("#thoughtBgInnerDup");
+  if(!dup){ dup=document.createElement("div"); dup.id="thoughtBgInnerDup"; dup.setAttribute("aria-hidden","true"); track.appendChild(dup); }
+  const syncDup=()=>{ dup.innerHTML=inner.innerHTML; };
   /* gradient direction: bottom = newest at top, sharp at top; top = newest at bottom, sharp at bottom */
   const grad=(window._bgGradient||"bottom");
   const recent=(thoughts||[]).slice(0,10);
@@ -5347,6 +5356,7 @@ function paintThoughtBg(){
   if(!isNew){
     /* first paint — render newest-first, sharpest at top, blurrier toward the bottom */
     inner.innerHTML=recent.map((t,i)=>`<div class="bgthought ${t.kind}" data-ts="${t.ts}" style="--bgt-plane:${bgPlaneBlur(grad==="top" ? recent.length-1-i : i, base)}">${esc(t.text)}</div>`).join("");
+    syncDup();
     return;
   }
   /* incremental update: only add what's new, only remove what's gone — no wipe, no pop */
@@ -5354,7 +5364,7 @@ function paintThoughtBg(){
   const fresh=recent.filter(t=>!shown.has(String(t.ts)));
   const keep=new Set(recent.map(t=>String(t.ts)));
   [...inner.children].forEach(el=>{ if(!keep.has(el.dataset.ts)) el.remove(); });
-  if(!fresh.length){ reblur(); return; }
+  if(!fresh.length){ reblur(); syncDup(); return; }
   /* prepend new thoughts at the top (newest = closest = sharpest), fade in */
   const frag=document.createDocumentFragment();
   fresh.forEach(t=>{
@@ -5377,7 +5387,7 @@ function paintThoughtBg(){
     inner.style.transform="translateY(0)";
   }
   reblur();
-  requestAnimationFrame(()=>{ [...inner.children].forEach(el=>{ if(fresh.some(t=>String(t.ts)===el.dataset.ts)) el.style.opacity=""; }); });
+  requestAnimationFrame(()=>{ [...inner.children].forEach(el=>{ if(fresh.some(t=>String(t.ts)===el.dataset.ts)) el.style.opacity=""; }); syncDup(); });
 }
 /* v147 — Background settings: drift speed, opacity, blur, on/off toggles. Saved in localStorage. */
 /* v151 — Appearance: motion styles, blur methods, presets, full slider set. Default = Step. */
