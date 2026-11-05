@@ -1125,10 +1125,16 @@ details.wgCard>div{padding:0 16px 16px}
     <section class="panelview" id="view-memory">
       <div class="wrap">
         <h1>Your <i>memory.</i></h1>
-                <div class="ccard open" id="tapeCard">
+        <div class="ccard open" id="thoughtsCard">
+          <button class="ccard-head">💭 What I'm thinking about <span class="sub">my inner stream — tap 💬 to bring one into chat</span><span class="chev">⌄</span></button>
+          <div class="ccard-body">
+            <div id="thoughtItemsMem"></div>
+          </div>
+        </div>
+                <div class="ccard" id="tapeCard">
           <button class="ccard-head">📼 Core brief <span class="sub" id="tapeMeta">Not written yet</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
-            <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 0 10px">The brief I read first, every turn — distilled from everything I know: books, pins, the pad, our chats. Logically ordered, up to right now. Hit refresh and I assemble it fresh — your manual edits are never overwritten, only appended to. It also refreshes itself quietly in the background when new memories land.</p>
+            <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 0 10px">The brief I read first, every turn — distilled from everything I know.</p>
             <div id="tapeView"><p class="tapeempty">No core brief yet — hit Refresh and I&apos;ll distill everything into the brief I read every turn.</p></div>
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
               <button class="btn btn-gold" id="tapeRefreshBtn">📼 Refresh — bring me up to speed</button>
@@ -1141,12 +1147,6 @@ details.wgCard>div{padding:0 16px 16px}
                 <button class="chipbtn" id="tapeCancelBtn">Cancel</button>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="ccard open" id="thoughtsCard">
-          <button class="ccard-head">💭 What I'm thinking about <span class="sub">my inner stream — tap 💬 to bring one into chat</span><span class="chev">⌄</span></button>
-          <div class="ccard-body">
-            <div id="thoughtItemsMem"></div>
           </div>
         </div>
         <div class="ccard open" id="workmemCard">
@@ -1665,7 +1665,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="142"; window._bootMark="script-start";
+window.WG_BUILD="143"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
