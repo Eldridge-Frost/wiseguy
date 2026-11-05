@@ -644,7 +644,7 @@ details.wgCard>div{padding:0 16px 16px}
 #thoughtBg[data-motion="still"] #thoughtBgInner{transition:none;animation:none}
 @keyframes bgdrift{from{transform:translateY(0)}to{transform:translateY(-50%)}}
 @keyframes bgbreathe{0%,100%{opacity:1}50%{opacity:.55}}
-#thoughtBg .bgthought{font-size:var(--bgt-text,17px);line-height:1.4;font-weight:600;filter:blur(var(--bgt-blur,4px));opacity:var(--bgt-opacity,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:var(--bgt-space,14px) 4%;transition:opacity var(--bgt-speed,5s) ease}
+#thoughtBg .bgthought{font-size:var(--bgt-text,17px);line-height:1.4;font-weight:600;filter:blur(var(--bgt-plane,4px));opacity:var(--bgt-opacity,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:var(--bgt-space,14px) 4%;transition:opacity var(--bgt-speed,5s) ease}
 #thoughtBg .bgthought.spark{color:#E6C27A}
 #thoughtBg .bgthought.deep{color:#5EEAD4}
 #thoughtBg[data-blur="frosted"] .bgthought{filter:none}
@@ -1536,6 +1536,13 @@ details.wgCard>div{padding:0 16px 16px}
           </div>
         </div>
         <div class="field" style="margin-bottom:16px">
+          <label style="font-weight:700;margin-bottom:6px;display:block">Blur gradient — which end falls out of focus</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <label style="display:flex;align-items:center;gap:8px;background:var(--panel);padding:10px 12px;border-radius:11px;cursor:pointer"><input type="radio" name="bgGradient" value="bottom" checked> ⬇️ Blur at bottom <span style="color:var(--muted);font-size:11px">new thoughts land at the top, sharp — older ones sink and blur</span></label>
+            <label style="display:flex;align-items:center;gap:8px;background:var(--panel);padding:10px 12px;border-radius:11px;cursor:pointer"><input type="radio" name="bgGradient" value="top"> ⬆️ Blur at top <span style="color:var(--muted);font-size:11px">new thoughts land at the bottom, sharp — older ones rise and blur</span></label>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:16px">
           <label style="font-weight:700;margin-bottom:6px;display:block">Presets</label>
           <div style="display:flex;gap:8px;flex-wrap:wrap" id="bgPresets">
             <button class="chipbtn" data-preset="calm">😌 Calm</button>
@@ -1768,7 +1775,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="151"; window._bootMark="script-start";
+window.WG_BUILD="152"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -5270,28 +5277,37 @@ function renderThoughtList(){
     || '<p class="hint">No topics — add one below, or they seed from your Projects book.</p>';
 }
 let _bgSig="";
+function bgPlaneBlur(idx, base){
+  /* depth gradient: newest (top) is sharpest, older thoughts recede — +0.6px blur per plane down */
+  return (base + idx*0.6).toFixed(1)+"px";
+}
 function paintThoughtBg(){
   const bg=$("#thoughtBg"); if(!bg) return;
-  const recent=(thoughts||[]).slice(-10);
+  /* gradient direction: bottom = newest at top, sharp at top; top = newest at bottom, sharp at bottom */
+  const grad=(window._bgGradient||"bottom");
+  const recent=(thoughts||[]).slice(0,10);
+  if(grad==="top") recent.reverse();
   const sig=recent.map(t=>t.ts).join(",");
   if(sig===_bgSig) return; /* nothing changed — background stays still */
   const isNew=!!_bgSig; /* first paint: no slide, just appear */
   _bgSig=sig;
   let inner=$("#thoughtBgInner");
   if(!inner){ inner=document.createElement("div"); inner.id="thoughtBgInner"; bg.appendChild(inner); }
+  const base=+(getComputedStyle(document.documentElement).getPropertyValue("--bgt-blur")||"4").replace("px","");
+  /* blur follows age, not position: newest is always sharpest, wherever it sits */
+  const reblur=()=>{ const n=inner.children.length; [...inner.children].forEach((el,i)=>el.style.setProperty("--bgt-plane", bgPlaneBlur(grad==="top" ? n-1-i : i, base))); };
   if(!isNew){
-    /* first paint — render the whole list, no motion */
-    inner.innerHTML=recent.map(t=>`<div class="bgthought ${t.kind}" data-ts="${t.ts}">${esc(t.text)}</div>`).join("");
+    /* first paint — render newest-first, sharpest at top, blurrier toward the bottom */
+    inner.innerHTML=recent.map((t,i)=>`<div class="bgthought ${t.kind}" data-ts="${t.ts}" style="--bgt-plane:${bgPlaneBlur(grad==="top" ? recent.length-1-i : i, base)}">${esc(t.text)}</div>`).join("");
     return;
   }
   /* incremental update: only add what's new, only remove what's gone — no wipe, no pop */
   const shown=new Set([...inner.children].map(el=>el.dataset.ts));
   const fresh=recent.filter(t=>!shown.has(String(t.ts)));
   const keep=new Set(recent.map(t=>String(t.ts)));
-  /* remove thoughts that scrolled off */
   [...inner.children].forEach(el=>{ if(!keep.has(el.dataset.ts)) el.remove(); });
-  if(!fresh.length) return;
-  /* prepend new thoughts at the top, faded out, then slide the list up gently and fade them in */
+  if(!fresh.length){ reblur(); return; }
+  /* prepend new thoughts at the top (newest = closest = sharpest), fade in, slide gently */
   const frag=document.createDocumentFragment();
   fresh.forEach(t=>{
     const d=document.createElement("div");
@@ -5305,6 +5321,7 @@ function paintThoughtBg(){
   void inner.offsetHeight; /* force reflow so the transition applies */
   inner.style.transition="";
   inner.style.transform="translateY(0)";
+  reblur();
   requestAnimationFrame(()=>{ [...inner.children].forEach(el=>{ if(fresh.some(t=>String(t.ts)===el.dataset.ts)) el.style.opacity=""; }); });
 }
 /* v147 — Background settings: drift speed, opacity, blur, on/off toggles. Saved in localStorage. */
@@ -5312,7 +5329,7 @@ function paintThoughtBg(){
 const BG_PRESETS={
   calm:{motion:"step",blurMethod:"layer",scroll:0,speed:6,blur:5,opacity:20,text:16,space:16,dim:10,bubble:30,smooth:true,pause:true,battery:false},
   step:{motion:"step",blurMethod:"layer",scroll:0,speed:5,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
-  drift:{motion:"drift",blurMethod:"layer",scroll:15,speed:5,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
+  drift:{motion:"drift",blurMethod:"layer",gradient:"bottom",scroll:15,speed:5,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:false},
   vivid:{motion:"drift",blurMethod:"layer",scroll:20,speed:4,blur:2,opacity:45,text:19,space:12,dim:0,bubble:0,smooth:true,pause:false,battery:false},
   ghost:{motion:"breathe",blurMethod:"frosted",scroll:0,speed:6,blur:6,opacity:15,text:17,space:18,dim:20,bubble:40,smooth:true,pause:true,battery:false},
   still:{motion:"still",blurMethod:"layer",scroll:0,speed:5,blur:4,opacity:28,text:17,space:14,dim:0,bubble:0,smooth:true,pause:true,battery:true},
@@ -5354,16 +5371,19 @@ function applyBgSettings(){
     setR("bgBubbleRange",s.bubble,"#bgBubbleVal",v=>v+"%");
     document.querySelectorAll('input[name="bgMotion"]').forEach(r=>r.checked=r.value===s.motion);
     document.querySelectorAll('input[name="bgBlurMethod"]').forEach(r=>r.checked=r.value===s.blurMethod);
+    document.querySelectorAll('input[name="bgGradient"]').forEach(r=>r.checked=r.value===(s.gradient||"bottom"));
+    window._bgGradient=s.gradient||"bottom";
   }catch(_){}
 }
 function saveBgSettings(){
   try{
     const motion=(document.querySelector('input[name="bgMotion"]:checked')||{}).value||"step";
     const blurMethod=(document.querySelector('input[name="bgBlurMethod"]:checked')||{}).value||"layer";
+    const gradient=(document.querySelector('input[name="bgGradient"]:checked')||{}).value||"bottom";
     const s={
       thoughts:$("#bgThoughtsToggle")?$("#bgThoughtsToggle").checked:true,
       news:$("#bgNewsToggle")?$("#bgNewsToggle").checked:true,
-      motion, blurMethod,
+      motion, blurMethod, gradient,
       scroll:+($("#bgScrollRange")?$("#bgScrollRange").value:0),
       speed:+($("#bgSpeedRange")?$("#bgSpeedRange").value:5),
       blur:+($("#bgBlurRange")?$("#bgBlurRange").value:4),
@@ -5382,7 +5402,7 @@ function saveBgSettings(){
 }
 ["bgThoughtsToggle","bgNewsToggle","bgSmoothToggle","bgPauseToggle","bgBatteryToggle"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", saveBgSettings); });
 ["bgScrollRange","bgSpeedRange","bgOpacityRange","bgBlurRange","bgTextRange","bgSpaceRange","bgDimRange","bgBubbleRange"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("input", saveBgSettings); });
-document.querySelectorAll('input[name="bgMotion"],input[name="bgBlurMethod"]').forEach(r=>r.addEventListener("change", saveBgSettings));
+document.querySelectorAll('input[name="bgMotion"],input[name="bgBlurMethod"],input[name="bgGradient"]').forEach(r=>r.addEventListener("change", ()=>{ saveBgSettings(); _bgSig=""; try{ paintThoughtBg(); }catch(_){} }));
 document.querySelectorAll('#bgPresets [data-preset]').forEach(b=>b.addEventListener("click", ()=>{
   const p=BG_PRESETS[b.dataset.preset]; if(!p) return;
   const s=Object.assign(bgDefaults(), p);
