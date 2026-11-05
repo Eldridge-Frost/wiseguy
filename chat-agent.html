@@ -577,6 +577,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 /* Workbench instrument cards */
 details.wgCard{background:var(--panel);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;overflow:hidden}
 details.wgCard summary{cursor:pointer;padding:14px 16px;font-weight:800;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;color:var(--text)}
+details.wgCard summary::after{content:"\u2304";margin-left:auto;color:var(--muted);font-size:16px;line-height:1;transition:transform .25s;flex-shrink:0}
+details.wgCard[open] summary::after{transform:rotate(180deg)}
 details.wgCard summary::-webkit-details-marker{display:none}
 details.wgCard summary .hint{margin:0}
 details.wgCard>div{padding:0 16px 16px}
@@ -663,7 +665,7 @@ details.wgCard>div{padding:0 16px 16px}
 .ts-btn:hover{background:var(--hover);color:var(--ink)}
 .ts-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:13px;color:var(--muted)}
 .ts-label{margin-right:6px}
-.thoughtlist{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;margin:0 0 8px;max-height:320px;overflow-y:auto;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.thoughtlist{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin:0 0 8px;max-height:180px;overflow-y:auto;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .tl-head{margin-bottom:8px}.tl-head .hint{display:block;font-size:11.5px;color:var(--muted2)}
 .titem{padding:7px 9px;border-left:2px solid var(--border);margin:6px 0;font-size:13px;line-height:1.5}
 .titem.spark{border-color:#5EEAD4}.titem.deep{border-color:#E6C27A}
@@ -940,7 +942,7 @@ details.wgCard>div{padding:0 16px 16px}
       <div class="wrap">
         <h1>Game <i>time.</i></h1>
         <p class="lede">Ten classics on the shelf. Quick rounds, no setup — just play.</p>
-        <div class="ccard open">
+        <div class="ccard">
           <button class="ccard-head">🃏 Memory Match <span class="sub">Solo · ~2 min</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             <div class="mmstats">
@@ -1140,13 +1142,13 @@ details.wgCard>div{padding:0 16px 16px}
     <section class="panelview" id="view-memory">
       <div class="wrap">
         <h1>Your <i>memory.</i></h1>
-        <div class="ccard open" id="thoughtsCard">
+        <div class="ccard" id="thoughtsCard">
           <button class="ccard-head">💭 What I'm thinking about <span class="sub">my inner stream — tap 💬 to bring one into chat</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             <div id="thoughtItemsMem"></div>
           </div>
         </div>
-                <div class="ccard open" id="tapeCard">
+                <div class="ccard" id="tapeCard">
           <button class="ccard-head">📼 Core brief <span class="sub" id="tapeMeta">Not written yet</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             
@@ -1164,7 +1166,7 @@ details.wgCard>div{padding:0 16px 16px}
             </div>
           </div>
         </div>
-        <div class="ccard open" id="workmemCard">
+        <div class="ccard" id="workmemCard">
           <button class="ccard-head">✎ Working memory <span class="sub">the scratch pad — shared page</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 0 10px">A shared page — you write, David writes. Dump half-formed thoughts here; the core-brief refresh reads this too. It&apos;s saved on this device now, not just the session.</p>
@@ -1187,7 +1189,7 @@ details.wgCard>div{padding:0 16px 16px}
           <button class="ccard-head">✦ David's summary of the pad <span class="sub" id="padSummaryTime"></span><span class="chev">⌄</span></button>
           <div class="ccard-body"><ul class="sumlist" id="padSummaryList"></ul></div>
         </div>
-<div class="ccard open">
+<div class="ccard">
           <button class="ccard-head">✎ David's corner <span class="sub">David writes here too</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             <div id="davidNotes">
@@ -1262,7 +1264,7 @@ details.wgCard>div{padding:0 16px 16px}
       <p class="hint">Only what you add here is treated as “About you”. Saved memories above are learned from your chats and always shown with their source.</p>
     </div>
 
-        <div class="ccard open" style="margin-top:14px">
+        <div class="ccard" style="margin-top:14px">
           <button class="ccard-head">✦ Start with an idea <span class="sub">Fills the message box — you hit send</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
             <div class="qgrid">
@@ -1775,7 +1777,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="157"; window._bootMark="script-start";
+window.WG_BUILD="158"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -1912,6 +1914,68 @@ $("#navSettings").onclick=()=>openSettings("api"); $("#userSettingsBtn").onclick
 /* Tabs */
 $$("#memTabs button").forEach(b=>b.onclick=()=>{$$("#memTabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["saved","instructions","about"].forEach(t=>$("#tab-"+t).style.display=t===b.dataset.tab?"block":"none")});
 $$(".pers").forEach(b=>b.onclick=()=>{$$(".pers").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.personality=b.querySelector("b").textContent.replace("✦","").trim();S.personalityTag=true;const pc=$("#persCurrent");if(pc)pc.textContent="Currently: "+S.personality+" — "+b.querySelector("p").textContent+" Change it in Instructions below.";renderSheetTags();toast("Personality: "+S.personality+" — it's in my briefing from the next reply")});
+/* Collapsible cards everywhere — Reveries pattern: every section is a <details>,
+   every multi-card container gets Expand All / Collapse All at the top right. */
+function wgCardTitle(el){
+  /* title from the first <label> (spans stripped — no values/hints) or first <b> */
+  const lbl=el.querySelector("label");
+  if(lbl){
+    const c=lbl.cloneNode(true);
+    c.querySelectorAll("span").forEach(s=>s.remove());
+    let t=(c.textContent||"").replace(/\s+/g," ").trim().replace(/[\u2014\u2013\-]+\s*$/,"").trim();
+    if(t) return t;
+  }
+  const b=el.querySelector("b");
+  if(b && (b.textContent||"").trim()) return b.textContent.trim();
+  return "Settings";
+}
+function wgExpandCollapseRow(scope, getCards){
+  /* one row, top right: Expand all / Collapse all for the cards in this container */
+  if(scope.querySelector(":scope > .wgExpandRow")) return;
+  const row=document.createElement("div");
+  row.className="wgExpandRow";
+  row.style.cssText="display:flex;gap:8px;justify-content:flex-end;margin:0 0 10px";
+  row.innerHTML='<button type="button" class="btn btn-ghost wgExpandAll" style="padding:6px 12px;font-size:12.5px">\u2922 Expand all</button><button type="button" class="btn btn-ghost wgCollapseAll" style="padding:6px 12px;font-size:12.5px">\u2921 Collapse all</button>';
+  row.querySelector(".wgExpandAll").onclick=()=>{ getCards().forEach(d=>{ if(d.tagName==="DETAILS") d.open=true; else d.classList.add("open"); }); };
+  row.querySelector(".wgCollapseAll").onclick=()=>{ getCards().forEach(d=>{ if(d.tagName==="DETAILS") d.open=false; else d.classList.remove("open"); }); };
+  scope.insertBefore(row, scope.firstChild);
+}
+function wgMakeCollapsible(){
+  try{
+    /* Settings tabs: wrap each direct-child .field / .switchrow in a <details class="wgCard"> */
+    ["general","assistants","api","engine","data","shortcuts","developer","background"].forEach(t=>{
+      const tab=$("#mtab-"+t); if(!tab) return;
+      const blocks=[...tab.children].filter(el=>el.classList && (el.classList.contains("field")||el.classList.contains("switchrow")) && el.tagName!=="DETAILS");
+      if(!blocks.length) return;
+      blocks.forEach(el=>{
+        const det=document.createElement("details");
+        det.className="wgCard"; det.open=false; /* everything starts collapsed — Jack picks what opens by default */
+        const sum=document.createElement("summary");
+        sum.textContent=wgCardTitle(el);
+        el.style.marginBottom="0";
+        el.parentNode.insertBefore(det, el);
+        det.appendChild(sum);
+        det.appendChild(el);
+      });
+      const cards=[...tab.querySelectorAll("details.wgCard")];
+      if(cards.length>=2) wgExpandCollapseRow(tab, ()=>[...tab.querySelectorAll("details.wgCard")]);
+    });
+    /* Workbench: cards already exist — just add the buttons */
+    const wb=$("#view-workbench");
+    if(wb){
+      const cards=[...wb.querySelectorAll("details.wgCard")];
+      if(cards.length>=2) wgExpandCollapseRow(wb, ()=>[...wb.querySelectorAll("details.wgCard")]);
+    }
+    /* Memory tab: .ccard pattern (button head + .open class) — add the buttons */
+    const mem=$("#view-memory");
+    if(mem){
+      const cards=[...mem.querySelectorAll(".ccard")];
+      if(cards.length>=2) wgExpandCollapseRow(mem, ()=>[...mem.querySelectorAll(".ccard")]);
+    }
+  }catch(_){}
+}
+try{ wgMakeCollapsible(); }catch(_){}
+
 function switchMTab(name){ $$(".modalnav button").forEach(x=>x.classList.toggle("active",x.dataset.mtab===name)); ["general","assistants","api","engine","data","shortcuts","developer","background"].forEach(t=>{const el=$("#mtab-"+t); if(el) el.style.display=t===name?"block":"none"}); const titles={general:["General","Everyday behaviour for the chat UI."],assistants:["Assistants","Who answers you — switch, create, rename, or remove assistants. Each keeps its own chats and memories."],api:["API & Bring Your Own Key","Connect with your own key, a local server, or any OpenAI-compatible endpoint. Keys never leave this device."],engine:["Engine","Diagnostics for calibration — backend, speed, context and memory size."],data:["Data controls","Export or clear your chats from this device."],shortcuts:["Keyboard shortcuts","Move faster without the mouse."],developer:["Developer","The prompts behind the brief — edit them directly."],background:["Appearance","How the background thoughts move, blur, and feel — every option, your call."]}; if(titles[name]){$("#modalTitle").textContent=titles[name][0];$("#modalSub").textContent=titles[name][1];} if(name==="engine"){ try{ renderEngine(); }catch(_){} } }
 
 /* Developer → prompt editor: load, save, reset. Overrides live in localStorage;
