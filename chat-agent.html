@@ -739,13 +739,12 @@ details.wgCard>div{padding:0 16px 16px}
         <option value="Local" selected>David · Local</option>
         <option value="__byok">⚿ BYOK model… (Settings)</option>
       </select>
-      <div class="top-actions" style="display:none">
+      <div class="top-actions">
         <button class="tokenbtn" id="tokenBtn" aria-label="Token speed and usage for this chat" title="Tokens — speed, usage &amp; context for this chat"><span class="tt">t</span><span class="ts"><span id="tokenBtnSpeed">91.4</span><small>tok / sec</small></span></button>
         <button class="iconbtn topact" id="topNewChat" aria-label="New chat" title="New chat">＋</button>
         <button class="iconbtn topact" id="topAttach" aria-label="Attach files" title="Attach files">📎</button>
         <button class="iconbtn topact" id="persCycleBtn" aria-label="Cycle persona" title="Cycle persona">🎭</button>
       </div>
-      <button class="iconbtn" id="topExpandBtn" aria-label="Show full toolbar" title="Show full toolbar">⌄</button>
     </header>
 
     <div class="tokeninline" id="tokenPanel" hidden aria-label="Token speed and usage for this chat">
@@ -1665,7 +1664,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="144"; window._bootMark="script-start";
+window.WG_BUILD="145"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -4484,20 +4483,12 @@ function applyTextScale(){
 
 /* Slim topbar toggle — frees up vertical space for chat */
 (function(){
-  const tb=$("#topbar"), btn=$("#topExpandBtn"), ms=$("#modelSelect"), sm=$("#slimModelName");
-  if(!tb||!btn) return;
+  const tb=$("#topbar"), ms=$("#modelSelect"), sm=$("#slimModelName");
+  if(!tb) return;
   function updateSlimName(){
     if(sm&&ms){ const opt=ms.options[ms.selectedIndex]; sm.textContent=opt?opt.textContent.split("·")[0].trim():"David"; }
   }
-  btn.onclick=()=>{
-    const slim=tb.classList.toggle("slim");
-    btn.textContent=slim?"⌄":"⌃";
-    btn.title=slim?"Show full toolbar":"Hide toolbar";
-    const sel=$("#modelSelect"), acts=tb.querySelector(".top-actions");
-    if(sel) sel.style.display=slim?"none":"";
-    if(acts) acts.style.display=slim?"none":"flex";
-    if(sm) sm.style.display=slim?"":"none";
-  };
+  /* v145 — topExpandBtn removed: toolbar is always exposed, no show/hide toggle */
   if(ms) ms.addEventListener("change", updateSlimName);
   updateSlimName();
 })();
