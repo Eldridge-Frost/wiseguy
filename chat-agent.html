@@ -1147,10 +1147,10 @@ details.wgCard>div{padding:0 16px 16px}
     <section class="panelview" id="view-memory">
       <div class="wrap">
         <h1>Your <i>memory.</i></h1>
-        <div class="ccard" id="thoughtsCard">
-          <button class="ccard-head">💭 What I'm thinking about <span class="sub">my inner stream — tap 💬 to bring one into chat</span><span class="chev">⌄</span></button>
+        <div class="ccard open" id="thoughtsCard">
+          <button class="ccard-head">💭 What I'm thinking about <span class="sub">my inner stream — 💬 bring one into chat, 💾 keep it</span><span class="chev">⌄</span></button>
           <div class="ccard-body">
-            <div id="thoughtItemsMem"></div>
+            <div id="thoughtItemsMem" style="max-height:180px;overflow-y:auto"></div>
           </div>
         </div>
                 <div class="ccard" id="tapeCard">
@@ -1162,7 +1162,6 @@ details.wgCard>div{padding:0 16px 16px}
               <button class="btn btn-gold" id="tapeRefreshBtn">📼 Refresh — bring me up to speed</button>
               <button class="chipbtn" id="tapeEditBtn">Edit</button>
             </div>
-            <p class="hint" style="margin:10px 0 0">The prompts behind this brief live in Settings → Developer. <button class="chipbtn" onclick="openSettings('developer')">Edit them there</button></p>
             <div id="tapeEditWrap" style="display:none;margin-top:10px">
               <textarea class="padarea" id="tapeEdit" rows="8" style="min-height:120px" placeholder="Core brief text…"></textarea>
               <div style="display:flex;gap:8px;margin-top:8px">
@@ -1262,18 +1261,7 @@ details.wgCard>div{padding:0 16px 16px}
       <p class="hint">Only what you add here is treated as “About you”. Saved memories above are learned from your chats and always shown with their source.</p>
     </div>
 
-        <div class="ccard" style="margin-top:14px">
-          <button class="ccard-head">✦ Start with an idea <span class="sub">Fills the message box — you hit send</span><span class="chev">⌄</span></button>
-          <div class="ccard-body">
-            <div class="qgrid">
-              <button class="qchip" data-promptchip="Help me plan my week">◐ Plan my week</button>
-              <button class="qchip" data-promptchip="What do you remember about me? Show me my memories">🧠 What do you remember?</button>
-              <button class="qchip" data-promptchip="Help me draft a sharp, concise email">✎ Draft something</button>
-              <button class="qchip" data-promptchip="Explain a hard topic simply, then quiz me">✦ Learn something new</button>
-            </div>
-            <p style="margin-top:10px">Ideas live here in Memory now — the Chat tab opens straight onto the conversation, nothing in the way.</p>
-          </div>
-        </div>
+        <p style="text-align:center;font-size:11.5px;color:var(--muted);margin:18px 0 4px">Tape prompts live in <button class="chipbtn" onclick="openSettings('developer')">Settings → Developer</button></p>
       </div>
     </section>
 
@@ -1785,7 +1773,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="166"; window._bootMark="script-start";
+window.WG_BUILD="167"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -1863,8 +1851,8 @@ function renderMemories(){
       items.map(({m,i})=>`<div class="memitem ${m.pinned?"pinned":""} ${m.starred?"starred":""}">
         <div class="memtop"><div class="mi">${m.icon}</div><div style="flex:1;min-width:0" id="memtext-${i}"><p>${esc(m.text)}</p><small>${esc(m.meta)}</small><br><span class="booktag">${b.icon} ${esc(b.name)}${m.pinned?" · ◆ Pinned":""}${m.starred?" · ★ Starred":""}</span></div></div>
         <div class="memactions">
-          <button class="act ${m.starred?"on":""}" onclick="starMem(${i})" title="Star / favourite this memory">${m.starred?"★ Starred":"☆ Star"}</button>
-          <button class="act ${m.pinned?"on":""}" onclick="pinMem(${i})" title="Pin to the top of this book">${m.pinned?"◆ Pinned":"◆ Pin"}</button>
+          <button class="act ${m.starred?"on":""}" onclick="starMem(${i})" title="Star — a favourite, it gets its own section in the brief">${m.starred?"★ Starred":"☆ Star"}</button>
+          <button class="act ${m.pinned?"on":""}" onclick="pinMem(${i})" title="Pin — must-keep, it stays in the brief">${m.pinned?"◆ Pinned":"◆ Pin"}</button>
           <button class="act" onclick="useMemInChat(${i})" title="Send this memory into the main chat as context">💬 Use in chat</button>
           <button class="act" onclick="copyMem(${i})" title="Copy this memory">⧉ Copy</button>
           <button class="act" onclick="editMem(${i})" title="Edit this memory">✎ Edit</button>
@@ -1877,7 +1865,7 @@ function renderMemories(){
   wgSave(); /* every memory/book mutation flows through renderMemories — persist it */
 }
 window.setMemFilter=id=>{memFilter=id; renderMemories();};
-window.starMem=i=>{memories[i].starred=!memories[i].starred; renderMemories(); toast(memories[i].starred?"★ Starred — favourites rise in their book":"Star removed")};
+window.starMem=i=>{memories[i].starred=!memories[i].starred; renderMemories(); toast(memories[i].starred?"★ Starred — a favourite, it gets its own section in the brief":"Star removed")};
 window.copyMem=async i=>{try{await navigator.clipboard.writeText(memories[i].text); toast("Memory copied")}catch{toast("Copy not available here")}};
 window.editMem=i=>{
   const host=$("#memtext-"+i); if(!host||host.querySelector("textarea")) return;
@@ -1908,7 +1896,7 @@ window.renameBook=bi=>{
   inp.addEventListener("blur",commit);
 };
 window.delMem=i=>{memories.splice(i,1);renderMemories();toast("Memory deleted")};
-window.pinMem=i=>{memories[i].pinned=!memories[i].pinned;renderMemories();toast(memories[i].pinned?"Pinned to top of memory":"Unpinned")};
+window.pinMem=i=>{memories[i].pinned=!memories[i].pinned;renderMemories();toast(memories[i].pinned?"◆ Pinned — must-keep, it stays in the brief":"Unpinned")};
 try{ renderMemories(); }catch(_){}
 
 /* Drawer / modal */
@@ -3646,10 +3634,10 @@ function tapeSources(){
   const role=($("#aboutRole")&&$("#aboutRole").value||"").trim(); if(role) prof.push("Role: "+role);
   const ints=($("#aboutInterests")&&$("#aboutInterests").value||"").trim(); if(ints) prof.push("Interests: "+ints);
   bits.push("Profile: "+prof.join(" | "));
-  /* Pins: must-keep, oldest first, overflow counted — the Emotion rule */
+  /* Pins: must-keep — the brief always keeps your most recent pins, shown oldest-first, overflow counted */
   const pinsAll=memories.filter(m=>m.pinned);
   if(pinsAll.length){
-    const shown=pinsAll.slice(-12).reverse(); /* memories are newest-first: the 12 oldest, shown oldest-first */
+    const shown=pinsAll.slice(0,12).reverse(); /* memories are newest-first: the 12 most recent pins, shown oldest-first */
     const lines=shown.map(m=>"◆ "+m.text);
     if(pinsAll.length>12) lines.push("("+ (pinsAll.length-12) +" more pins are kept but not listed here)");
     bits.push("Pinned memories (must-keep, never drop for age):\n"+lines.join("\n"));
@@ -5338,12 +5326,13 @@ function renderThoughtStrip(){
 }
 function renderThoughtList(){
   const box=$("#thoughtItems"); if(!box) return;
-  const html=thoughts.length? thoughts.map((t,i)=>`<div class="titem ${t.kind}">${esc(t.text)}<time>${t.kind==="spark"?"⚡ Spark":"💭 Thought"} · ${new Date(t.ts).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}</time><button class="act" data-thoughtchat="${i}" title="Bring this thought into chat">💬</button></div>`).join("")
+  const html=thoughts.length? thoughts.map((t,i)=>`<div class="titem ${t.kind}">${esc(t.text)}<time>${t.kind==="spark"?"⚡ Spark":"💭 Thought"} · ${new Date(t.ts).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}</time><button class="act" data-thoughtchat="${i}" title="Bring this thought into chat">💬</button><button class="act" data-thoughtsave="${i}" title="Save this thought to memory">💾</button></div>`).join("")
     : '<p class="hint">No thoughts yet — they start flowing once the backend is up.</p>';
   box.innerHTML=html;
   const memBox=$("#thoughtItemsMem");
-  if(memBox){ memBox.innerHTML=html; memBox.querySelectorAll("[data-thoughtchat]").forEach(b=>b.onclick=()=>thoughtToChat(+b.dataset.thoughtchat)); }
+  if(memBox){ memBox.innerHTML=html; memBox.querySelectorAll("[data-thoughtchat]").forEach(b=>b.onclick=()=>thoughtToChat(+b.dataset.thoughtchat)); memBox.querySelectorAll("[data-thoughtsave]").forEach(b=>b.onclick=()=>thoughtToMemory(+b.dataset.thoughtsave)); }
   box.querySelectorAll("[data-thoughtchat]").forEach(b=>b.onclick=()=>thoughtToChat(+b.dataset.thoughtchat));
+  box.querySelectorAll("[data-thoughtsave]").forEach(b=>b.onclick=()=>thoughtToMemory(+b.dataset.thoughtsave));
   try{ paintThoughtBg(); }catch(_){}
   const tb=$("#topicItems");
   if(tb) tb.innerHTML=topics.map((t,i)=>{ const s=t.status==="open"?"🟢":t.status==="closed"?"⚪":"🟡";
@@ -5517,6 +5506,12 @@ function thoughtToChat(i){
   if(inp){ inp.value="What were you thinking when you said: \""+t.text+"\"?"; autoGrow(); }
   const sb=$("#sendBtn"); if(sb) sb.disabled=false;
   if(inp) inp.focus();
+}
+function thoughtToMemory(i){
+  /* A thought that matters becomes a memory: filed in a book, feeds the tape. */
+  const t=thoughts[i]; if(!t) return;
+  const r=saveMemoryInstant(t.text, "From a thought · "+new Date(t.ts).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}));
+  if(r) toast("💾 Thought saved to memory — filed in "+r.book.icon+" "+r.book.name);
 }
 function seedTopics(){
   if(topics.length) return;
