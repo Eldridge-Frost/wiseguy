@@ -134,6 +134,9 @@ button{cursor:pointer;border:0}
 .bubblehead b{font-size:13px}
 .bubblehead time{font-size:12px;color:var(--muted2)}
 .memchip{font-size:11px;font-weight:800;letter-spacing:.02em;background:var(--teal-dim);color:var(--teal);padding:3px 7px;border-radius:99px}
+.memchip.conn-live{background:rgba(74,222,128,.15);color:#4ADE80}
+.memchip.conn-demo{background:rgba(251,191,36,.15);color:#FBBF24}
+.memchip.conn-failed{background:rgba(248,113,113,.15);color:#F87171}
 .bubble p{margin:0 0 10px;line-height:1.75;color:#E7E5E0;font-size:15px}
 .bubble ul{margin:6px 0 12px;padding-left:18px;line-height:1.7;color:#E7E5E0;font-size:15px}
 .bubble code{font-family:JetBrains Mono,monospace;font-size:13px;background:#1E2027;padding:2px 6px;border-radius:6px;border:1px solid var(--border)}
@@ -1753,16 +1756,18 @@ async function freeWebSearch(q){
   if(!lines.length) throw new Error("no results");
   return {lines, via:"free scrape"};
 }
-let lastWebCtx=null;
+let lastWebCtx=null, lastWebError=null;
 async function gatherWebContext(q){
-  lastWebCtx=null;
+  lastWebCtx=null; lastWebError=null;
   try{
     const res = tavilyKey ? await tavilySearch(q) : await freeWebSearch(q);
     lastWebCtx="Live web context ("+res.via+", "+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})+"):\n"+res.lines.join("\n");
-  }catch(_){
+  }catch(e){
+    lastWebError=(e&&e.message)||String(e);
     if(tavilyKey){ try{ const res=await freeWebSearch(q);
       lastWebCtx="Live web context (free scrape fallback, "+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})+"):\n"+res.lines.join("\n");
-    }catch(_2){} }
+      lastWebError=null;
+    }catch(e2){ lastWebError=lastWebError+" / fallback: "+((e2&&e2.message)||String(e2)); } }
   }
   return lastWebCtx;
 }
@@ -1773,7 +1778,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="167"; window._bootMark="script-start";
+window.WG_BUILD="168"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -2384,7 +2389,7 @@ function addUser(text){
 function demoReply(prompt){
   const p=prompt.toLowerCase();
   if(p.includes("remember")||p.includes("memor")) return "Open the Memory tab: everything lives in books — 👥 People, ▦ Projects, ♥ Preferences, 💡 Ideas and ✓ Decisions. They fill automatically as we chat: mention a person, a preference, a decision or an idea and I file it in the right book without you doing anything. Every entry can be ★ starred, ◆ pinned, edited, copied, or sent back into this chat with 💬. The entries there now are labelled demo examples.";
-  if(S.webSearch && needsWeb(p)){ const ctx=lastWebCtx||""; if(ctx) return "Here's what I found:\n\n"+ctx+"\n\n(Demo mode — that's the live web context; connect your backend and I'll reason over it properly.)"; return "Web search is on — I looked, but nothing came back. Try rephrasing, or add a Tavily key in Settings → Engine for stronger search."; }
+  if(S.webSearch && needsWeb(p)){ const ctx=lastWebCtx||""; if(ctx) return "Here's what I found:\n\n"+ctx; return "Web search is on — I looked, but nothing came back. Try rephrasing, or add a Tavily key in Settings → API & BYOK for stronger search."; }
   if(p.includes("week")||p.includes("plan")) return "Let\'s build it from scratch: tell me your fixed commitments and top 3 priorities for the week, and I\'ll turn them into a day-by-day plan. If you save your usual focus times in Memory, I\'ll use them automatically next time.";
   if(p.includes("email")||p.includes("draft")) return "Here's a clean starter draft you can tweak:\n\n“Hi [Name], quick update: we're on track. Next step is [X] by Friday. Flag anything blocking you by EOD Wednesday and I'll clear it. Thanks, Jack”\n\nGive me the name and the X and I'll finish it properly.";
 return "On it. Quick take first, depth if you want it:\n\n"+prompt.slice(0,1).toUpperCase()+prompt.slice(1).replace(/\?$/,"")+" — here's the useful version: start with the smallest clear next step, use what you\'ve saved in Memory, and iterate. Tell me a bit more context and I'll make this specific, not generic.";
@@ -2501,10 +2506,23 @@ async function streamReply(prompt){
     }
   }catch(e){
     live=false; const errMsg=(e&&e.message)||String(e);
-    full=demoReply(prompt)+"\n\n(Note: live call failed ("+errMsg+") — demo reply. Check Settings → API.)";
+    full="⚠️ Live call failed ("+errMsg+") — this is a demo reply, not the model. Check Settings → API.\n\n"+demoReply(prompt);
     totalMs=performance.now()-t0; if(genMs===null) genMs=Math.max(60,totalMs-(ttftMs||0));
   }
   const ty=body.querySelector(".typing"); if(ty) ty.remove();
+  /* Connection chip — every reply says plainly whether it's live or demo,
+     so there's never a question about which one you're talking to. */
+  const connState = live ? "live" : (liveReady ? "failed" : "demo");
+  if(S.webSearch && needsWeb(prompt) && live && !lastWebCtx && lastWebError){
+    full="⚠️ Web search failed ("+lastWebError+") — answering without live web context.\n\n"+full;
+  }
+  const bh=el.querySelector(".bubblehead");
+  if(bh){
+    const cc=document.createElement("span");
+    cc.className="memchip "+(connState==="live"?"conn-live":connState==="failed"?"conn-failed":"conn-demo");
+    cc.textContent = connState==="live" ? "● Live · "+provider : connState==="failed" ? "● Live failed — demo reply" : "● Demo — not connected";
+    const tm=bh.querySelector("time"); if(tm) bh.insertBefore(cc, tm); else bh.appendChild(cc);
+  }
   holder.style.display=""; holder.innerHTML=formatReply(full);
   $("#viewport").scrollTop=$("#viewport").scrollHeight;
   /* Record the run — real numbers: API usage when reported, otherwise the
