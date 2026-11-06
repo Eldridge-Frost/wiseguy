@@ -1401,11 +1401,13 @@ details.wgCard>div{padding:0 16px 16px}
       <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h2 id="modalTitle">API &amp; Bring Your Own Key</h2><p class="sub" id="modalSub">Use OpenAI directly with your own key, or point David at any OpenAI-compatible endpoint. Keys never leave this browser session.</p></div></div>
 
       <div id="mtab-assistants" style="display:none">
-        <p class="sub">Each assistant keeps its own chats, memories, and settings. Provider and keys are shared across all of them on this device.</p>
+        <p class="sub">Each assistant keeps its own chats, memories, settings, model, and system prompt. Provider and keys are shared across all of them on this device.</p>
         <div id="asstList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
         <div class="field"><label>New assistant</label>
           <div style="display:flex;gap:8px;margin-bottom:8px" id="asstColors"></div>
           <div style="display:flex;gap:8px"><input type="text" id="asstNewName" placeholder="Name&hellip;" maxlength="24" autocomplete="off" style="flex:1"><button type="button" class="btn btn-gold" id="asstAddBtn">＋ Add</button></div>
+          <div style="margin-top:8px"><input type="text" id="asstNewModel" placeholder="Model — blank uses the default" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%"></div>
+          <textarea id="asstNewSys" class="padarea" placeholder="System prompt — who is this assistant? What should they do, how should they talk? Blank uses the default." style="min-height:70px;margin-top:8px;width:100%"></textarea>
         </div>
         <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
         <b style="font-size:14px">How the agent thinks</b>
@@ -1453,7 +1455,6 @@ details.wgCard>div{padding:0 16px 16px}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div class="field"><label>Organisation ID (optional)</label><input type="text" id="orgIdInput" placeholder="org-…" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
-          <div class="field"><label>Default model</label><input type="text" id="defaultModelInput" value="local" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
         </div>
         <div class="statusline" id="connStatus" style="background:var(--panel);border-color:var(--border);color:var(--muted)">○ Not connected — paste your OpenAI key above and test the connection</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-gold" id="testBtn">Test connection</button><button class="btn btn-ghost" id="saveApiBtn">Save</button><button class="btn btn-ghost" id="removeKeyBtn" style="color:#FCA5A5">Remove key</button></div>
@@ -1630,7 +1631,7 @@ details.wgCard>div{padding:0 16px 16px}
       </div>
       <div id="mtab-developer" style="display:none">
         <p class="sub">The prompts behind the core brief. Edit them here — they take effect on the next refresh, no rebuild, no middleman. <b>[assistant]</b>, <b>[user]</b> and <b>[SOURCES]</b> are filled in automatically.</p>
-        <div class="field"><label>System prompt</label><textarea id="devTapeSys" class="padarea" style="min-height:110px;font-size:13px"></textarea></div>
+        <div class="field"><label>Brief system prompt — for the tape, not chat</label><textarea id="devTapeSys" class="padarea" style="min-height:110px;font-size:13px"></textarea></div>
         <div class="field"><label>Brief prompt — full refresh</label><textarea id="devTapePrompt" class="padarea" style="min-height:260px;font-size:13px"></textarea></div>
         <div class="field"><label>Update prompt — append mode</label><textarea id="devTapeAppend" class="padarea" style="min-height:130px;font-size:13px"></textarea></div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
@@ -1782,7 +1783,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="163"; window._bootMark="script-start";
+window.WG_BUILD="164"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -1817,7 +1818,7 @@ function wgSave(){
       assistants:assistants,
       activeId:activeAssistantId,
       byok:{ key:apiKey||"", provider:provider, urls:savedUrls, keys:savedKeys, tavilyKey:tavilyKey||"",
-             model:(document.querySelector("#defaultModelInput")||{}).value||"",
+             model:(activeAssistant()&&activeAssistant().model)||"",
              org:(document.querySelector("#orgIdInput")||{}).value||"",
              localModels:localModels, picked:currentModel }
     }));
@@ -2081,7 +2082,7 @@ $("#modelSelect").addEventListener("change",e=>{
     else { openSettings("api"); }
     return;
   }
-  currentModel=v; const mid=MODEL_IDS[currentModel]; if(mid) $("#defaultModelInput").value=mid;
+  currentModel=v; const mid=MODEL_IDS[currentModel]; if(mid){ const a=activeAssistant(); if(a) a.model=mid; }
   renderSheetTags(); wgSave(); toast("Model switched to "+currentModel);
 });
 
@@ -2276,8 +2277,7 @@ baseUrlInputEl.addEventListener("keydown",e=>{
    idempotent, so firing twice is harmless. */
 $("#urlSuggest").addEventListener("mousedown",e=>{ const b=e.target.closest("[data-us]"); if(!b) return; e.preventDefault(); applySuggest(b.dataset.us); });
 $("#urlSuggest").addEventListener("click",e=>{ const b=e.target.closest("[data-us]"); if(!b) return; applySuggest(b.dataset.us); });
-$("#defaultModelInput").addEventListener("blur",e=>{ e.target.value=cleanFieldText(e.target.value); });
-$("#defaultModelInput").addEventListener("paste",e=>{ setTimeout(()=>{ e.target.value=cleanFieldText(e.target.value); wgSave(); },0); });
+
 $("#orgIdInput").addEventListener("blur",e=>{ e.target.value=cleanFieldText(e.target.value); wgSave(); });
 
 $$(".prov").forEach(p=>p.onclick=()=>{
@@ -2348,7 +2348,6 @@ $("#testBtn").onclick=async()=>{
 $("#saveApiBtn").onclick=()=>{
   const key=cleanApiKey(keyInput.value); keyInput.value=key; apiKey=key; updateKeyMeta(false); wgSave();
   baseUrlInputEl.value=cleanFieldText(baseUrlInputEl.value);
-  $("#defaultModelInput").value=cleanFieldText($("#defaultModelInput").value);
   const res=updateResolved();
   toast("Saved on this device — chats will POST to "+res.chatUrl);
 };
@@ -4144,12 +4143,16 @@ function saveGate(){
   return {ok:true};
 }
 function effectiveModelId(){
-  const typed=($("#defaultModelInput").value||"").trim();
-  if(!S.modelTag) return typed||MODEL_IDS[currentModel]||"local";
-  if(typed && MODEL_IDS[currentModel] && typed!==MODEL_IDS[currentModel]) return typed; /* hand-edited default wins */
-  return MODEL_IDS[currentModel]||typed||"local";
+  /* v164 — the model lives on the assistant now. The global Default model field is gone.
+     Fall back to the picked model, then local. */
+  const a=(typeof activeAssistant==="function")?activeAssistant():null;
+  if(a&&a.model) return String(a.model).trim()||"local";
+  return MODEL_IDS[currentModel]||"local";
 }
 function personaText(){
+  /* v164 — per-assistant system prompt. When set, it IS the persona. */
+  const a=(typeof activeAssistant==="function")?activeAssistant():null;
+  if(a&&a.systemPrompt) return String(a.systemPrompt).trim();
   const n=userName();
   if(!S.personalityTag) return "I'm "+assistantName()+". I talk straight, I listen first, and I don't waste your time.";
   let t="I'm "+assistantName()+" — "+n+"'s guy, the one answering here. I talk like a person, not a product: first person, plain words, no corporate fog. I say the real thing and skip the filler. If I don't know something, I say so — an honest gap beats a pretty guess. "+
@@ -4473,6 +4476,7 @@ function showSetup(){
 
 /* ===== Assistants management (Settings) ===== */
 let asstNewColor=ASST_COLORS[0];
+let editingAsstId=null; /* which assistant's model/prompt editor is open */
 function renderAssistants(){
   const host=$("#asstList"); if(!host) return;
   host.innerHTML="";
@@ -4498,6 +4502,9 @@ function renderAssistants(){
       inp.addEventListener("keydown",e=>{ if(e.key==="Enter") inp.blur(); if(e.key==="Escape"){ renderAssistants(); } });
     };
     row.appendChild(rn);
+    const ed2=document.createElement("button"); ed2.className="btn btn-ghost"; ed2.style.padding="6px 10px"; ed2.style.fontSize="12px"; ed2.textContent="Edit";
+    ed2.onclick=()=>{ editingAsstId=(editingAsstId===a.id)?null:a.id; renderAssistants(); };
+    row.appendChild(ed2);
     if(assistants.length>1){
       const del=document.createElement("button"); del.className="btn btn-ghost"; del.style.padding="6px 10px"; del.style.fontSize="12px"; del.textContent="✕";
       del.title="Delete assistant";
@@ -4519,6 +4526,24 @@ function renderAssistants(){
     }
     row.onclick=(e)=>{ if(e.target===row||e.target===nm||e.target===dot) switchAssistant(a.id); };
     host.appendChild(row);
+    if(editingAsstId===a.id){
+      const ed=document.createElement("div");
+      ed.style.cssText="border:1px solid var(--gold);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px";
+      const mLab=document.createElement("label"); mLab.textContent="Model"; mLab.style.cssText="font-size:12px;color:var(--muted)";
+      const mIn=document.createElement("input"); mIn.type="text"; mIn.value=a.model||""; mIn.placeholder="Model — blank uses the default"; mIn.autocapitalize="off"; mIn.autocorrect="off"; mIn.spellcheck=false;
+      mIn.style.cssText="background:var(--panel);border:1px solid var(--border);border-radius:8px;color:white;padding:8px 10px;font-size:14px;width:100%";
+      const sLab=document.createElement("label"); sLab.textContent="System prompt"; sLab.style.cssText="font-size:12px;color:var(--muted)";
+      const sIn=document.createElement("textarea"); sIn.value=a.systemPrompt||""; sIn.placeholder="Who is this assistant? What should they do, how should they talk? Blank uses the default.";
+      sIn.style.cssText="background:var(--panel);border:1px solid var(--border);border-radius:8px;color:white;padding:8px 10px;font-size:14px;min-height:70px;width:100%";
+      const btnRow=document.createElement("div"); btnRow.style.cssText="display:flex;gap:8px";
+      const sv=document.createElement("button"); sv.className="btn btn-gold"; sv.textContent="Save"; sv.style.cssText="padding:8px 14px";
+      sv.onclick=()=>{ a.model=mIn.value.trim(); a.systemPrompt=sIn.value.trim(); editingAsstId=null; wgSave(); renderAssistants(); toast("Saved — "+a.name+" updated"); };
+      const cx=document.createElement("button"); cx.className="btn btn-ghost"; cx.textContent="Cancel"; cx.style.cssText="padding:8px 14px";
+      cx.onclick=()=>{ editingAsstId=null; renderAssistants(); };
+      btnRow.appendChild(sv); btnRow.appendChild(cx);
+      ed.appendChild(mLab); ed.appendChild(mIn); ed.appendChild(sLab); ed.appendChild(sIn); ed.appendChild(btnRow);
+      host.appendChild(ed);
+    }
   });
   /* color presets for new */
   const ch=$("#asstColors"); if(ch&&!ch.children.length){
@@ -4568,8 +4593,8 @@ try{
   const addBtn=$("#asstAddBtn");
   if(addBtn) addBtn.onclick=()=>{
     const v=($("#asstNewName").value||"").trim().slice(0,24); if(!v){ toast("Give the assistant a name first"); return; }
-    const a={id:"asst-"+Date.now().toString(36), name:v, color:asstNewColor};
-    assistants.push(a); $("#asstNewName").value="";
+    const a={id:"asst-"+Date.now().toString(36), name:v, color:asstNewColor, model:(($("#asstNewModel")||{}).value||"").trim(), systemPrompt:(($("#asstNewSys")||{}).value||"").trim()};
+    assistants.push(a); $("#asstNewName").value=""; const _nm=$("#asstNewModel"); if(_nm) _nm.value=""; const _ns=$("#asstNewSys"); if(_ns) _ns.value="";
     wgSave(); renderAssistants();
     toast(v+" created — tap Switch to use them");
   };
@@ -4828,7 +4853,7 @@ function removeSheetTag(key){
   if(key==="memory"){ if(S.sheetMemory && S.memoryMaster){ S.sheetMemory=false; toast("Memory removed from this chat — saved memories won't be used here"); } else { S.memoryMaster=true; S.sheetMemory=true; toast("Memory back on — master switch re-enabled in the Memory tab too"); } }
   if(key==="web"){ S.webSearch=false; toast("Web search off for this chat"); }
   if(key==="stt"){ toast("STT model is set in Settings → Hotline — tap to change it there"); return; }
-  if(key==="model"){ S.modelTag=false; toast("Model tag removed — this chat now uses your saved default model ("+(($("#defaultModelInput").value||"gpt-4o"))+")"); }
+  if(key==="model"){ S.modelTag=false; toast("Model tag removed — this chat now uses "+(effectiveModelId()||"gpt-4o")); }
   syncSwitches(); renderSheetTags();
 }
 try{ renderSheetTags(); }catch(_){}
