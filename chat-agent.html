@@ -1778,7 +1778,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="168"; window._bootMark="script-start";
+window.WG_BUILD="169"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -1945,21 +1945,51 @@ function wgExpandCollapseRow(scope, getCards){
 }
 function wgMakeCollapsible(){
   try{
-    /* Settings tabs: wrap each direct-child .field / .switchrow in a <details class="wgCard"> */
+    /* Settings tabs: each direct-child .field gets its own <details class="wgCard">.
+       But consecutive little toggles (.switchrow) share ONE card — six switches
+       don't need six windows, they fit in one. That shared card starts open. */
+    const wrapOne=(el)=>{
+      const det=document.createElement("details");
+      det.className="wgCard"; det.open=false; /* everything starts collapsed — Jack picks what opens by default */
+      const sum=document.createElement("summary");
+      sum.textContent=wgCardTitle(el);
+      el.style.marginBottom="0";
+      el.parentNode.insertBefore(det, el);
+      det.appendChild(sum);
+      det.appendChild(el);
+      return det;
+    };
+    const wrapToggles=(run)=>{
+      if(!run.length) return null;
+      if(run.length===1) return wrapOne(run[0]);
+      const det=document.createElement("details");
+      det.className="wgCard"; det.open=true; /* the toggles fit in one window — show them */
+      const sum=document.createElement("summary");
+      sum.textContent="Quick toggles";
+      run.forEach(el=>{ el.style.marginBottom="0"; });
+      run[0].parentNode.insertBefore(det, run[0]);
+      det.appendChild(sum);
+      run.forEach(el=>det.appendChild(el));
+      return det;
+    };
     ["general","assistants","api","engine","data","shortcuts","developer","background"].forEach(t=>{
       const tab=$("#mtab-"+t); if(!tab) return;
-      const blocks=[...tab.children].filter(el=>el.classList && (el.classList.contains("field")||el.classList.contains("switchrow")) && el.tagName!=="DETAILS");
-      if(!blocks.length) return;
-      blocks.forEach(el=>{
-        const det=document.createElement("details");
-        det.className="wgCard"; det.open=false; /* everything starts collapsed — Jack picks what opens by default */
-        const sum=document.createElement("summary");
-        sum.textContent=wgCardTitle(el);
-        el.style.marginBottom="0";
-        el.parentNode.insertBefore(det, el);
-        det.appendChild(sum);
-        det.appendChild(el);
+      const kids=[...tab.children];
+      if(!kids.some(el=>el.classList && (el.classList.contains("field")||el.classList.contains("switchrow")) && el.tagName!=="DETAILS")) return;
+      let run=[];
+      const flushRun=()=>{ wrapToggles(run); run=[]; };
+      kids.forEach(el=>{
+        if(!el.classList || el.tagName==="DETAILS"){ flushRun(); return; }
+        if(el.classList.contains("switchrow")){
+          if(run.length && el.previousElementSibling!==run[run.length-1]) flushRun();
+          run.push(el);
+        } else if(el.classList.contains("field")){
+          flushRun(); wrapOne(el);
+        } else {
+          flushRun();
+        }
       });
+      flushRun();
       const cards=[...tab.querySelectorAll("details.wgCard")];
       if(cards.length>=2) wgExpandCollapseRow(tab, ()=>[...tab.querySelectorAll("details.wgCard")]);
     });
