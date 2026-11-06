@@ -765,7 +765,7 @@ details.wgCard>div{padding:0 16px 16px}
         <option value="__byok">⚿ BYOK model… (Settings)</option>
       </select>
       <div class="top-actions" style="display:none">
-        <button class="tokenbtn" id="tokenBtn" aria-label="Token speed and usage for this chat" title="Tokens — speed, usage &amp; context for this chat"><span class="tt">t</span><span class="ts"><span id="tokenBtnSpeed">91.4</span><small>tok / sec</small></span></button>
+        <button class="tokenbtn" id="tokenBtn" aria-label="Token speed and usage for this chat" title="Tokens — speed, usage &amp; context for this chat"><span class="tt">t</span><span class="ts"><span id="tokenBtnSpeed">—</span><small>tok / sec</small></span></button>
         <button class="iconbtn topact" id="topNewChat" aria-label="New chat" title="New chat">＋</button>
         <button class="iconbtn topact" id="topAttach" aria-label="Attach files" title="Attach files">📎</button>
         <button class="iconbtn topact" id="persCycleBtn" aria-label="Cycle persona" title="Cycle persona">🎭</button>
@@ -785,7 +785,7 @@ details.wgCard>div{padding:0 16px 16px}
         <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#22262E" stroke-width="15" stroke-linecap="round"/>
         <path id="tokGaugeArc" d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#5EEAD4" stroke-width="15" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" style="transition:stroke-dashoffset .18s ease, stroke .3s"/>
       </svg>
-      <div class="gauge-num" id="tokGaugeNum">0.0</div>
+      <div class="gauge-num" id="tokGaugeNum">—</div>
       <div class="gauge-unit">tokens / second · total speed · scale 0–120</div>
       <div class="threespeed">
         <div><span>Peak</span><b id="tokPeak">—</b></div>
@@ -1467,7 +1467,7 @@ details.wgCard>div{padding:0 16px 16px}
         <p class="sub" style="margin-bottom:6px">Calibration view — how the engine is running, what the last chats cost in context, and where every token went. Estimates are labelled “est.” (chars ÷ 4) when the backend doesn't report usage.</p>
         <div class="enginerow"><span><span class="onlinedot"></span>Backend</span><b id="engBackend">online · Demo mode</b></div>
         <div class="enginerow"><span>Model</span><b id="engModel">Local</b></div>
-        <div class="enginerow"><span>Last speed</span><b id="engLastSpeed">Peak 91.4 · gen — · total 91.4 tok/s</b></div>
+        <div class="enginerow"><span>Last speed</span><b id="engLastSpeed">No runs yet — send a message</b></div>
         <div class="enginerow"><span>Context window</span><b>128,000 tokens</b></div>
         <div class="enginerow"><span>Last context used</span><b id="engLastCtx">—</b></div>
         <div class="enginerow"><span>Context audit</span><b class="goldv" id="engAuditTotal">≈ 1,846 tokens (23% of 8K, Standard)</b></div>
@@ -1778,7 +1778,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="169"; window._bootMark="script-start";
+window.WG_BUILD="170"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -3810,17 +3810,32 @@ $("#topSaveChat").onclick=()=>{ showTab("chat"); exportChat(); };
 $("#topCopyChat").onclick=()=>{ showTab("chat"); copyChat(); };
 
 /* ✨ Ghost Writer — light polish. Formats and enhances the draft in the
-   composer, keeping Jack's voice and words nearly intact. Not a rewrite. */
+   composer, keeping Jack's voice and words nearly intact. Not a rewrite.
+   SAFETY: the original is never destroyed. A polish that comes back under
+   half the draft's words is a summary, not a polish — the original stays.
+   Tap ✨ again right after a polish to undo it. */
+let ghostBackup=null, ghostPolished=null;
 $("#ghostBtn").onclick=async()=>{
-  const ta=$("#input"); const draft=(ta.value||"").trim();
+  const ta=$("#input");
+  if(ghostBackup!==null && ghostPolished!==null && (ta.value||"").trim()===ghostPolished){
+    ta.value=ghostBackup; toast("Original restored"); ghostBackup=null; ghostPolished=null; return;
+  }
+  const draft=(ta.value||"").trim();
   if(!draft){ toast("Type something first — I'll polish it"); return; }
   const btn=$("#ghostBtn"); btn.textContent="…"; btn.disabled=true;
+  const wc=s=>(s.trim().split(/\s+/).filter(Boolean).length);
   try{
     const sys="You are a light-touch editor. Format and enhance the user's text: fix formatting, tighten phrasing, clean up roughness. Keep their voice, their words nearly intact — do NOT rewrite, do NOT change meaning, do NOT add new ideas. Output ONLY the polished text, no commentary, no quotes.";
     const res=await callLive(draft, {system:sys, tailMsgs:[]}, null);
-    if(res && res.text){ ta.value=res.text.trim(); toast("Polished ✓"); }
-    else toast("Ghostwriter came back empty");
-  }catch(e){ toast("Ghostwriter failed — "+((e&&e.message)||"unknown")); }
+    const polished=res&&res.text?res.text.trim():"";
+    if(!polished){ toast("Ghostwriter came back empty — your text is untouched"); }
+    else if(wc(polished) < wc(draft)*0.5){
+      toast("Ghostwriter shrank your text ("+wc(draft)+" → "+wc(polished)+" words) — kept your original");
+    } else {
+      ghostBackup=draft; ghostPolished=polished;
+      ta.value=polished; toast("Polished ✓ — tap ✨ again to undo");
+    }
+  }catch(e){ toast("Ghostwriter failed — "+((e&&e.message)||"unknown")+" — your text is untouched"); }
   btn.textContent="✨"; btn.disabled=false;
 };
 
@@ -3861,25 +3876,10 @@ $("#sheetTempSwitch").onclick=e=>{ tempChat=!tempChat; e.currentTarget.classList
 /* Run history — last 50 kept, newest first, numbers only (no prompt text stored).
    Kinds match the filter: Thought/Well, Chat, Other. */
 const RUN_KINDS=["Thought/Well","Chat","Other"];
-const RUNS=(()=>{
-  const kindPattern=["Thought/Well","Thought/Well","Chat","Thought/Well","Other","Thought/Well","Chat","Thought/Well","Thought/Well","Other"];
-  const out=[]; let mins=0;
-  for(let i=0;i<50;i++){
-    const kind=kindPattern[i%kindPattern.length];
-    const sys=12;
-    const input= kind==="Chat" ? 180+((i*137)%820) : kind==="Thought/Well" ? 240+((i*211)%900) : 60+((i*97)%420);
-    const hist= kind==="Chat" ? ((i*53)%4)*120 : 0;
-    const histMsgs= hist? 2+((i*53)%4) : 0;
-    const prompt=sys+hist+input;
-    const output= kind==="Other" ? 40+((i*61)%180) : 70+((i*83)%210);
-    const peak=(68+((i*37)%29)+(i%3)*0.4).toFixed(1);
-    const secs=Math.max(0.6, prompt/620 + output/260).toFixed(1);
-    const base=new Date(2026,9,29,11,35,0); base.setMinutes(base.getMinutes()-mins); mins+= kind==="Chat"?4:2;
-    out.push({kind, backend:"Local · Demo", peak, prompt, sys, hist, histMsgs, input, output, totalTok:prompt+output, secs,
-      when: base.toLocaleDateString([], {month:"short", day:"numeric"})+", "+base.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})});
-  }
-  return out;
-})();
+/* Run history — real runs only, newest first. Starts empty: every entry here
+   is a run this app actually recorded (chat, thought, bench), with measured
+   timing and token counts. No sample data. */
+const RUNS=[];
 const CLIPBOARD_CAP=100000; /* safe text cap for iPhone & Android clipboards, well under the ~1MB system limit */
 let runFilter="all";
 function filteredRuns(){ return runFilter==="all" ? RUNS : RUNS.filter(r=>r.kind===runFilter); }
@@ -3926,71 +3926,79 @@ async function copyRunHistory(){
   catch{ toast("Copy not available in this browser — use Export .txt instead"); }
 }
 /* ===== Token ticker — daily token usage, stock-chart style =====
-   One literal series is the single source: bars, both moving averages,
-   and every stat on the card are computed from it. Demo series (demo mode):
-   90 days, Aug 1 – Oct 29 2026, total tokens per day (prompt + output). */
-const TICKER_DAYS=[
-20510,21670,30760,31200,31340,31280,31130,22710,22700,31200,
-31610,32230,33000,33830,26300,26890,35510,35460,35020,34190,
-33040,23350,21870,28750,27520,26620,26130,26110,18240,19070,
-28500,29830,31200,32510,33630,26220,26850,35530,44740,35860,
-36010,36300,28490,29270,38620,39930,41410,42950,44430,37390,
-38330,47140,47180,46760,45920,44750,35090,33670,40660,39570,
-38790,38380,38330,30310,30820,39770,40440,41020,41420,41610,
-33290,48090,41090,40800,40650,40730,41160,33670,34870,44740,
-46570,48550,50530,52370,45630,46800,55820,56080,55910,55390
-];
-const TICKER_START=new Date(2026,7,1); /* Aug 1 2026 */
-function tickerDate(i){ const d=new Date(TICKER_START); d.setDate(d.getDate()+i); return d; }
+   Real runs only — no sample data. The series is built by aggregating the
+   recorded runs (RUNS) by their timestamp, filtered by the run-history kind
+   filter. Runs are in-memory, so the history starts empty each session and
+   builds as you chat; days/hours/minutes with no runs read 0. */
 function fmtTok(v){ return v>=1000 ? (Math.round(v/100)/10).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})+"K" : String(Math.round(v)); }
 /* Chart state — Line / Bars / Candles, moving averages toggleable,
    granularity Day / Hour / Minute, and the series follows the run-history kind filter. */
 let tickerType="bars", tickerMA20On=true, tickerMA50On=true, tickerGran="day";
-/* Per-kind daily series, split from TICKER_DAYS so the kinds sum to the day's total. */
-const TICKER_KINDS=(()=>{
-  const tw=[], ch=[], ot=[];
-  TICKER_DAYS.forEach((v,i)=>{
-    const a=Math.round(v*(.52+.06*Math.sin(i/5.1))), b=Math.round(v*(.30+.04*Math.sin(i/3.3+1.2)));
-    tw.push(a); ch.push(b); ot.push(v-a-b);
+function tickerSeries(){
+  const runs=RUNS.filter(r=>runFilter==="all" || r.kind===runFilter);
+  const now=new Date();
+  const dayDates=[], hourDates=[], minDates=[];
+  const d0=new Date(now); d0.setHours(0,0,0,0);
+  for(let i=89;i>=0;i--){ const d=new Date(d0); d.setDate(d.getDate()-i); dayDates.push(d); }
+  const h0=new Date(now); h0.setMinutes(0,0,0);
+  for(let i=71;i>=0;i--){ const d=new Date(h0); d.setHours(d.getHours()-i); hourDates.push(d); }
+  const m0=new Date(now); m0.setSeconds(0,0);
+  for(let i=119;i>=0;i--){ const d=new Date(m0); d.setMinutes(d.getMinutes()-i); minDates.push(d); }
+  const dayVals=new Array(90).fill(0), hourVals=new Array(72).fill(0), minVals=new Array(120).fill(0);
+  const dayIdx=new Map(dayDates.map((d,i)=>[d.toDateString(),i]));
+  const hourIdx=new Map(hourDates.map((d,i)=>[d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()+"-"+d.getHours(),i]));
+  const minIdx=new Map(minDates.map((d,i)=>[d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()+"-"+d.getHours()+"-"+d.getMinutes(),i]));
+  let any=false;
+  runs.forEach(r=>{
+    if(!r.ts) return; const t=new Date(r.ts); const tot=r.totalTok||0; any=true;
+    const di=dayIdx.get(t.toDateString()); if(di!=null) dayVals[di]+=tot;
+    const hi=hourIdx.get(t.getFullYear()+"-"+t.getMonth()+"-"+t.getDate()+"-"+t.getHours()); if(hi!=null) hourVals[hi]+=tot;
+    const mi=minIdx.get(t.getFullYear()+"-"+t.getMonth()+"-"+t.getDate()+"-"+t.getHours()+"-"+t.getMinutes()); if(mi!=null) minVals[mi]+=tot;
   });
-  return {"all":TICKER_DAYS, "Thought/Well":tw, "Chat":ch, "Other":ot};
-})();
-const HOUR_W=[.012,.008,.006,.005,.006,.010,.022,.040,.058,.072,.078,.075,.068,.072,.078,.082,.075,.062,.048,.038,.030,.024,.018,.014]; /* share of a day's tokens by hour */
+  return {dayVals, hourVals, minVals, dayDates, hourDates, minDates, any};
+}
 function maOf(arr,n){ return arr.map((_,i)=>{ if(i<n-1) return null; let s=0; for(let j=i-n+1;j<=i;j++) s+=arr[j]; return s/n; }); }
 function ohlcOf(arr){ return arr.map((close,i)=>{ const open= i===0 ? Math.round(close*0.97) : arr[i-1]; const wob=1+((i*7)%5)*0.008; return { o:open, c:close, h:Math.round(Math.max(open,close)*1.035*wob), l:Math.round(Math.min(open,close)*(2-1.035*wob)) }; }); }
-/* The current view: one values array + labels, built from the filtered kind at the chosen granularity.
-   Hour = last 3 days broken into 72 hours (each day's hours sum back to that day).
-   Minute = the last 120 minutes (9:36–11:35 AM, Oct 29), each clock-hour slice normalised to its hour. */
+/* The current view: one values array + labels, built from the real recorded
+   runs at the chosen granularity — day (last 90 days), hour (last 72 hours),
+   or minute (last 120 minutes), each bucket summed from the runs that
+   actually landed in it. */
 function tickerView(){
-  const baseDaily=TICKER_KINDS[runFilter]||TICKER_DAYS;
-  const daily=baseDaily.slice();
-  /* Runs recorded this session are real — they land on today's bar (and flow
-     into the hour/minute views, which are built from the last days). */
-  daily[daily.length-1]+= (typeof realToday!=="undefined" ? (realToday[runFilter]||0) : 0);
+  const s=tickerSeries();
   const kindLabel= runFilter==="all" ? "All kinds" : runFilter;
-  if(tickerGran==="day") return { vals:daily, kindLabel, unit:"day", short:"d", range:"last 90 days", vs:"vs yesterday",
-    fmt:i=>tickerDate(i).toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"}),
-    tick:i=>tickerDate(i).toLocaleDateString([], {month:"short", day:"numeric"}) };
-  const hourVals=[], hourTimes=[];
-  [87,88,89].forEach(di=>{
-    const raw=HOUR_W.map((w,h)=> w*(0.9+(((di*24+h)*13)%19)/100)), rs=raw.reduce((a,b)=>a+b,0);
-    raw.forEach((rw,h)=>{ hourVals.push(Math.round(daily[di]*rw/rs)); const d=tickerDate(di); d.setHours(h,0,0,0); hourTimes.push(d); });
-  });
-  if(tickerGran==="hour") return { vals:hourVals, kindLabel, unit:"hour", short:"h", range:"last 72 hours", vs:"vs previous hour",
-    fmt:i=>hourTimes[i].toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"})+" · "+hourTimes[i].toLocaleTimeString([], {hour:"numeric"}),
-    tick:i=>hourTimes[i].toLocaleDateString([], {weekday:"short"})+" "+hourTimes[i].toLocaleTimeString([], {hour:"numeric"}) };
-  const minVals=[], minTimes=[], startMin=new Date(2026,9,29,9,36);
-  [[24,hourVals[57]*24/60],[60,hourVals[58]],[36,hourVals[59]*36/60]].forEach(([mins,total])=>{
-    const raw=Array.from({length:mins},(_,k)=> 0.78+(((minVals.length+k)*29)%47)/100), rs=raw.reduce((a,b)=>a+b,0);
-    raw.forEach(rw=>{ minVals.push(Math.max(1,Math.round(total*rw/rs))); const d=new Date(startMin); d.setMinutes(d.getMinutes()+minVals.length-1); minTimes.push(d); });
-  });
-  return { vals:minVals, kindLabel, unit:"minute", short:"m", range:"last 120 minutes", vs:"vs previous minute",
-    fmt:i=>minTimes[i].toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})+" · "+minTimes[i].toLocaleDateString([], {month:"short", day:"numeric"}),
-    tick:i=>minTimes[i].toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) };
+  if(tickerGran==="day") return { vals:s.dayVals, kindLabel, unit:"day", short:"d", range:"last 90 days", vs:"vs yesterday",
+    fmt:i=>s.dayDates[i].toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"}),
+    tick:i=>s.dayDates[i].toLocaleDateString([], {month:"short", day:"numeric"}) };
+  if(tickerGran==="hour") return { vals:s.hourVals, kindLabel, unit:"hour", short:"h", range:"last 72 hours", vs:"vs previous hour",
+    fmt:i=>s.hourDates[i].toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"})+" · "+s.hourDates[i].toLocaleTimeString([], {hour:"numeric"}),
+    tick:i=>s.hourDates[i].toLocaleDateString([], {weekday:"short"})+" "+s.hourDates[i].toLocaleTimeString([], {hour:"numeric"}) };
+  return { vals:s.minVals, kindLabel, unit:"minute", short:"m", range:"last 120 minutes", vs:"vs previous minute",
+    fmt:i=>s.minDates[i].toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})+" · "+s.minDates[i].toLocaleDateString([], {month:"short", day:"numeric"}),
+    tick:i=>s.minDates[i].toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) };
 }
 function renderTicker(){
   const svg=$("#tickerChart"); if(!svg) return;
   const view=tickerView(), vals=view.vals, N=vals.length;
+  /* No real runs yet — show an honest empty state, not a flat chart. */
+  if(!vals.reduce((a,b)=>a+b,0)){
+    $$(".ticker-seg [data-ctype]").forEach(b=>b.classList.toggle("active", b.dataset.ctype===tickerType));
+    $$(".ticker-seg [data-gran]").forEach(b=>b.classList.toggle("active", b.dataset.gran===tickerGran));
+    $$(".ma-toggle").forEach(b=>{ const on= b.dataset.ma==="20" ? tickerMA20On : tickerMA50On; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
+    svg.innerHTML=`<text x="280" y="119" text-anchor="middle" font-size="13" fill="#9CA3AF" font-family="JetBrains Mono,monospace">No runs yet — send a message and your usage lands here.</text>`;
+    $("#tickerSym").textContent="TOKENS · "+view.unit.toUpperCase();
+    $("#tickerName").textContent="Token ticker — "+view.kindLabel+" · "+view.range;
+    $("#tickerLast").textContent="—";
+    $("#tickerPriceLabel").textContent="avg tokens / "+view.unit+" · "+view.kindLabel;
+    const chgEl=$("#tickerChg"); chgEl.textContent="—"; chgEl.className="ticker-chg";
+    $("#tickerMa20").textContent="—"; $("#tickerMa50").textContent="—"; $("#tickerHigh").textContent="—"; $("#tickerTotal").textContent="—";
+    $("#tickerMa20Label").textContent="20-"+view.unit+" avg";
+    $("#tickerMa50Label").textContent="50-"+view.unit+" avg";
+    $("#tickerHighLabel").textContent=view.range.replace("last ","")+" high";
+    $("#tickerTotalLabel").textContent=view.range.replace("last ","")+" total";
+    $("#tickerNote").innerHTML="Real runs only — no sample data. History builds as you chat; each run you make is recorded for real.";
+    const read=$("#tickerReadout"); if(read) read.textContent="No runs yet.";
+    return;
+  }
   const ma20arr=maOf(vals,20), ma50arr=maOf(vals,50), ohlc=ohlcOf(vals);
   const W=560,H=238,padL=46,padR=8,padT=10,padB=24,plotW=W-padL-padR,plotH=H-padT-padB;
   const maxV=Math.max(...vals);
@@ -4050,7 +4058,7 @@ function renderTicker(){
   if(leg[0]) leg[0].innerHTML="<i class=\"barsw\" style=\"background:#34D399\"></i>Up "+view.unit+"<i class=\"barsw\" style=\"background:#F87171;margin-left:8px\"></i>Down "+view.unit;
   if(leg[1]) leg[1].innerHTML="<i style=\"background:var(--gold)\"></i>20-"+view.unit+" moving avg";
   if(leg[2]) leg[2].innerHTML="<i style=\"background:#7DD3FC\"></i>50-"+view.unit+" moving avg";
-  $("#tickerNote").innerHTML="This ticker follows the <b style='color:#D8D5CE'>kind filter</b> in Run history (Settings → Engine) — currently <b style='color:#D8D5CE'>"+esc(view.kindLabel)+"</b>, so the big number is that kind's average. Drill down with Day / Hour / Minute to test at finer grain. "+(realToday.all? "Includes <b style='color:#D8D5CE'>"+realToday.all.toLocaleString()+" tokens</b> from runs recorded this session, added to today. " : "Demo series as the baseline — runs you make are recorded for real and added to today. ")+"Peak "+view.unit+": <b style='color:#D8D5CE'>"+view.fmt(highIdx)+" · "+maxV.toLocaleString()+" tokens</b>. "+
+  $("#tickerNote").innerHTML="This ticker follows the <b style='color:#D8D5CE'>kind filter</b> in Run history (Settings → Engine) — currently <b style='color:#D8D5CE'>"+esc(view.kindLabel)+"</b>, so the big number is that kind's average. Real runs only — no sample data. "+(realToday.all? "Includes <b style='color:#D8D5CE'>"+realToday.all.toLocaleString()+" tokens</b> from runs recorded this session. " : "")+"Peak "+view.unit+": <b style='color:#D8D5CE'>"+view.fmt(highIdx)+" · "+maxV.toLocaleString()+" tokens</b>. "+
     (ma20>ma50 ? "The 20-"+view.unit+" average sits <b style='color:#D8D5CE'>above</b> the 50-"+view.unit+" — usage is trending up against the longer baseline." : "The 20-"+view.unit+" average sits <b style='color:#D8D5CE'>below</b> the 50-"+view.unit+" — usage is cooling off versus the longer baseline.");
   const read=$("#tickerReadout");
   const showDay=i=>{ const v=vals[i];
@@ -4338,7 +4346,7 @@ function auditRows(brief){
    Speeds come from measured timings; usage from the API when reported. */
 function recordRun(r){
   const prompt=r.sys+r.hist+r.input;
-  const totalSecs=Math.max(0.1, r.totalMs/1000);
+  const totalSecs=Math.max(0.1, (r.totalMs||0)/1000); /* never NaN — a missing timing must not poison the speed readouts */
   const totSpd=r.output/totalSecs;
   const genSpd=r.genMs? r.output/Math.max(0.05,r.genMs/1000) : null;
   const peak=Math.max(totSpd, genSpd||0)*1.12;
@@ -5583,8 +5591,11 @@ let tokLiveTimer=null, tokTesting=false;
 function tokSpeeds(){ if(!RUNS||!RUNS.length) return {peak:0,gen:0,total:0}; const latest=RUNS[0], peak=parseFloat(latest.peak); return { peak, gen: latest.gen?parseFloat(latest.gen):peak*0.86, total: latest.tot?parseFloat(latest.tot):peak }; }
 function setGauge(v){ const frac=Math.min(1, Math.max(0, v/120)); const arc=$("#tokGaugeArc"); if(!arc) return; arc.style.strokeDashoffset=(377*(1-frac)).toFixed(1); arc.style.stroke= v>=70 ? "#5EEAD4" : v>=40 ? "#E6C27A" : "#F87171"; $("#tokGaugeNum").textContent=v.toFixed(1); }
 function renderTokenPanel(){
-  const sp=tokSpeeds(); setGauge(sp.total);
-  $("#tokPeak").textContent=sp.peak.toFixed(1); $("#tokGen").textContent="≈"+sp.gen.toFixed(1); $("#tokTotalSpd").textContent=sp.total.toFixed(1);
+  const sp=tokSpeeds(); const hasRuns=RUNS.length>0; setGauge(sp.total);
+  $("#tokPeak").textContent=hasRuns? sp.peak.toFixed(1) : "—";
+  $("#tokGen").textContent=hasRuns? "≈"+sp.gen.toFixed(1) : "—";
+  $("#tokTotalSpd").textContent=hasRuns? sp.total.toFixed(1) : "—";
+  if(!hasRuns){ const gn=$("#tokGaugeNum"); if(gn) gn.textContent="—"; }
   $("#tokGaugeModel").textContent=currentModel+(apiKey ? " · "+provider : " · Demo mode");
   let u=0,a=0,uc=0,ac=0;
   $$("#messages .msg").forEach(m=>{ const b=m.querySelector(".bubble"); const t=b?b.innerText:""; const est=Math.max(1,Math.round(t.length/4)); if(m.classList.contains("user")){ u+=est; uc++; } else { a+=est; ac++; } });
@@ -5599,17 +5610,20 @@ function renderTokenPanel(){
   $("#tokCtxSub").textContent="The briefing I'd actually send with your next message, measured block by block — "+pct+"% of your "+opt.value+" tier ("+(tierTok/1024)+"K)";
   $("#tokCtxBar").style.width=Math.min(100,pct)+"%";
   $("#tokCtxWindow").textContent="Model context window: 128,000 tokens — this briefing uses ≈"+(ctxTotal/1280).toFixed(1)+"% of it. Room to spare.";
-  $("#tokRuns").innerHTML=RUNS.slice(0,5).map(r=>`<div class="tokrun"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${runSpeedLine(r)}</div></div>`).join("");
-  $("#tokenBtnSpeed").textContent=sp.total.toFixed(1);
+  $("#tokRuns").innerHTML=hasRuns? RUNS.slice(0,5).map(r=>`<div class="tokrun"><div class="rplace"><b>${esc(r.kind)}</b> · ${esc(r.backend)}</div><div class="rspeed">${runSpeedLine(r)}</div></div>`).join("") : `<div class="tokrun">No runs yet — send a message and your stats land here.</div>`;
+  $("#tokenBtnSpeed").textContent=hasRuns? sp.total.toFixed(1) : "—";
 }
 function openTokenPanel(){
   try{ renderTokenPanel(); }catch(err){ try{ toast("Token stats hiccup: "+String(err.message||err).slice(0,80)); }catch(_){} }
   try{ if(tokView==="ticker") renderTicker(); }catch(_){}
   tokenPanel.hidden=false;
   if(tokLiveTimer) clearInterval(tokLiveTimer);
-  const base=tokSpeeds().total;
-  tokLiveTimer=setInterval(()=>{ if(tokTesting) return; setGauge(Math.max(0, base + Math.sin(Date.now()/2600)*1.8 + Math.sin(Date.now()/731)*0.9)); },900);
-  window._tokLive=tokLiveTimer;
+  tokLiveTimer=null; window._tokLive=null;
+  if(RUNS.length){
+    const base=tokSpeeds().total;
+    tokLiveTimer=setInterval(()=>{ if(tokTesting) return; setGauge(Math.max(0, base + Math.sin(Date.now()/2600)*1.8 + Math.sin(Date.now()/731)*0.9)); },900);
+    window._tokLive=tokLiveTimer;
+  }
 }
 function closeTokenPanel(){
   if(tokenPanel) tokenPanel.hidden=true;
@@ -5624,10 +5638,11 @@ $$("#tokViewSeg [data-tview]").forEach(b=>b.onclick=()=>{ tokView=b.dataset.tvie
   if(tokView==="ticker") renderTicker(); });
 $("#tokOpenEngine").onclick=()=>{ closeTokenPanel(); openSettings("engine"); };
 $("#tokTestBtn").onclick=()=>{
+  if(!RUNS.length){ $("#tokTestStatus").textContent="No runs yet — send a message first, then test."; return; }
   if(tokTesting) return; tokTesting=true; window._tokTesting=true;
   const btn=$("#tokTestBtn"), st=$("#tokTestStatus"); btn.disabled=true; btn.textContent="Testing…";
   const sp=tokSpeeds(), t0=performance.now(), dur=1900;
-  const phases=[[0,"Pinging the model — time to first token…"],[620,"Streaming — measuring generation speed…"],[1280,"Totalling up the round trip…"]];
+  const phases=[[0,"Reading your latest recorded run…"],[620,"Replaying the recorded speed…"],[1280,"Totalling up the round trip…"]];
   let pi=0;
   const iv=setInterval(()=>{
     const el=performance.now()-t0;
@@ -5637,7 +5652,7 @@ $("#tokTestBtn").onclick=()=>{
     if(p>=1){ clearInterval(iv); setGauge(sp.total); $("#tokPeak").textContent=sp.peak.toFixed(1); $("#tokGen").textContent="≈"+sp.gen.toFixed(1); $("#tokTotalSpd").textContent=sp.total.toFixed(1); st.textContent="✓ Done — "+sp.total.toFixed(1)+" tok/s total · read from your latest recorded run ("+RUNS[0].when+")"; btn.disabled=false; btn.textContent="▶ Run speed test again"; tokTesting=false; window._tokTesting=false; }
   },40);
 };
-$("#tokenBtnSpeed").textContent=RUNS[0].peak;
+if(RUNS[0]) $("#tokenBtnSpeed").textContent=RUNS[0].peak;
 
 /* ===== Briefing budget bar — tap a slice, see what's in it ===== */
 const BB_BLOCKS=[
