@@ -1487,9 +1487,8 @@ details.wgCard>div{padding:0 16px 16px}
 
       <div id="mtab-general" style="display:none">
         <p class="sub">The everyday switches — these used to hide behind the ＋ button in chat. They live here now, as real settings.</p>
-        <div class="field" style="margin-bottom:18px"><label>UI size <span id="textScaleVal" style="color:var(--gold);font-weight:700">100%</span></label>
-          <input type="number" inputmode="decimal" id="textScaleRange" min="70" max="150" step="5" value="100" style="width:100%" aria-label="Text size" class="numinput">
-          <p class="hint" style="margin-top:6px">Text only — independent of interface size. Bump this up if the UI is small but you want readable text.</p>
+        <div class="field" style="margin-bottom:18px"><label>Text size</label>
+          <p class="hint" style="margin:4px 0 0">Text size follows your Android system font size — change it in Android Settings → Display → Font size. The in-app slider was removed: it shrank the whole app to the top of the screen instead of changing the text.</p>
         </div>
         <div class="field" style="margin-bottom:18px"><label>🔥 Hotline — voice assistant</label>
           <p class="hint" style="margin:0 0 10px">Hold your power button (or swipe the corner) to talk. Your voice goes straight to the AI.</p>
@@ -1783,7 +1782,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="164"; window._bootMark="script-start";
+window.WG_BUILD="165"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -4621,28 +4620,17 @@ bindSwitch($("#genEnter"), ()=>S.enterSend, v=>{ S.enterSend=v; toast(v?"Enter s
 bindSwitch($("#genSound"), ()=>S.sound, v=>{ S.sound=v; });
 bindSwitch($("#apiStream"), ()=>S.streaming, v=>{ S.streaming=v; toast(v?"Streaming on — replies arrive token by token":"Streaming off — replies arrive whole"); });
 
-/* UI size — zoom scales the WHOLE interface (text, buttons, spacing, icons).
-   The old --text-scale only changed the root font-size, which nothing reads:
-   0 of 265 font-sizes use rem, so the slider was a placebo. Zoom is the real mechanism. */
+/* v165 — the zoom is GONE. CSS zoom on the root shrank the whole app to the top
+   third of the screen with a black bar underneath. Text size now follows the
+   Android system font size; there is no in-app slider anymore. This function
+   only makes sure no zoom is ever applied. */
 function applyTextScale(){
-  const t=parseInt(S.textScale,10)||100;
   try{
-    document.documentElement.style.setProperty("--text-scale", t/100);
-    document.documentElement.style.zoom = t/100;
+    document.documentElement.style.setProperty("--text-scale", 1);
+    document.documentElement.style.zoom = "";
   }catch(_){}
-  const lbl=$("#textScaleVal"); if(lbl) lbl.textContent=t+"%";
-  const rng=$("#textScaleRange"); if(rng && document.activeElement!==rng) rng.value=t;
 }
 (function(){
-  const trng=$("#textScaleRange");
-  if(trng){
-    trng.value=parseInt(S.textScale,10)||100;
-    trng.addEventListener("input",()=>{
-      S.textScale=parseInt(trng.value,10)||100;
-      applyTextScale();
-      try{ wgSave(); }catch(_){}
-    });
-  }
   /* Thought interval sliders — 1s (testing) to 300s */
   const srng=$("#sparkIntRange");
   if(srng){
