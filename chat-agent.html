@@ -1162,6 +1162,7 @@ details.wgCard>div{padding:0 16px 16px}
               <button class="btn btn-gold" id="tapeRefreshBtn">📼 Refresh — bring me up to speed</button>
               <button class="chipbtn" id="tapeEditBtn">Edit</button>
             </div>
+            <p class="hint" style="margin:10px 0 0">The prompts behind this brief live in Settings → Developer. <button class="chipbtn" onclick="openSettings('developer')">Edit them there</button></p>
             <div id="tapeEditWrap" style="display:none;margin-top:10px">
               <textarea class="padarea" id="tapeEdit" rows="8" style="min-height:120px" placeholder="Core brief text…"></textarea>
               <div style="display:flex;gap:8px;margin-top:8px">
@@ -1235,7 +1236,7 @@ details.wgCard>div{padding:0 16px 16px}
     <div class="switchrow"><div><b>Show memory chips in chat</b><p>Label replies that used saved memories.</p></div><button class="switch on" id="swChips"></button></div>
     <div class="switchrow"><div><b>Web search</b><p>Let David look things up while you chat — in this build that means the live BBC feed in the News tab. </p></div><button class="switch" id="swWeb"></button></div>
     <div class="switchrow"><div><b>Canvas &amp; tools</b><p>Drafts, code and tools available from the 📎 attach button in chat.</p></div><button class="switch on" id="swCanvas"></button></div>
-    <div class="switchrow"><div><b>Personality</b><p id="persCurrent">Currently: David — sharp, warm, a little playful. Change it in Instructions below.</p></div><button class="btn btn-ghost" style="padding:7px 11px;font-size:12px" onclick="document.querySelector('#memTabs [data-tab=&quot;instructions&quot;]').click()">Change</button></div>
+    <div class="switchrow"><div><b>Personality</b><p id="persCurrent">Currently: David — sharp, warm, a little playful. Change it in Settings → Assistants.</p></div><button class="btn btn-ghost" style="padding:7px 11px;font-size:12px" onclick="openSettings('assistants')">Change</button></div>
 
     <div class="tabs" id="memTabs"><button class="active" data-tab="saved">Saved</button><button data-tab="instructions">Instructions</button><button data-tab="about">About you</button></div>
 
@@ -1251,16 +1252,8 @@ details.wgCard>div{padding:0 16px 16px}
       <button class="btn btn-ghost" id="clearMemBtn" style="width:100%;justify-content:center;margin-top:14px;color:#FCA5A5">Clear all memories</button>
     </div>
     <div id="tab-instructions" style="display:none">
-      <div class="field"><label>What should David know about you?</label><textarea rows="4" id="instrKnow" placeholder="E.g. what you do, your projects, things David should always keep in mind…"></textarea></div>
-      <div class="field"><label>How should David respond?</label><textarea rows="4" id="instrRespond" placeholder="E.g. lead with the answer, use bullets for plans, keep it concise…"></textarea></div>
-      <div class="field"><label>Personality</label><div class="persgrid">
-        <button class="pers active"><b>David ✦</b><p>Sharp, warm, a little playful. The default.</p></button>
-        <button class="pers"><b>Concise</b><p>Shortest useful answer, every time.</p></button>
-        <button class="pers"><b>Creative</b><p>More ideas, wilder angles.</p></button>
-        <button class="pers"><b>Formal</b><p>Polished &amp; professional.</p></button>
-        <button class="pers"><b>WiseGuy</b><p>The wise guy — shooting the breeze, easy company, no fixing unless asked.</p></button>
-      </div></div>
-      <button class="btn btn-gold" style="width:100%;justify-content:center" id="saveInstrBtn">Save instructions</button>
+      <p style="font-size:13.5px;line-height:1.6;color:var(--muted);margin:0 0 12px">Instructions live on each assistant now — their model, system prompt, and quick style, all in one place. About you (name, what you do, interests) is still here under About you, and it applies to every assistant.</p>
+      <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="openSettings('assistants')">🤖 Open Assistants in Settings</button>
     </div>
     <div id="tab-about" style="display:none">
       <div class="field"><label>Name</label><input type="text" id="aboutName" value="" placeholder="Your name"></div>
@@ -1409,6 +1402,16 @@ details.wgCard>div{padding:0 16px 16px}
           <div style="margin-top:8px"><input type="text" id="asstNewModel" placeholder="Model — blank uses the default" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%"></div>
           <textarea id="asstNewSys" class="padarea" placeholder="System prompt — who is this assistant? What should they do, how should they talk? Blank uses the default." style="min-height:70px;margin-top:8px;width:100%"></textarea>
         </div>
+        <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
+        <b style="font-size:14px">Quick style — <span id="persForName">David</span></b>
+        <p class="hint" style="margin:4px 0 14px">A shortcut for how this assistant answers. Used only when the assistant has no custom system prompt above — a custom prompt replaces it.</p>
+        <div class="field"><div class="persgrid">
+          <button class="pers active"><b>David ✦</b><p>Sharp, warm, a little playful. The default.</p></button>
+          <button class="pers"><b>Concise</b><p>Shortest useful answer, every time.</p></button>
+          <button class="pers"><b>Creative</b><p>More ideas, wilder angles.</p></button>
+          <button class="pers"><b>Formal</b><p>Polished &amp; professional.</p></button>
+          <button class="pers"><b>WiseGuy</b><p>The wise guy — shooting the breeze, easy company, no fixing unless asked.</p></button>
+        </div></div>
         <div style="border-top:1px solid var(--border);margin:22px 0 16px"></div>
         <b style="font-size:14px">How the agent thinks</b>
         <p class="hint" style="margin:4px 0 14px">Thought timers and reply behaviour — shared across all assistants on this device.</p>
@@ -1782,7 +1785,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="165"; window._bootMark="script-start";
+window.WG_BUILD="166"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -1816,6 +1819,7 @@ function wgSave(){
     localStorage.setItem(WG_MASTER, JSON.stringify({
       assistants:assistants,
       activeId:activeAssistantId,
+      about:{ name:(($("#aboutName")||{}).value||"").trim(), role:(($("#aboutRole")||{}).value||"").trim(), interests:(($("#aboutInterests")||{}).value||"").trim() },
       byok:{ key:apiKey||"", provider:provider, urls:savedUrls, keys:savedKeys, tavilyKey:tavilyKey||"",
              model:(activeAssistant()&&activeAssistant().model)||"",
              org:(document.querySelector("#orgIdInput")||{}).value||"",
@@ -1918,7 +1922,8 @@ $("#navSettings").onclick=()=>openSettings("api"); $("#userSettingsBtn").onclick
 
 /* Tabs */
 $$("#memTabs button").forEach(b=>b.onclick=()=>{$$("#memTabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");["saved","instructions","about"].forEach(t=>$("#tab-"+t).style.display=t===b.dataset.tab?"block":"none")});
-$$(".pers").forEach(b=>b.onclick=()=>{$$(".pers").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.personality=b.querySelector("b").textContent.replace("✦","").trim();S.personalityTag=true;const pc=$("#persCurrent");if(pc)pc.textContent="Currently: "+S.personality+" — "+b.querySelector("p").textContent+" Change it in Instructions below.";renderSheetTags();toast("Personality: "+S.personality+" — it's in my briefing from the next reply")});
+function syncPersCards(){ const n=assistantName(); const pf=$("#persForName"); if(pf) pf.textContent=n; $$(".pers").forEach(x=>x.classList.toggle("active", (x.querySelector("b").textContent.replace("✦","").trim())===(S.personality||"David"))); }
+$$(".pers").forEach(b=>b.onclick=()=>{$$(".pers").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.personality=b.querySelector("b").textContent.replace("✦","").trim();S.personalityTag=true;const pc=$("#persCurrent");if(pc)pc.textContent="Currently: "+S.personality+" — "+b.querySelector("p").textContent+" Change it in Settings → Assistants.";try{ wgSave(); }catch(_){} renderSheetTags();toast("Personality: "+S.personality+" — it's in my briefing from the next reply")});
 /* Collapsible cards everywhere — Reveries pattern: every section is a <details>,
    every multi-card container gets Expand All / Collapse All at the top right. */
 function wgCardTitle(el){
@@ -4107,7 +4112,6 @@ function renderAssistantName(){
   /* TreeWalker removed — it rewrote chat history on rename. Only explicit UI slots update. */
   [["#input","Message ","\u2026  ( / for commands, @ to use memory )"],
    ["#padArea","Start typing \u2014 ideas, lists, rough drafts, anything. "," reads what's here when you ask\u2026"],
-   ["#instrKnow","E.g. what you do, your projects, things "," should always keep in mind\u2026"],
 
   ].forEach(([sel,pre,suf])=>{ const el=$(sel); if(el&&el.placeholder) el.placeholder=pre+n+suf; });
   _lastRenderedName=n;
@@ -4357,6 +4361,11 @@ let setupProv="OpenAI"; let setupUrls={};
   if(byok.model){ const m=$("#defaultModelInput"); if(m) m.value=byok.model; }
   if(byok.org){ const o=$("#orgIdInput"); if(o) o.value=byok.org; }
   if(byok.key){ const ki=$("#apiKeyInput"); if(ki) ki.value=byok.key; apiKey=cleanApiKey(byok.key); if(!savedKeys[provider]) savedKeys[provider]=apiKey; }
+  /* About-you is global (every assistant) — restore it so it survives a relaunch */
+  if(m.about){ const an=$("#aboutName"), ar=$("#aboutRole"), ai=$("#aboutInterests");
+    if(an && m.about.name){ an.value=m.about.name; an.dispatchEvent(new Event("input")); }
+    if(ar && m.about.role) ar.value=m.about.role;
+    if(ai && m.about.interests) ai.value=m.about.interests; }
   if(provider!=="OpenAI" && byok.localModels && byok.localModels.length){
     setLocalModels(byok.localModels, true);
     const pk=byok.picked||"";
@@ -4478,6 +4487,7 @@ let asstNewColor=ASST_COLORS[0];
 let editingAsstId=null; /* which assistant's model/prompt editor is open */
 function renderAssistants(){
   const host=$("#asstList"); if(!host) return;
+  try{ syncPersCards(); }catch(_){}
   host.innerHTML="";
   assistants.forEach(a=>{
     const row=document.createElement("div");
@@ -4846,8 +4856,8 @@ function removeSheetTag(key){
 }
 try{ renderSheetTags(); }catch(_){}
 
-/* Instructions + About-you — read live by buildBriefing() on every reply */
-$("#saveInstrBtn").onclick=()=>{ lastBriefing=buildBriefing(""); toast("Saved — that's in my briefing from the next reply (Profile + Rules, measured in the Engine)"); };
+/* About-you — read live by buildBriefing() on every reply (tape Profile + userName).
+   The old Instructions boxes are gone: they were never read and never saved. */
 $("#aboutName").addEventListener("input",e=>{
   const v=e.target.value.trim()||"User";
   const hn=$("#heroName"); if(hn) hn.textContent=v;
