@@ -6,6 +6,12 @@ server, or explore in demo mode. Your chats never leave your device.
 | ![Chat](screenshots/wiseguy-chat.png) | ![Memory](screenshots/wiseguy-memory.png) |
 | --- | --- |
 
+## Download
+
+- **WiseGuy-v197.apk** — the Android app. Install this on your phone: [v197 release](https://github.com/Eldridge-Frost/wiseguy/releases/tag/v197). Install over the top of the previous build — never uninstall (uninstall wipes your chats and memories).
+- **chat-agent.html** — the whole app in one file (v197). Open it in any modern browser and it runs, no install needed. This is the source of truth — the APK is just a thin wrapper around this file.
+- **screenshots/** — what the app looks like. **SOUL.md**, **PHILOSOPHY-STORAGE.md** and **WHAT-WE-DIDNT-SELL.md** — why it's built this way.
+
 ## What it is
 
 - **Chat** with your own model — local (koboldcpp, llama.cpp, Ollama) or any
