@@ -3,6 +3,9 @@
 Chat with any OpenAI-compatible backend. Bring your own key, point it at a local
 server, or explore in demo mode. Your chats never leave your device.
 
+| ![Chat](screenshots/wiseguy-chat.png) | ![Memory](screenshots/wiseguy-memory.png) |
+| --- | --- |
+
 ## What it is
 
 - **Chat** with your own model — local (koboldcpp, llama.cpp, Ollama) or any
@@ -51,3 +54,11 @@ memory + recent chat, budgeted to ~2K tokens.
 CC BY-NC-ND 4.0 — free to download and share, not for sale, no
 modifications yet. See LICENSE. This will open further after the initial
 release period.
+
+## Backgrounds
+
+Each tab has its own background:
+
+| ![Blurred news](screenshots/wiseguy-mockup-blurred-news.webp) | ![Night grid](screenshots/wiseguy-mockup-night-grid.webp) |
+| --- | --- |
+| ![Thought river](screenshots/wiseguy-mockup-thought-river.webp) | ![Ticker](screenshots/wiseguy-mockup-ticker.webp) |
