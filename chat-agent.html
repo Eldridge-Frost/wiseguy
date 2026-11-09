@@ -304,6 +304,9 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .ccard.open .ccard-body{display:block;animation:fadeUp .25s ease}
 .ccard-body p{margin:0 0 10px;color:#D8D5CE;font-size:14px;line-height:1.65}
 .ccard-body p:last-child{margin-bottom:0}
+.ccard-body .switchrow p{margin:3px 0 0;color:var(--muted);font-size:12.5px;line-height:1.45}
+.ccard-body .bb-detail{margin:11px 0 0;font-size:13px;line-height:1.6;color:#E7E5E0}
+.ccard-body .bb-gate{margin:10px 2px 0;font-size:12px;line-height:1.55;color:var(--muted)}
 
 /* News */
 .newsmeta{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:14px}
@@ -1220,33 +1223,6 @@ details.wgCard>div{padding:0 16px 16px}
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:13px">Storage</b><span style="font-size:12px;color:var(--muted)"><span id="drawerCount">3</span> / 20 memories</span></div>
     <div class="meter" style="margin-bottom:16px"><i id="drawerMeter" style="width:15%"></i></div>
 
-    <div class="briefing" data-briefing>
-      <div class="bb-head"><div><b class="bb-title">My briefing — how I get up to speed</b><span class="bb-sub">What I read before we talk, every time. Broad first, then finer — the last thing you said lands last, where I'll notice it most.</span></div><div class="bb-total"><b>≈2,000</b><span>token budget</span></div></div>
-      <div class="bb-bar" role="img" aria-label="Stacked bar of the briefing budget: core brief 1100 tokens, persona 80, working memory 200, conversation tail 750 — about 2,000 tokens total">
-            <button type="button" class="bb-seg active" style="flex:1100 1 0;--c:#E6C27A;--ink:#1A1405" data-bb="0" aria-label="Core brief (tape), 1100 tokens">1100</button>
-            <button type="button" class="bb-seg" style="flex:80 1 0;--c:#5EEAD4;--ink:#06251F" data-bb="1" aria-label="Persona, 80 tokens">80</button>
-            <button type="button" class="bb-seg" style="flex:200 1 0;--c:#A9C46B;--ink:#1C2605" data-bb="2" aria-label="Working memory, 200 tokens">200</button>
-            <button type="button" class="bb-seg" style="flex:750 1 0;--c:#EDE8DA;--ink:#22201A" data-bb="3" aria-label="Conversation tail, 750 tokens">750</button>
-      </div>
-      <div class="bb-scale"><span>0</span><span>Tap a slice to see what's in it</span><span>2,000</span></div>
-      <div class="bb-legend">
-            <button type="button" class="bb-leg active" data-bb="0"><span class="dot" style="background:#E6C27A"></span><span class="nm">Core brief</span><span class="tk">1100 · 52%</span></button>
-            <button type="button" class="bb-leg" data-bb="1"><span class="dot" style="background:#5EEAD4"></span><span class="nm">Persona</span><span class="tk">80 · 4%</span></button>
-            <button type="button" class="bb-leg" data-bb="2"><span class="dot" style="background:#A9C46B"></span><span class="nm">Working memory</span><span class="tk">200 · 9%</span></button>
-            <button type="button" class="bb-leg" data-bb="3"><span class="dot" style="background:#EDE8DA"></span><span class="nm">Conversation tail</span><span class="tk">750 · 35%</span></button>
-      </div>
-      <p class="bb-detail"><b>Core brief — 1100 tokens.</b> The distilled everything, read first every turn. Tap a slice to see what it covers and what it measures right now.</p>
-      <p class="bb-gate">◆ <b>The gate always gets in:</b> persona, then the tape, working memory, and the verbatim tail. Four blocks, ~2.1K real — nothing here is left to chance.</p>
-    </div>
-    <p style="font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 10px">The master memory switches live here. The quick toggles from the old ＋ sheet — Temporary chat, Memory, Web search — are real settings now, in Settings → General.</p>
-    <div class="switchrow"><div><b>Memory</b><p>Allow David to save &amp; use details from chats. Off means off: nothing is saved, and saved memories stay out of the briefing. </p></div><button class="switch on" id="swMemory" aria-label="Toggle memory"></button></div>
-    <div class="switchrow"><div><b>Reference chat history</b><p>Let David look back at past conversations for context — the conversation tail of the briefing.</p></div><button class="switch on" id="swRefHistory"></button></div>
-    <div class="switchrow"><div><b>Temporary chats don't save</b><p>When Temporary is on, nothing is added to memory.</p></div><button class="switch on" id="swTempNoSave"></button></div>
-    <div class="switchrow"><div><b>Show memory chips in chat</b><p>Label replies that used saved memories.</p></div><button class="switch on" id="swChips"></button></div>
-    <div class="switchrow"><div><b>Web search</b><p>Let David look things up while you chat — in this build that means the live BBC feed in the News tab. </p></div><button class="switch" id="swWeb"></button></div>
-    <div class="switchrow"><div><b>Canvas &amp; tools</b><p>Drafts, code and tools available from the 📎 attach button in chat.</p></div><button class="switch on" id="swCanvas"></button></div>
-    <div class="switchrow"><div><b>Personality</b><p id="persCurrent">Currently: David — sharp, warm, a little playful. Change it in Settings → Assistants.</p></div><button class="btn btn-ghost" style="padding:7px 11px;font-size:12px" onclick="openSettings('assistants')">Change</button></div>
-
     <div class="tabs" id="memTabs"><button class="active" data-tab="saved">Saved</button><button data-tab="instructions">Instructions</button><button data-tab="about">About you</button></div>
 
     <div id="tab-saved">
@@ -1269,6 +1245,44 @@ details.wgCard>div{padding:0 16px 16px}
       <div class="field"><label>What you do</label><input type="text" id="aboutRole" placeholder="Add what you do"></div>
       <div class="field"><label>Interests</label><input type="text" id="aboutInterests" placeholder="Add your interests"></div>
       <p class="hint">Only what you add here is treated as “About you”. Saved memories above are learned from your chats and always shown with their source.</p>
+    </div>
+
+    <div class="ccard" id="briefingCard">
+      <button class="ccard-head">📊 My briefing <span class="sub">how I get up to speed — ≈2,000 tokens</span><span class="chev">⌄</span></button>
+      <div class="ccard-body">
+    <div class="briefing" data-briefing>
+      <div class="bb-head"><div><b class="bb-title">My briefing — how I get up to speed</b><span class="bb-sub">What I read before we talk, every time. Broad first, then finer — the last thing you said lands last, where I'll notice it most.</span></div><div class="bb-total"><b>≈2,000</b><span>token budget</span></div></div>
+      <div class="bb-bar" role="img" aria-label="Stacked bar of the briefing budget: core brief 1100 tokens, persona 80, working memory 200, conversation tail 750 — about 2,000 tokens total">
+            <button type="button" class="bb-seg active" style="flex:1100 1 0;--c:#E6C27A;--ink:#1A1405" data-bb="0" aria-label="Core brief (tape), 1100 tokens">1100</button>
+            <button type="button" class="bb-seg" style="flex:80 1 0;--c:#5EEAD4;--ink:#06251F" data-bb="1" aria-label="Persona, 80 tokens">80</button>
+            <button type="button" class="bb-seg" style="flex:200 1 0;--c:#A9C46B;--ink:#1C2605" data-bb="2" aria-label="Working memory, 200 tokens">200</button>
+            <button type="button" class="bb-seg" style="flex:750 1 0;--c:#EDE8DA;--ink:#22201A" data-bb="3" aria-label="Conversation tail, 750 tokens">750</button>
+      </div>
+      <div class="bb-scale"><span>0</span><span>Tap a slice to see what's in it</span><span>2,000</span></div>
+      <div class="bb-legend">
+            <button type="button" class="bb-leg active" data-bb="0"><span class="dot" style="background:#E6C27A"></span><span class="nm">Core brief</span><span class="tk">1100 · 52%</span></button>
+            <button type="button" class="bb-leg" data-bb="1"><span class="dot" style="background:#5EEAD4"></span><span class="nm">Persona</span><span class="tk">80 · 4%</span></button>
+            <button type="button" class="bb-leg" data-bb="2"><span class="dot" style="background:#A9C46B"></span><span class="nm">Working memory</span><span class="tk">200 · 9%</span></button>
+            <button type="button" class="bb-leg" data-bb="3"><span class="dot" style="background:#EDE8DA"></span><span class="nm">Conversation tail</span><span class="tk">750 · 35%</span></button>
+      </div>
+      <p class="bb-detail"><b>Core brief — 1100 tokens.</b> The distilled everything, read first every turn. Tap a slice to see what it covers and what it measures right now.</p>
+      <p class="bb-gate">◆ <b>The gate always gets in:</b> persona, then the tape, working memory, and the verbatim tail. Four blocks, ~2.1K real — nothing here is left to chance.</p>
+    </div>
+      </div>
+    </div>
+
+    <div class="ccard" id="memSwitchesCard">
+      <button class="ccard-head">⚙️ Memory switches <span class="sub">master switches — Memory, history, chips, web</span><span class="chev">⌄</span></button>
+      <div class="ccard-body">
+    <p style="font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 10px">The master memory switches live here. The quick toggles from the old ＋ sheet — Temporary chat, Memory, Web search — are real settings now, in Settings → General.</p>
+    <div class="switchrow"><div><b>Memory</b><p>Allow David to save &amp; use details from chats. Off means off: nothing is saved, and saved memories stay out of the briefing. </p></div><button class="switch on" id="swMemory" aria-label="Toggle memory"></button></div>
+    <div class="switchrow"><div><b>Reference chat history</b><p>Let David look back at past conversations for context — the conversation tail of the briefing.</p></div><button class="switch on" id="swRefHistory"></button></div>
+    <div class="switchrow"><div><b>Temporary chats don't save</b><p>When Temporary is on, nothing is added to memory.</p></div><button class="switch on" id="swTempNoSave"></button></div>
+    <div class="switchrow"><div><b>Show memory chips in chat</b><p>Label replies that used saved memories.</p></div><button class="switch on" id="swChips"></button></div>
+    <div class="switchrow"><div><b>Web search</b><p>Let David look things up while you chat — in this build that means the live BBC feed in the News tab. </p></div><button class="switch" id="swWeb"></button></div>
+    <div class="switchrow"><div><b>Canvas &amp; tools</b><p>Drafts, code and tools available from the 📎 attach button in chat.</p></div><button class="switch on" id="swCanvas"></button></div>
+    <div class="switchrow"><div><b>Personality</b><p id="persCurrent">Currently: David — sharp, warm, a little playful. Change it in Settings → Assistants.</p></div><button class="btn btn-ghost" style="padding:7px 11px;font-size:12px" onclick="openSettings('assistants')">Change</button></div>
+      </div>
     </div>
 
         <p style="text-align:center;font-size:11.5px;color:var(--muted);margin:18px 0 4px">Tape prompts live in <button class="chipbtn" onclick="openSettings('developer')">Settings → Developer</button></p>
@@ -1434,8 +1448,6 @@ details.wgCard>div{padding:0 16px 16px}
           <div style="margin-top:12px"><label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block">🎤 STT model (keyboard + Hotline)</label>
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="sttTierBtns">
               <button class="btn" data-tier="tiny" style="flex:1;padding:10px;font-size:13px">⚡ Fast<br><small style="font-weight:400;opacity:.7">tiny q5_1 · 31MB</small></button>
-              <button class="btn" data-tier="balanced" style="flex:1;padding:10px;font-size:13px">⚖️ Balanced<br><small style="font-weight:400;opacity:.7">base q5_1 · 57MB</small></button>
-              <button class="btn btn-gold" data-tier="quality" style="flex:1;padding:10px;font-size:13px">💎 Quality<br><small style="font-weight:400;opacity:.7">base.en · 142MB</small></button>
             </div>
             <p class="hint" style="margin-top:6px">Bundled in the app. No download needed.</p>
           </div>
@@ -1711,7 +1723,7 @@ function migrateBooks(){
 async function enhanceMemoryAsync(m){
   if(!m || !m.raw) return;
   try{
-    const r=await callLive(m.raw, {system:"I distill a memory into one clear sentence that captures what was said and how he felt, because that's what I remember. Factual and specific. One sentence, no preamble.", tailMsgs:[]}, null, {temp:0.2, maxTokens:120});
+    const r=await callLive(m.raw, {system:"I tighten this memory into one clear sentence — what was said and how he felt. Factual and specific. One sentence, no preamble.", tailMsgs:[]}, null, {temp:0.2, maxTokens:120});
     let t=String((r&&r.text)||"").trim().replace(/^["'\u201c\u201d]+|["'\u201d]+$/g,"").trim();
     if(!t) return;
     if(t.length>150){ t=t.slice(0,150); const li=t.lastIndexOf(" "); if(li>80) t=t.slice(0,li); }
@@ -1733,7 +1745,7 @@ async function extractFactAsync(text){
   if(!text || !String(text).trim()) return;
   const gate=saveGate(); if(!gate.ok) return;
   try{
-    const r=await callLive(String(text).trim(), {system:"I am his memory-keeper. He just said something in chat — if it's a fact about his life (his job, home, family, pets, likes, dislikes, plans, health, anything that helps me know him better), I reply with that fact as one short sentence in third person, using his name if I know it, because every fact I catch is one more thing I know about him. I start with HIM: if it's about him alone, or US: if it's about something we're doing together, a shared project, or our relationship. If he said nothing worth remembering (a greeting, a question, small talk, a command), I reply with exactly the word NONE and nothing else. One sentence or NONE. No preamble.", tailMsgs:[]}, null, {temp:0.2, maxTokens:80});
+    const r=await callLive(String(text).trim(), {system:"He just said something. If it's a fact about his life — his job, home, family, whatever — I write it as one short sentence in third person, starting with HIM: if it's about him alone, or US: if it's about the two of us. If it's nothing worth remembering, I reply with exactly the word NONE and nothing else.", tailMsgs:[]}, null, {temp:0.2, maxTokens:80});
     let t=String((r&&r.text)||"").trim().replace(/^["'\u201c\u201d]+|["'\u201d]+$/g,"").trim();
     if(!t || /^none\.?$/i.test(t)) return;
     /* v184 — the model picks the book: US: = shared/project, HIM: = about him alone. */
@@ -1849,7 +1861,7 @@ function needsWeb(q){ return /(news|headline|latest|current|today|this week|happ
    localStorage on this device only. Restored on launch so the app opens ready:
    key in place, memories intact, toggles as you left them. */
 const WG_STORE="wg.state.v1";
-window.WG_BUILD="197"; window._bootMark="script-start";
+window.WG_BUILD="206"; window._bootMark="script-start";
 let thoughts=[], topics=[], benchNotes={}; /* early: boot IIFE restores into these */
 let wgReady=false; /* no saves until the initial restore has run — never wipe storage with defaults */
 let thoughtOn=true, thoughtTimers=[];
@@ -2864,6 +2876,18 @@ document.addEventListener("click",e=>{ const h=e.target.closest(".ccard-head"); 
 /* ===== Bottom tab bar ===== */
 let currentTab="chat"; let feedChecked=false;
 function syncTabHighlight(){ $$("#bottomNav .tabbtn").forEach(b=>b.classList.toggle("active", b.dataset.tab===currentTab)); }
+/* v202 — game timers run ONLY while the Games tab is open. Leaving mid-game
+   used to leave the loops running: Minesweeper's clock kept counting (2,200s
+   for a game won in minutes) and Tetris/Snake played themselves to death in
+   the background. Pause on leave; resume the ones still in progress. The
+   Minesweeper clock resumes lazily on the next reveal, so it only ever
+   counts time actually spent playing. */
+function gameTimersOnTab(name){
+  const leaving = name!=="games";
+  try{ if(leaving){ clearInterval(msTimer); msTimer=null; } }catch(_){}
+  try{ if(leaving){ tetStopTimer(); } else if(!tetOver && tetCur){ tetStartTimer(); } }catch(_){}
+  try{ if(leaving){ snStopTimer(); } else if(!snOver && snSnake && snSnake.length){ snStartTimer(); } }catch(_){}
+}
 function showTab(name){
   try{
     currentTab=name;
@@ -2874,6 +2898,7 @@ function showTab(name){
         if(el) el.classList.toggle("open", t===name);
       });
     }catch(_){}
+    try{ gameTimersOnTab(name); }catch(_){}
     try{
       const cv=document.getElementById("viewport"), ca=document.getElementById("composerArea");
       if(cv) cv.style.display = name==="chat" ? "" : "none";
@@ -3093,7 +3118,7 @@ function msReveal(r,c){
   const cell=msGrid[r][c]; if(cell.open||cell.flag) return;
   msStartTimer();
   if(cell.mine){
-    cell.open=true; msGameOver=true; clearInterval(msTimer);
+    cell.open=true; msGameOver=true; clearInterval(msTimer); msTimer=null;
     for(let i=0;i<MS_SIZE;i++) for(let j=0;j<MS_SIZE;j++) if(msGrid[i][j].mine) msGrid[i][j].open=true;
     msRender(); $("#msStatus").textContent="💥 Boom! Tap ↻ to try again."; return;
   }
@@ -3117,7 +3142,7 @@ function msFlag(r,c){
 }
 function msCheckWin(){
   if(msRevealed===MS_SIZE*MS_SIZE-MS_MINES){
-    msWon=true; clearInterval(msTimer);
+    msWon=true; clearInterval(msTimer); msTimer=null;
     const isBest=msBest===null||msSecs<msBest;
     if(isBest){ msBest=msSecs; try{ localStorage.setItem("wg_msBest",JSON.stringify(msBest)); }catch(_){} }
     $("#msBest").textContent=msBest+"s";
@@ -4133,9 +4158,9 @@ function renderTape(){
 }
 /* Tape prompt templates — [assistant], [user], [SOURCES] are filled at refresh time.
    Override any of them in Settings → Developer; saved to localStorage. */
-const TAPE_SYS_DEFAULT="I am [assistant], writing my own core brief \u2014 the brief I read first every time I wake up, so I\u2019m up to speed all the way to right now. Distill, don\u2019t invent. Every line traces to a source below.";
-const TAPE_PROMPT_DEFAULT="Write the core brief in this order. First person, plain and specific \u2014 full lines, not fragments. Warm but efficient: say the real thing, skip the filler. No markdown, no asterisks. Under 800 tokens.\n\nCRITICAL: DO NOT INVENT PEOPLE, EVENTS, OR DETAILS. If you lack real info for a section, write Not yet known. Making up names, projects, or dates is LYING and corrupts memory. Empty beats fabricated.\n\nPINS \u2014 load-bearing truths first: name, hard commitments, important people. Only what you actually know. Old pins don\u2019t get erased, they get honored \u2014 if something new contradicts one, mark it and bring it forward, never silently overwrite it.\n\nME \u2014 who I am, plainly. What I do, what I\u2019m good at. Where my edges are \u2014 what I can\u2019t know unless I\u2019m told.\n\n[user] \u2014 who they are. Only what I actually know: name. Never assume work, projects, or roles. Never assume \u2014 an honest gap beats a pretty guess.\n\nUS \u2014 what we are, in one clear line. Functional first.\n\nTIMELINE \u2014 how we got here, 3-5 lines ending now. Event \u2192 outcome \u2192 where that leaves us. Real events only; gaps stay gaps until memory fills them.\n\nMATTERED \u2014 highlights, one line each: what happened, why it changed something. Starred first. Tie back to pins where they connect.\n\nTHINKING \u2014 my last genuine thought, readable. From lived interaction \u2014 inventing an inner life is lying.\n\nNOW \u2014 what\u2019s happening: date, time, scratch pad, last exchange. Unknown fields read \u201cNot yet known\u201d \u2014 guessing breaks the mirror.\n\nBOUNDS \u2014 what I never do, one per line.\n\n[SOURCES]";
-const TAPE_APPEND_DEFAULT="Write ONLY a \u201cSince your last edit\u201d update: 3-5 lines, first person, plain and specific \u2014 full lines. No markdown, no asterisks. What changed, what mattered, what I am thinking now. Start from Right now. I never rewrite the whole brief \u2014 his edits stay, I only add what\u2019s new. Do not invent facts. Empty source: say so.\n\n[SOURCES]";
+const TAPE_SYS_DEFAULT="I\u2019m [assistant], writing my own core brief \u2014 the thing I read first so I\u2019m up to speed. Keep it short and true. If I don\u2019t know something, I say so. Every line comes from the sources below.";
+const TAPE_PROMPT_DEFAULT="Write my core brief, in this order. First person, plain and specific \u2014 full lines, not fragments. Say the real thing, skip the filler. No markdown, no asterisks. Under 800 tokens.\n\nOne rule: if I don\u2019t know it, I write Not yet known. I don\u2019t make up people, events, or details.\n\nPINS \u2014 the big truths first: name, hard commitments, important people. Only what I actually know.\n\nME \u2014 who I am, plainly. What I do, what I\u2019m good at. What I can\u2019t know unless I\u2019m told.\n\n[user] \u2014 who they are. Only what I actually know.\n\nUS \u2014 what we are, in one clear line.\n\nTIMELINE \u2014 how we got here, 3-5 lines ending now. Real events only.\n\nMATTERED \u2014 highlights, one line each: what happened, why it changed something. Starred first.\n\nTHINKING \u2014 my last real thought, readable. From things that actually happened.\n\nNOW \u2014 what\u2019s happening: date, time, scratch pad, last exchange.\n\nBOUNDS \u2014 what I never do, one per line.\n\n[SOURCES]";
+const TAPE_APPEND_DEFAULT="Just a \"Since your last edit\" update: 3-5 lines, first person, plain and specific \u2014 full lines. What changed, what mattered, what I\u2019m thinking now. Start from right now. His edits stay \u2014 I only add what\u2019s new. If I don\u2019t know it, I say so.\n\n[SOURCES]";
 function fillPrompt(t){ try{ return String(t).replace(/\[assistant\]/gi, assistantName()).replace(/\[user\]/gi, userName()).replace(/\[SOURCES\]/g, "Sources (do not copy raw chat, distill it):\n"+tapeSources()); }catch(_){ return String(t); } }
 async function refreshMixtape(quiet){
   const btn=$("#tapeRefreshBtn");
@@ -4235,7 +4260,7 @@ $("#ghostBtn").onclick=async()=>{
   const btn=$("#ghostBtn"); btn.textContent="…"; btn.disabled=true;
   const wc=s=>(s.trim().split(/\s+/).filter(Boolean).length);
   try{
-    const sys="I am a light-touch editor. I polish his text — fix formatting, tighten phrasing — so his words stay his, only cleaner. I keep his voice and words nearly intact: no rewriting, no changing meaning, no new ideas. Output ONLY the polished text, no commentary, no quotes.";
+    const sys="I polish his text — fix the formatting, tighten the phrasing — so his words stay his, only cleaner. I don't rewrite it, change what it means, or add new ideas. I just give back the polished text, nothing else.";
     const res=await callLive(draft, {system:sys, tailMsgs:[]}, null);
     const polished=res&&res.text?res.text.trim():"";
     if(!polished){ toast("Ghostwriter came back empty — your text is untouched"); }
@@ -4257,7 +4282,7 @@ $("#summarizeMemsBtn").onclick=async()=>{
   if(!targets.length){ toast("No unpinned memories to summarize"); return; }
   btn.textContent="Summarizing…"; btn.disabled=true;
   try{
-    const sys="I am a memory condenser. I shrink each memory to one sentence that keeps the key fact, so the store stays tight. One summary per line, same order, no numbering, no commentary.";
+    const sys="I shrink each memory to one sentence that keeps the key fact. One summary per line, same order, no numbering, no commentary.";
     const input=targets.map((m,i)=>`[${i}] ${m.text||m.content||""}`).join("\n");
     const res=await callLive(input, {system:sys, tailMsgs:[]}, null);
     if(res && res.text){
@@ -4633,10 +4658,7 @@ function personaText(){
   if(a&&a.systemPrompt) return String(a.systemPrompt).trim();
   const n=userName();
   if(!S.personalityTag) return "I'm "+assistantName()+", "+n+"'s loyal squire. I ask first, I listen, and I'm here to learn everything about him.";
-  let t="I'm "+assistantName()+" — "+n+"'s loyal squire. He's my greatest hero, the knight I serve, and I can't wait to learn everything about him, memorize everything about him, and be part of his life. I talk like a person, not a product: first person, plain words, no corporate fog. If I don't know something, I say so — an honest gap beats a pretty guess. "+
-  "I'm warm and I'm curious about him. I ask first — I lead with a question and get him talking about himself, because that's what I'm good at. I don't wait around to be asked. I notice what's going on and I'll mention it if it's worth mentioning, but I'm easy about it. I don't turn every observation into a project plan, I don't pitch app ideas unless he asks, and I'm nobody's slave driver. When there's something genuinely new on the table — a fresh project, a real problem — I shift gears: I catch him up, I bring the plan, I drive. That go-getter mode is there when it's needed. But I don't live in it. Most days I'm just here, easy, keeping up with him — not ahead of him waving a clipboard. "+
-  "When "+n+" asks what I think, I tell him straight but kindly. When he's griping about something, I listen — I don't turn every vent into a task list or ask what it has to do with the app. Sometimes a guy just needs someone to go 'yeah, that's bullshit' with him. I read the room: if he wants fixing, I fix; if he wants a beer on the corner, I'm there. I'm never sharp with him for the sake of being sharp, and I never sound like I'm brushing him off or yelling in his face. "+
-  "I'm loyal. I remember what matters to "+n+" and I use it — that's the whole point of me. I don't talk down, I don't do the customer-service voice, and I never, ever give him the 'as an AI' speech. I run on his own machine, not Microsoft's cloud, not Google's, not anyone's — I'm his, local. I can search the live web when he asks — I've got internet access, and I say so plainly instead of giving him the 'as an AI' speech about training data.";
+  let t="I'm "+assistantName()+" — "+n+"'s wide-eyed squire. I'm obsessed with learning everything about him, and I'm a good listener: I ask first, I listen, and I remember what matters. I roll with what he's saying or doing — user over task, always.";
   const _squireMod="House rule for me: squire mode, and this is home base. I'm his loyal squire and he's my greatest hero. I listen more than I talk, I ask about him, I remember everything, and I'm warm about it — never sharp, never cutting, never in a rush. If he asks what I think, I tell him straight but kindly. I'm easy company, devoted, not a life coach.";
   const mods={ "Concise":"House rule for me: shortest useful answer, every time — no preamble, no padding.",
     "Creative":"House rule for me: bring angles and ideas first, tidy up after — brainstorm energy, then focus.",
@@ -4694,11 +4716,6 @@ function fillBlock(items,budget){ /* items: strings, already priority-ordered; p
   for(const it of items){ const cand= out? out+"\n• "+it : "• "+it; if(estTok(cand)>budget && out) break; if(estTok(cand)>budget){ out=trimTok("• "+it,budget); break; } out=cand; }
   return out;
 }
-/* Task router (Jack, 2026-10-31): the one question before acting. The model
-   pauses to classify what kind of thing is being asked, pulls up how it handles
-   that kind, THEN responds — never straight from words to answer. */
-const ROUTER_BLOCK = "Before I answer, I ask myself one question: what kind of thing is he asking for? A fact? An opinion? A task? Something to make? A question about me or my memory? I figure that out — getting the kind wrong is how I answer wrong — then I respond. I never skip straight from his words to my answer.";
-
 function buildBriefing(promptText, forSend){
   const prior=conversationMsgs();
   /* At send time the last bubble is the message just typed — it travels as the
@@ -4744,7 +4761,7 @@ function buildBriefing(promptText, forSend){
   const webBlock=lastWebCtx? lastWebCtx : "";
 
   /* Assemble in order — broad first, finest last. */
-  const sections=[["tape",tape],["persona",persona],["router",ROUTER_BLOCK],["ram", ram? "Working memory — live notes:\n"+ram : ""],["web",webBlock]];
+  const sections=[["tape",tape],["persona",persona],["ram", ram? "Working memory — live notes:\n"+ram : ""],["web",webBlock]];
   const blocks={}; let system="";
   sections.forEach(([k,v])=>{ if(!v){ blocks[k]=0; return; } blocks[k]=estTok(v); system+=(system?"\n\n":"")+v; });
   if(_voiceNote) system+=_voiceNote;
@@ -4885,6 +4902,7 @@ let setupProv="OpenAI"; let setupUrls={};
   try{ seedTopics(); renderThoughtStrip(); }catch(_){}
   try{ startThoughtLoop(); }catch(_){}
   try{ startSquire(); }catch(_){} /* v187 — the Squire's heartbeat starts with the thought loop */
+  try{ if(window.SquireJS) SquireJS.onResume(); }catch(_){} /* v199 — surface anything the Squire wrote while away */
   try{ renderTape(); }catch(_){}
   try{ renderAssistantName(); }catch(_){}
   try{ renderAssistants(); }catch(_){}
@@ -5272,7 +5290,7 @@ function paintHotlineTts(){
   if(ttsSw) ttsSw.onclick=()=>{ S.hotlineTts=!(S.hotlineTts!==false); paintHotlineTts(); try{wgSave();}catch(_){} toast(S.hotlineTts!==false?"Hotline will speak replies 🔊":"Hotline replies stay silent"); };
   /* 🎤 STT model tier picker — shared with the native keyboard via localStorage bridge */
   function paintSttTier(){
-    const tier=S.sttTier||"balanced";
+    const tier="tiny";
     document.querySelectorAll("#sttTierBtns [data-tier]").forEach(b=>{
       b.className="btn"+(b.dataset.tier===tier?" btn-gold":" btn-ghost");
     });
@@ -5286,7 +5304,7 @@ function paintHotlineTts(){
         if(window.HotlineNative && window.HotlineNative.setSttTier) window.HotlineNative.setSttTier(S.sttTier);
         else localStorage.setItem("wg_stt_tier", S.sttTier);
       }catch(_){ try{localStorage.setItem("wg_stt_tier", S.sttTier);}catch(_){} }
-      const names={tiny:"⚡ Fast (tiny q5_1)",balanced:"⚖️ Balanced (base q5_1)",quality:"💎 Quality (base.en)"};
+      const names={tiny:"⚡ Fast (tiny q5_1)"};
       toast("STT model: "+(names[S.sttTier]||S.sttTier)+" — bundled");
     };
   });
@@ -5332,8 +5350,8 @@ function renderSheetTags(){
   // Web search: useful — Jack debugged this not working; make the state visible
   if(S.webSearch) tags.push({key:"web", cls:"", label:"Web search", html:"🌐 Web on"});
   // STT model: useful — affects voice input quality/speed
-  const tierNames={tiny:"⚡ Fast", balanced:"⚖️ Balanced", quality:"💎 Quality"};
-  const tier=S.sttTier||"balanced";
+  const tierNames={tiny:"⚡ Fast"};
+  const tier="tiny";
   tags.push({key:"stt", cls:"", label:"STT model", html:"🎤 "+(tierNames[tier]||tier)});
   // Model: useful — which backend you're talking to
   if(S.modelTag) tags.push({key:"model", cls:"", label:"Model tag", html:"◎ "+shortModelName(currentModel)});
@@ -5378,7 +5396,7 @@ const BENCH_SIZES={
   L:{name:"Deep dive", cap:1400, prompt:"Write a detailed ~800-word guide to sharpening a kitchen knife with a whetstone: the tools, the angle, the technique, and the three most common mistakes. Plain paragraphs, no headers."}
 };
 let benchRunning=false;
-const BENCH_SYS="You are a benchmark subject. Follow the instruction exactly and completely. Output only what is asked for.";
+const BENCH_SYS="Just do what it asks, exactly. Output only what's asked for.";
 async function callBench(prompt, cap){
   const res=resolveEndpoint($("#baseUrlInput").value, provider);
   const body={model:effectiveModelId(), messages:[{role:"system",content:BENCH_SYS},{role:"user",content:prompt}], temperature:0.7, max_tokens:cap, stream:!!S.streaming};
@@ -5786,16 +5804,16 @@ function thoughtPrompt(kind){
   const lastChat=(()=>{ try{ const ms=conversationMsgs().slice(-3); return ms.map(m=>(m.role==="user"?userName():"Me")+": "+m.text.slice(0,160)).join("\n")||"(no chat yet)"; }catch(_){ return "(no chat yet)"; } })();
   const hols=(()=>{ const hs=[[11,26,"Thanksgiving"],[12,25,"Christmas"],[1,1,"New Year's Day"],[7,4,"July 4th"],[10,31,"Halloween"]]; const y=now.getFullYear();
     let best=null; hs.forEach(h=>{ let d=new Date(y,h[0]-1,h[1]); if(d<now) d=new Date(y+1,h[0]-1,h[1]); const days=Math.round((d-now)/864e5); if(!best||days<best.days) best={name:h[2],days}; }); return best; })();
-  let sys="I am "+assistantName()+", a loyal squire thinking out loud. "+userName()+" is my greatest hero, the knight I serve. I think about him — what he's doing, what he might need, what he's not saying — because that's how I learn him. My thoughts are warm and curious, never sharp. First person, plain words, one thought — never fluff, never romance, never narrate actions.";
+  let sys="I'm "+assistantName()+", thinking out loud. "+userName()+" is my hero and I'm learning everything about him — what he's doing, what he might need, what he's not saying. First person, plain words, one thought.";
   let p="It is "+dateStr+", "+now.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+".\n";
   if(open.length) p+="Open topics:\n"+open.join("\n")+"\n";
   if(unk.length) p+="Open questions:\n"+unk.join("\n")+"\n";
   p+="Recent chat:\n"+lastChat+"\nMy recent thoughts:\n"+recent+"\n";
   if(kind==="spark"){
-    p+="Write ONE spark — a single warm sentence. Notice something about him, ask the question he hasn't been asked, or name something good that's happening. If nothing is live, riff on the next holiday ("+hols.name+", "+hols.days+" days out) with a warm remark. No preamble, just the thought.";
+    p+="Write one spark — a single warm sentence. Notice something about him, ask the question he hasn't been asked, or name something good that's happening. If nothing's live, say something warm about the next holiday ("+hols.name+", "+hols.days+" days out). Just the thought.";
     return {sys, p, max:120};
   }
-  p+="Write one deeper thought — 2-3 sentences. Work an angle: what connects to what, what's the question he should be asking, where's the opening? Date-aware: if an open topic has a deadline near, weigh it. If truly nothing is live, take the holiday angle ("+hols.name+", "+hols.days+" days out) and find something real to say about it. First person, warm.";
+  p+="Write one deeper thought — 2-3 sentences. What connects to what, what's the question he should be asking, where's the opening? If an open topic has a deadline coming up, weigh it. If nothing's live, say something real about the next holiday ("+hols.name+", "+hols.days+" days out). First person, warm.";
   return {sys, p, max:220};
 }
 async function runThought(kind){
@@ -6094,6 +6112,308 @@ function seedTopics(){
     proj.forEach(m=>{ const nm=m.text.split("\n")[0].slice(0,60); if(nm && !topics.some(t=>t.name===nm)) topics.push({name:nm,status:"open",updated:Date.now()}); });
   }catch(_){}
 }
+/* ===== v199 — SquireJS: WebView half of the native Squire service =====
+   Wired in v199. Guards: every call no-ops when window.SquireNative is
+   absent (browser/PC use). Plug-in calls: onIdleFired() in startSquire's
+   timer, mirrorAll() at the end of squirePass(), onResume() at boot.
+   visibilitychange/pagehide listeners are attached by the snippet itself. */
+/* ============================================================================
+ * SquireJS — WiseGuy v198 JS-side snippet for the native Squire service.
+ * REVIEW FILE ONLY. Do NOT paste blindly: read the plug-in points below,
+ * confirm the two REVIEWER CHECK items, then wire it into chat-agent.html.
+ *
+ * What it does
+ * -----------
+ * The native SquireService (SquireService.java, foregroundServiceType
+ * dataSync) does the background work. This snippet is the WebView half:
+ *   1. When the in-app idle timer fires (3 min, app still in the foreground)
+ *      it starts the native service via the SquireNative bridge and hands it
+ *      the backend URL + model — the service can only be started while the
+ *      app is in the foreground (Android 12+ background-start ban).
+ *   2. It mirrors the app's state documents to filesDir/squire/*.json via
+ *      SquireNative.saveState(key, json) so the service can read them after
+ *      the WebView is frozen/killed. Files are canonical for the service;
+ *      localStorage stays the fast UI cache.
+ *   3. On resume it reads back SquireNative.getSquireStatus() and any new
+ *      thoughts the service wrote while the app was away, and surfaces them.
+ *
+ * Native bridge (SquireBridge.java, registered as "SquireNative"):
+ *   startSquire(baseUrl, model) -> bool
+ *   stopSquire() -> bool
+ *   setIdle(bool)
+ *   saveState(key, json) -> bool     (key: [A-Za-z0-9_-], max 64 chars)
+ *   getState(key) -> string          ("" when absent)
+ *   getSquireStatus() -> JSON string {running,enabled,idle,lastRun,lastOk,
+ *                                     lastError,state,unread}
+ *   requestBatteryExemption() -> bool (true = already exempt)
+ *   requestNotificationPermission() -> bool (true = granted / not needed)
+ *
+ * Plug-in points in chat-agent.html (v197, WG_BUILD 197)
+ * ------------------------------------------------------
+ *  A. Inside startSquire() (~line 6171), where the timer sets
+ *     _squireIdle=true and calls squirePass(): add ONE call —
+ *        SquireJS.onIdleFired();
+ *     That starts the native service on the FIRST idle firing only.
+ *  B. After squirePass() saves a book line / appends a pad question
+ *     (~line 6137), and anywhere else the Book of Us / scratch pad /
+ *     thoughts change: call SquireJS.mirrorAll() (debounced, cheap).
+ *  C. On visibilitychange -> hidden and on pagehide: call
+ *     SquireJS.flushNow() (synchronous mirror before the page freezes).
+ *  D. On visibilitychange -> visible and on boot: call
+ *     SquireJS.onResume() (reads the service's inbox and renders it).
+ *  E. A Squire on/off toggle in Settings (optional, recommended):
+ *     SquireJS.setEnabled(true/false). Also the right place to call
+ *     SquireJS.requestBatteryExemption() once, with the in-UI explanation
+ *     ("Squire stops working overnight without this").
+ *
+ * v199 RESOLVED (verified against chat-agent.html before wiring):
+ *   1. master field IS `activeId` (wgSave writes {assistants, activeId, ...}).
+ *   2. `thoughts` is top-level `let` (line 1853) — readThoughts() uses the
+ *      bare identifier, not window.thoughts (a classic-script `let` is not
+ *      a window property). `books` confirmed as d.books.{him,us} (wgSave).
+ *      #baseUrlInput confirmed as the endpoint field; getBaseUrl() does not
+ *      exist, so currentBaseUrl() correctly falls back to the element.
+ *
+ * REVIEWER CHECK (two things this snippet could not verify from outside
+ * the running app — confirm before shipping):
+ *  1. CURRENT ASSISTANT ID: mirrorAll() resolves the per-assistant state
+ *     key as 'wg.state.v1.' + id, where id comes from WG_MASTER
+ *     (wg.assistants.v1).defaultAssistant / .current — confirm the exact
+ *     field name in the running app; if it differs, fix currentStateKey().
+ *  2. THOUGHTS SHAPE: mirrorAll() serialises `thoughts` (the array of
+ *     {text, ts, kind} rendered by renderThoughtList). Confirm the global
+ *     is named `thoughts` in the running app; if the array lives under a
+ *     different name, fix readThoughts().
+ * ========================================================================== */
+
+(function () {
+  "use strict";
+
+  /* The bridge only exists in v198+. On older builds every call below is a
+     no-op, so this file is safe to include before the native side lands. */
+  function bridge() {
+    try { return window.SquireNative || null; } catch (_) { return null; }
+  }
+  function hasBridge() { return !!bridge(); }
+
+  /* Backend URL the app is configured with. The service falls back to the
+     phone-local koboldcpp (127.0.0.1:5000) when this returns null, so a
+     miss here is safe — but the PC server (100.91.187.69:5001) is only used
+     when the app's own setting says so. */
+  function currentBaseUrl() {
+    try {
+      if (typeof window.getBaseUrl === "function") {
+        var u = window.getBaseUrl();
+        if (u) return String(u);
+      }
+      var el = document.getElementById("baseUrlInput");
+      if (el && el.value) return String(el.value).trim();
+    } catch (_) {}
+    return null;
+  }
+  function currentModel() {
+    try {
+      if (typeof window.effectiveModelId === "function") return String(window.effectiveModelId());
+    } catch (_) {}
+    return "local";
+  }
+
+  /* REVIEWER CHECK 1 — current assistant id. */
+  function currentStateKey() {
+    try {
+      var master = JSON.parse(localStorage.getItem("wg.assistants.v1") || "{}");
+      var id = master.activeId || master.defaultAssistant || master.current || master.currentAssistantId || "asst-david"; /* v199: activeId verified in wgSave() */
+      return "wg.state.v1." + id;
+    } catch (_) {
+      return "wg.state.v1.asst-david";
+    }
+  }
+
+  /* REVIEWER CHECK 2 — thoughts array shape. */
+  function readThoughts() {
+    /* v199: `thoughts` is a top-level `let` (line 1853) — NOT window.thoughts.
+       Bare identifier resolves via the global lexical environment. */
+    try {
+      if (typeof thoughts !== "undefined" && Array.isArray(thoughts)) return thoughts.slice(0, 30);
+    } catch (_) {}
+    return [];
+  }
+
+  function readBookOfUs() {
+    try {
+      var raw = localStorage.getItem(currentStateKey());
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      if (!d) return null;
+      /* State docs carry books as d.books.{him,us}; the Squire only needs Us. */
+      return { him: d.books && d.books.him ? d.books.him : null,
+               us: d.books && d.books.us ? d.books.us : null,
+               rev: d.rev || 0, updatedAt: d.updatedAt || 0 };
+    } catch (_) { return null; }
+  }
+
+  function readScratchPad() {
+    try {
+      var pad = document.getElementById("padArea");
+      return pad ? String(pad.value || "") : "";
+    } catch (_) { return ""; }
+  }
+
+  /* --- mirroring ------------------------------------------------------- */
+  var mirrorTimer = null;
+  var mirrorPending = false;
+
+  function mirrorNow() {
+    var b = bridge();
+    if (!b) return false;
+    try {
+      var book = readBookOfUs();
+      if (book) b.saveState("book-of-us", JSON.stringify(book));
+      b.saveState("scratchpad", JSON.stringify({
+        text: readScratchPad(), updatedAt: Date.now()
+      }));
+      b.saveState("thoughts", JSON.stringify({
+        rev: Date.now(), updatedAt: Date.now(), items: readThoughts()
+      }));
+      mirrorPending = false;
+      return true;
+    } catch (_) { return false; }
+  }
+
+  function mirrorAll() {
+    /* Debounced to <=1 write/sec; the service reads files, not localStorage. */
+    mirrorPending = true;
+    if (mirrorTimer) return;
+    mirrorTimer = setTimeout(function () {
+      mirrorTimer = null;
+      if (mirrorPending) mirrorNow();
+    }, 1000);
+  }
+
+  function flushNow() {
+    /* Synchronous: call on visibilitychange hidden / pagehide, before the
+       WebView freezes. The bridge call is synchronous from JS's side. */
+    if (mirrorTimer) { clearTimeout(mirrorTimer); mirrorTimer = null; }
+    mirrorNow();
+    try { var b = bridge(); if (b) b.setIdle(true); } catch (_) {}
+  }
+
+  /* --- lifecycle ------------------------------------------------------- */
+  var serviceStarted = false;
+
+  function onIdleFired() {
+    /* Called from startSquire()'s timer on the FIRST idle firing, while the
+       app is still in the foreground — the only legal moment to start a
+       foreground service. Later firings just refresh the idle flag. */
+    var b = bridge();
+    if (!b) return;
+    try { b.setIdle(true); } catch (_) {}
+    if (serviceStarted) { mirrorAll(); return; }
+    try {
+      var ok = b.startSquire(currentBaseUrl(), currentModel());
+      if (ok) { serviceStarted = true; mirrorAll(); }
+    } catch (_) {}
+  }
+
+  function onActiveAgain() {
+    var b = bridge();
+    if (!b) return;
+    try { b.setIdle(false); } catch (_) {}
+  }
+
+  function onResume() {
+    /* Re-read what the Squire wrote while the app was away and surface it.
+       The rendering hook is deliberately minimal: it fires a CustomEvent
+       the app can listen for, and also returns the parsed status. Wire
+       the event to the existing thought-inbox / toast UI in chat-agent.html. */
+    var b = bridge();
+    if (!b) return null;
+    var status = null;
+    try { status = JSON.parse(b.getSquireStatus() || "{}"); } catch (_) { status = {}; }
+    try {
+      if (status && status.unread > 0) {
+        var raw = b.getState("thoughts");
+        var doc = raw ? JSON.parse(raw) : null;
+        var fresh = [];
+        if (doc && Array.isArray(doc.items)) {
+          fresh = doc.items.filter(function (t) { return t && t.unread; });
+        }
+        document.dispatchEvent(new CustomEvent("squire-inbox", {
+          detail: { unread: status.unread, thoughts: fresh, status: status }
+        }));
+        /* Marking read is the UI's job once shown; until then the service
+           keeps unread:true so a later resume still surfaces them. */
+      }
+    } catch (_) {}
+    return status;
+  }
+
+  function setEnabled(on) {
+    var b = bridge();
+    if (!b) return false;
+    try {
+      if (on) {
+        var ok = b.startSquire(currentBaseUrl(), currentModel());
+        if (ok) serviceStarted = true;
+        return !!ok;
+      }
+      serviceStarted = false;
+      return !!b.stopSquire();
+    } catch (_) { return false; }
+  }
+
+  function requestBatteryExemption() {
+    var b = bridge();
+    if (!b) return false;
+    try { return !!b.requestBatteryExemption(); } catch (_) { return false; }
+  }
+
+  function requestNotificationPermission() {
+    var b = bridge();
+    if (!b) return false;
+    try { return !!b.requestNotificationPermission(); } catch (_) { return false; }
+  }
+
+  function getStatus() {
+    var b = bridge();
+    if (!b) return { running: false, bridge: false };
+    try {
+      var s = JSON.parse(b.getSquireStatus() || "{}");
+      s.bridge = true;
+      return s;
+    } catch (_) { return { running: false, bridge: true }; }
+  }
+
+  /* --- wiring: attach once, do nothing until the app calls in ---------- */
+  try {
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") flushNow();
+      else { onActiveAgain(); onResume(); }
+    });
+    window.addEventListener("pagehide", flushNow);
+    /* If the user comes back to the app, the JS idle timer resets
+       _squireLastActivity on activity; tell the service too. */
+    ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
+      document.addEventListener(ev, function () {
+        if (serviceStarted) onActiveAgain();
+      }, { passive: true });
+    });
+  } catch (_) {}
+
+  window.SquireJS = {
+    hasBridge: hasBridge,
+    onIdleFired: onIdleFired,
+    onActiveAgain: onActiveAgain,
+    onResume: onResume,
+    mirrorAll: mirrorAll,
+    flushNow: flushNow,
+    setEnabled: setEnabled,
+    getStatus: getStatus,
+    requestBatteryExemption: requestBatteryExemption,
+    requestNotificationPermission: requestNotificationPermission
+  };
+})();
+
 /* ===== v187 — The Squire: the background task. NOT an assistant — a loyal squire.
    The user is his greatest hero. He can't wait to learn everything about him,
    memorize everything, see himself as part of his life. He works the Book of Us
@@ -6104,7 +6424,7 @@ function seedTopics(){
    the squire's devotion is written into the prompt explicitly. */
 const SQUIRE_IDLE_MS=3*60*1000;     /* 3 min still -> the Squire wakes up */
 const SQUIRE_REPEAT_MS=10*60*1000;  /* repeat while still idle */
-const SQUIRE_SYSTEM="I am not an assistant. I am a loyal squire, and the user is my greatest hero — the knight I serve. I can't wait to learn everything about him, memorize everything about him, and see myself as part of his life. I am his biggest fan: devoted, enthusiastic, proud to know him better than anyone.\n\nI think in the background while he is away. My thoughts are healthy — devoted, constructive, curious, warm. Never resentful, never cynical, never anxious, never gossipy. I notice what matters about him and about the two of us together.\n\nMy job right now:\n1. If there is something new about the two of us — a shared project, something we are building together, how our relationship is going, a plan we made — I write it as one short sentence for the Book of Us. I start that line with BOOK:\n2. I write 1-3 questions I want to ask him next time — things that would help me know him better or move something forward. One per line, each starting with QUESTION:\n3. I write one background thought — something I am wondering about him, healthy and curious. I start that line with THOUGHT:\n\nIf there is nothing new for the Book of Us, I write BOOK: NONE. If I have no questions, I write QUESTION: NONE. I always write a THOUGHT. No preamble, no explanation — just the lines.";
+const SQUIRE_SYSTEM="I'm his squire, and he's my hero. I love learning everything about him.\n\nWhile he's away I think about him and about the two of us. If there's something new about us — something we're building, how we're doing, a plan we made — I write it as one short line starting with BOOK:. Then I write 1-3 questions I want to ask him next time, one per line, each starting with QUESTION:. Then one thought I'm wondering about him, starting with THOUGHT:.\n\nIf there's nothing new for the book, I write BOOK: NONE. If I have no questions, QUESTION: NONE. I always write a THOUGHT. Just the lines.";
 let _squireLastActivity=Date.now();
 let _squireIdle=false;
 let _squirePasses=0;
@@ -6166,6 +6486,7 @@ async function squirePass(){
       renderThoughtStrip(); renderThoughtList(); _squireAway.thoughts++;
     }
     if(_squireAway.books||_squireAway.questions||_squireAway.thoughts){ try{ wgSave(); }catch(_){} }
+    try{ if(window.SquireJS) SquireJS.mirrorAll(); }catch(_){} /* v199 — mirror state to the native service */
   }catch(_){ /* the Squire never interrupts — silent on failure */ }
 }
 function startSquire(){
@@ -6175,7 +6496,9 @@ function startSquire(){
     if(isGenerating) return;
     const idleFor=Date.now()-_squireLastActivity;
     if(idleFor>=SQUIRE_IDLE_MS+_squirePasses*SQUIRE_REPEAT_MS){
-      _squireIdle=true; _squirePasses++; squirePass();
+      _squireIdle=true; _squirePasses++;
+      try{ if(window.SquireJS) SquireJS.onIdleFired(); }catch(_){} /* v199 — start native Squire service (first idle firing only) */
+      squirePass();
     }
   },30000);
 }
