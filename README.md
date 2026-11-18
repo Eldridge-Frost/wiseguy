@@ -6,6 +6,10 @@ server, or explore in demo mode. Your chats never leave your device.
 | ![Chat](screenshots/wiseguy-chat.png) | ![Memory](screenshots/wiseguy-memory.png) |
 | --- | --- |
 
+## Support
+
+WiseGuy and Reveries are free and stay free — no subscription, no account, no cloud in the middle. If you can afford to give, it goes straight to finishing them: [Help finish WiseGuy & Reveries — GoFundMe](https://gofund.me/53cd59720)
+
 ## Download
 
 - **WiseGuy-v197.apk** — the Android app. Install this on your phone: [v197 release](https://github.com/Eldridge-Frost/wiseguy/releases/tag/v197). Install over the top of the previous build — never uninstall (uninstall wipes your chats and memories).
